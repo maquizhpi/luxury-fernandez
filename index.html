@@ -522,6 +522,82 @@
   /* custom product card badge */
   .card-tag.tag-custom { background: #6c5ce7; color: #fff; }
 
+  /* ── MODAL ADMIN PANEL ── */
+  .modal-admin-panel {
+    display: none; margin-top: 16px; padding: 16px 18px;
+    border: 1px solid rgba(201,168,76,0.3);
+    background: rgba(201,168,76,0.06);
+  }
+  body.admin-on .modal-admin-panel { display: block; }
+  .modal-admin-panel-title {
+    font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 12px; font-weight: 600;
+  }
+  .modal-admin-panel label {
+    display: block; font-size: 9px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--warm-gray);
+    margin-bottom: 5px; margin-top: 12px; font-weight: 500;
+  }
+  .modal-admin-panel label:first-of-type { margin-top: 0; }
+  .modal-admin-input {
+    width: 100%; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--cream); padding: 9px 12px;
+    font-family: 'Montserrat', sans-serif; font-size: 12px; outline: none;
+    transition: border-color 0.2s;
+  }
+  .modal-admin-input:focus { border-color: var(--gold); }
+  .modal-admin-save {
+    width: 100%; background: var(--gold); color: var(--black);
+    border: none; padding: 11px; cursor: pointer;
+    font-family: 'Montserrat', sans-serif; font-size: 10px;
+    letter-spacing: 3px; text-transform: uppercase; font-weight: 600;
+    margin-top: 12px; transition: opacity 0.2s;
+  }
+  .modal-admin-save:hover { opacity: 0.85; }
+
+  /* ── SHARE BUTTONS ── */
+  .share-row {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 14px; padding-top: 14px;
+    border-top: 1px solid rgba(201,168,76,0.15);
+  }
+  .share-label {
+    font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--warm-gray); flex-shrink: 0; margin-right: 2px;
+  }
+  .share-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: none; cursor: pointer; display: flex;
+    align-items: center; justify-content: center;
+    transition: transform 0.2s, opacity 0.2s; flex-shrink: 0;
+  }
+  .share-btn:hover { transform: scale(1.12); opacity: 0.88; }
+  .share-btn svg { width: 17px; height: 17px; }
+  .share-fb { background: #1877F2; color: #fff; }
+  .share-wa-share { background: #25D366; color: #fff; }
+  .share-ig { background: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); color: #fff; }
+  .share-copy { background: rgba(201,168,76,0.18); color: var(--gold); border: 1px solid rgba(201,168,76,0.3) !important; }
+
+  /* ── IMAGE UPLOAD ── */
+  .img-or-divider {
+    text-align: center; font-size: 10px; color: #555;
+    letter-spacing: 1px; margin: 8px 0;
+  }
+  .file-upload-btn {
+    display: block; width: 100%; text-align: center;
+    background: rgba(255,255,255,0.04); border: 1px dashed rgba(201,168,76,0.35);
+    color: var(--gold); padding: 10px 14px; cursor: pointer;
+    font-size: 11px; letter-spacing: 2px; font-family: 'Montserrat', sans-serif;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .file-upload-btn:hover { background: rgba(201,168,76,0.08); border-color: var(--gold); }
+  .img-preview-thumb {
+    width: 100%; max-height: 140px; object-fit: contain;
+    margin-top: 8px; border: 1px solid rgba(201,168,76,0.2);
+    background: rgba(0,0,0,0.3); display: none;
+  }
+
   /* ── RESPONSIVE ── */
   @media (max-width: 640px) {
     .modal { grid-template-columns: 1fr; }
@@ -1157,8 +1233,14 @@
       </div>
     </div>
     <div class="form-group">
-      <label>URL de la imagen *</label>
-      <input type="text" id="f-img" placeholder="https://... o imagenes/nombre.JPG">
+      <label>Imagen *</label>
+      <input type="text" id="f-img" placeholder="Pegar URL (Google Drive, web...)" oninput="previewImgUrl()">
+      <div class="img-or-divider">— o sube desde tu dispositivo —</div>
+      <label class="file-upload-btn">
+        📷 Seleccionar imagen desde tu dispositivo
+        <input type="file" id="f-img-file" accept="image/*" onchange="handleImageFile(event)" style="display:none">
+      </label>
+      <img id="f-img-preview" class="img-preview-thumb" alt="Vista previa">
     </div>
     <div class="form-group">
       <label>Descripción</label>
@@ -1191,6 +1273,34 @@
         </svg>
         Consultar por WhatsApp
       </a>
+      <div class="share-row">
+        <span class="share-label">Compartir:</span>
+        <button class="share-btn share-fb" onclick="shareProduct('facebook')" title="Facebook">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </button>
+        <button class="share-btn share-wa-share" onclick="shareProduct('whatsapp')" title="Compartir por WhatsApp">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </button>
+        <button class="share-btn share-ig" onclick="shareProduct('instagram')" title="Instagram / Copiar">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        </button>
+        <button class="share-btn share-copy" onclick="shareProduct('copy')" title="Copiar enlace">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        </button>
+      </div>
+      <div class="modal-admin-panel">
+        <div class="modal-admin-panel-title">⚙ Editar Producto</div>
+        <label>Precio</label>
+        <input type="text" class="modal-admin-input" id="modalEditPrice" placeholder="Ej: $45 o Consultar precio">
+        <label>Nueva imagen (URL o Google Drive)</label>
+        <input type="text" class="modal-admin-input" id="modalEditImgUrl" placeholder="Pegar URL de imagen...">
+        <div class="img-or-divider" style="margin:7px 0">— o sube desde tu dispositivo —</div>
+        <label class="file-upload-btn" style="margin-bottom:0">
+          📷 Seleccionar imagen
+          <input type="file" id="modalEditImgFile" accept="image/*" onchange="handleModalImgFile(event)" style="display:none">
+        </label>
+        <button class="modal-admin-save" onclick="saveModalEdit()">Guardar cambios</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1198,6 +1308,10 @@
 <script>
 const WA = '593969808734';
 const ADMIN_PWD = 'luxury2025'; // ← cambia tu contraseña aquí
+const SITE_URL = 'https://luxury-fernandez.shop';
+let _tempImgData = null;
+let _modalTempImg = null;
+let currentModalIdx = -1;
 
 const products = [
   /* 0 */ { img:'imagenes/84bff691-0d81-43a1-984f-bddb26ffd087.JPG', brand:'Bimba y Lola', name:'Crossbody Blanca Cadena', cat:'Cartera', price:'Consultar precio', desc:'Elegante bolso crossbody en color blanco roto con cadena plateada y correa ajustable con logo. Cierre de botón giratorio. Ideal para el día a día con estilo y distinción.' },
@@ -1278,6 +1392,7 @@ function applySavedPrices() {
 
 // ── MODAL ──
 function openModal(idx) {
+  currentModalIdx = idx;
   const p = allProducts[idx];
   if (!p) return;
   const savedPrice = customPrices[idx] || p.price;
@@ -1292,6 +1407,11 @@ function openModal(idx) {
   document.getElementById('modalWA').href = `https://wa.me/${WA}?text=${msg}`;
   document.getElementById('modal').classList.add('open');
   document.body.style.overflow = 'hidden';
+  // pre-fill admin panel
+  document.getElementById('modalEditPrice').value = savedPrice !== 'Consultar precio' ? savedPrice : '';
+  document.getElementById('modalEditImgUrl').value = '';
+  document.getElementById('modalEditImgFile').value = '';
+  _modalTempImg = null;
 }
 function closeModal(e) {
   if (e.target === document.getElementById('modal')) closeModalDirect();
@@ -1403,8 +1523,10 @@ function saveProduct() {
   const brand = document.getElementById('f-brand').value.trim();
   const cat   = document.getElementById('f-cat').value;
   const price = document.getElementById('f-price').value.trim() || 'Consultar precio';
-  const img   = document.getElementById('f-img').value.trim();
+  let   img   = document.getElementById('f-img').value.trim();
   const desc  = document.getElementById('f-desc').value.trim();
+  if (_tempImgData) img = _tempImgData;
+  else if (img) img = convertGDriveUrl(img);
   if (!name || !brand || !img) { alert('Completa nombre, marca e imagen.'); return; }
   const newProduct = { img, brand, name, cat, price, desc: desc || `${name} de ${brand}.`, isCustom: true };
   localProducts.push(newProduct);
@@ -1413,6 +1535,9 @@ function saveProduct() {
   renderCustomProduct(newProduct, allProducts.length - 1);
   applyFilters();
   ['f-name','f-brand','f-price','f-img','f-desc'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-img-file').value = '';
+  document.getElementById('f-img-preview').style.display = 'none';
+  _tempImgData = null;
   closeAddModalDirect();
   alert(`✓ "${name}" agregado al catálogo.`);
 }
@@ -1434,6 +1559,137 @@ function renderCustomProduct(p, idx) {
     <div class="card-tag tag-custom">Nuevo</div>
     <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>`;
   grid.insertBefore(card, noRes);
+}
+
+// ── MODAL ADMIN EDIT ──
+function handleModalImgFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  document.getElementById('modalEditImgUrl').value = '';
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    _modalTempImg = e.target.result;
+    document.getElementById('modalImg').src = _modalTempImg;
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveModalEdit() {
+  if (currentModalIdx < 0) return;
+  const priceVal = document.getElementById('modalEditPrice').value.trim();
+  const imgUrlVal = document.getElementById('modalEditImgUrl').value.trim();
+  const newImg = _modalTempImg || (imgUrlVal ? convertGDriveUrl(imgUrlVal) : null);
+  let changed = false;
+
+  if (priceVal) {
+    customPrices[currentModalIdx] = priceVal;
+    localStorage.setItem('lf_prices', JSON.stringify(customPrices));
+    document.getElementById('modalPrice').textContent = priceVal;
+    if (allProducts[currentModalIdx]) allProducts[currentModalIdx].price = priceVal;
+    const priceEl = document.querySelector(`.price-text[data-pid="${currentModalIdx}"]`);
+    if (priceEl) priceEl.textContent = priceVal;
+    const wa = document.getElementById('modalWA');
+    const p = allProducts[currentModalIdx];
+    if (wa && p) {
+      const msg = encodeURIComponent(`Hola! Me interesa: *${p.name}* de ${p.brand}. Precio: ${priceVal}. ¿Puedes darme más información? Gracias!`);
+      wa.href = `https://wa.me/${WA}?text=${msg}`;
+    }
+    changed = true;
+  }
+
+  if (newImg) {
+    document.getElementById('modalImg').src = newImg;
+    const cardImg = document.querySelector(`.product-card[data-idx="${currentModalIdx}"] .card-img`);
+    if (cardImg) cardImg.src = newImg;
+    const localIdx = currentModalIdx - products.length;
+    if (localIdx >= 0 && localProducts[localIdx]) {
+      localProducts[localIdx].img = newImg;
+      allProducts[currentModalIdx].img = newImg;
+      localStorage.setItem('lf_products', JSON.stringify(localProducts));
+    }
+    changed = true;
+  }
+
+  _modalTempImg = null;
+  document.getElementById('modalEditImgFile').value = '';
+  document.getElementById('modalEditImgUrl').value = '';
+  if (changed) showToast('¡Cambios guardados!');
+  else showToast('No hay cambios para guardar.');
+}
+
+// ── GOOGLE DRIVE URL CONVERSION ──
+function convertGDriveUrl(url) {
+  let m = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (m) return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w1200`;
+  m = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (m && url.includes('drive.google.com')) return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w1200`;
+  return url;
+}
+
+// ── IMAGE PREVIEW (URL) ──
+function previewImgUrl() {
+  _tempImgData = null;
+  document.getElementById('f-img-file').value = '';
+  const url = document.getElementById('f-img').value.trim();
+  const preview = document.getElementById('f-img-preview');
+  if (url) {
+    preview.src = convertGDriveUrl(url);
+    preview.style.display = 'block';
+  } else {
+    preview.style.display = 'none';
+  }
+}
+
+// ── IMAGE UPLOAD FROM DEVICE ──
+function handleImageFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  document.getElementById('f-img').value = '';
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    _tempImgData = e.target.result;
+    const preview = document.getElementById('f-img-preview');
+    preview.src = _tempImgData;
+    preview.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── SHARE PRODUCT ──
+function shareProduct(platform) {
+  const title = document.getElementById('modalTitle').textContent;
+  const brand = document.getElementById('modalBrand').textContent;
+  const price = document.getElementById('modalPrice').textContent;
+  const text = `✨ ${brand} — ${title}\nPrecio: ${price}\nVer catálogo: ${SITE_URL}`;
+
+  if (platform === 'whatsapp') {
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+  } else if (platform === 'facebook') {
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SITE_URL)}&quote=${encodeURIComponent(`${brand} — ${title} | ${price}`)}`, '_blank');
+  } else if (platform === 'instagram') {
+    if (navigator.share) {
+      navigator.share({ title: `${brand} — ${title}`, text, url: SITE_URL });
+    } else {
+      navigator.clipboard.writeText(text).then(() => showToast('¡Copiado! Pégalo en Instagram.')).catch(() => prompt('Copia este texto:', text));
+    }
+  } else if (platform === 'copy') {
+    navigator.clipboard.writeText(`${brand} — ${title}\n${price}\n${SITE_URL}`).then(() => showToast('¡Enlace copiado!')).catch(() => prompt('Copia este enlace:', SITE_URL));
+  }
+}
+
+// ── TOAST NOTIFICATION ──
+function showToast(msg) {
+  let t = document.getElementById('lf-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'lf-toast';
+    t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--black);padding:10px 22px;font-size:11px;letter-spacing:2px;font-family:Montserrat,sans-serif;z-index:9999;pointer-events:none;opacity:0;transition:opacity 0.3s;white-space:nowrap;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.style.opacity = '0'; }, 2600);
 }
 
 // ── INIT ──
