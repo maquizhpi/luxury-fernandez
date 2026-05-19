@@ -401,6 +401,127 @@
   .product-card:nth-child(9)  { animation-delay: 0.36s; }
   .product-card:nth-child(10) { animation-delay: 0.40s; }
 
+  /* ── SKELETON LOADING ── */
+  .card-img { background: #222018; }
+  @keyframes shimmer {
+    0%   { background-position: -600px 0; }
+    100% { background-position:  600px 0; }
+  }
+  .product-card:not(.img-loaded) .card-img {
+    background: linear-gradient(90deg, #1a1712 25%, #272318 50%, #1a1712 75%);
+    background-size: 600px 100%;
+    animation: shimmer 1.4s infinite;
+  }
+  .product-card:not(.img-loaded) .card-overlay { opacity: 0; }
+  .product-card.img-loaded .card-overlay { opacity: 1; transition: opacity 0.4s; }
+
+  /* ── ADMIN BAR ── */
+  .admin-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 3000;
+    background: var(--gold); color: var(--black);
+    text-align: center; padding: 9px 16px;
+    font-size: 10px; letter-spacing: 4px; font-weight: 600;
+    text-transform: uppercase; display: none;
+    display: flex; align-items: center; justify-content: center; gap: 20px;
+  }
+  .admin-bar.hidden { display: none !important; }
+  .admin-bar-btn {
+    background: var(--black); color: var(--gold);
+    border: none; cursor: pointer; padding: 5px 14px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+    transition: opacity 0.2s;
+  }
+  .admin-bar-btn:hover { opacity: 0.8; }
+  .admin-bar-btn.danger { background: #c0392b; color: #fff; }
+
+  /* ── PRICE EDIT ── */
+  .price-wrap { display: inline-flex; align-items: center; gap: 8px; }
+  .edit-price-btn {
+    display: none; background: none; border: 1px solid var(--gold);
+    color: var(--gold); cursor: pointer; padding: 2px 7px;
+    font-size: 9px; letter-spacing: 2px; font-family: 'Montserrat', sans-serif;
+  }
+  body.admin-on .edit-price-btn { display: inline; }
+  .price-input {
+    background: rgba(201,168,76,0.12); border: 1px solid var(--gold);
+    color: var(--gold); font-size: 14px; font-weight: 500;
+    padding: 3px 8px; width: 130px; font-family: 'Montserrat', sans-serif;
+    outline: none;
+  }
+
+  /* ── ADD PRODUCT FAB ── */
+  .add-fab {
+    position: fixed; bottom: 28px; right: 28px; z-index: 900;
+    background: var(--gold); color: var(--black);
+    border: none; cursor: pointer;
+    width: 54px; height: 54px; border-radius: 50%;
+    font-size: 26px; font-weight: 300;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.6);
+    transition: transform 0.2s; display: none;
+    align-items: center; justify-content: center;
+  }
+  .add-fab:hover { transform: scale(1.1); }
+  body.admin-on .add-fab { display: flex; }
+
+  /* ── ADD PRODUCT MODAL ── */
+  .add-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+    z-index: 2000; display: flex; align-items: center; justify-content: center;
+    padding: 16px; opacity: 0; pointer-events: none;
+    transition: opacity 0.3s; backdrop-filter: blur(8px);
+  }
+  .add-overlay.open { opacity: 1; pointer-events: all; }
+  .add-modal {
+    background: var(--card-bg); max-width: 520px; width: 100%;
+    padding: 40px 36px; border: 1px solid rgba(201,168,76,0.2);
+    max-height: 90vh; overflow-y: auto; position: relative;
+    transform: translateY(24px); transition: transform 0.3s;
+  }
+  .add-overlay.open .add-modal { transform: translateY(0); }
+  .add-modal h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px; color: var(--cream); margin-bottom: 24px; font-weight: 400;
+  }
+  .form-group { margin-bottom: 16px; }
+  .form-group label {
+    display: block; font-size: 9px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--warm-gray);
+    margin-bottom: 6px; font-weight: 500;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(201,168,76,0.25);
+    color: var(--cream); padding: 10px 14px;
+    font-family: 'Montserrat', sans-serif; font-size: 12px;
+    outline: none; transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--gold);
+  }
+  .form-group select option { background: #1a1712; }
+  .form-group textarea { resize: vertical; min-height: 80px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .btn-save {
+    width: 100%; background: var(--gold); color: var(--black);
+    border: none; padding: 13px; cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+    font-weight: 600; margin-top: 8px; transition: opacity 0.2s;
+  }
+  .btn-save:hover { opacity: 0.85; }
+  .add-close {
+    position: absolute; top: 14px; right: 14px;
+    background: rgba(0,0,0,0.4); border: 1px solid rgba(201,168,76,0.25);
+    color: var(--cream); width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 15px; transition: all 0.2s;
+  }
+  .add-close:hover { background: var(--gold); color: var(--black); }
+
+  /* custom product card badge */
+  .card-tag.tag-custom { background: #6c5ce7; color: #fff; }
+
   /* ── RESPONSIVE ── */
   @media (max-width: 640px) {
     .modal { grid-template-columns: 1fr; }
@@ -451,84 +572,84 @@
 
   <!-- ─ CARTERAS ─ -->
   <div class="product-card" data-cat="cartera" data-idx="0" onclick="openModal(0)">
-    <img class="card-img" src="imagenes/84bff691-0d81-43a1-984f-bddb26ffd087.JPG" alt="Bimba y Lola Crossbody" loading="lazy">
+    <img class="card-img" src="imagenes/84bff691-0d81-43a1-984f-bddb26ffd087.JPG" alt="Bimba y Lola Crossbody" fetchpriority="high">
     <div class="card-overlay">
       <div class="card-brand">Bimba y Lola</div>
       <div class="card-name">Crossbody Blanca</div>
-      <div class="card-price">Consultar precio</div>
+      <div class="card-price"><span class="price-wrap"><span class="price-text" data-pid="0">Consultar precio</span><button class="edit-price-btn" onclick="editPrice(event,0)">✎</button></span></div>
     </div>
     <div class="card-tag tag-nuevo">Nuevo</div>
     <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
   </div>
 
   <div class="product-card" data-cat="cartera" data-idx="1" onclick="openModal(1)">
-    <img class="card-img" src="imagenes/5ad0fb87-9c0f-4f00-a822-e790bf98da00.JPG" alt="Bimba y Lola Tote" loading="lazy">
+    <img class="card-img" src="imagenes/5ad0fb87-9c0f-4f00-a822-e790bf98da00.JPG" alt="Bimba y Lola Tote" fetchpriority="high">
     <div class="card-overlay">
       <div class="card-brand">Bimba y Lola</div>
       <div class="card-name">Canvas Tote Bag</div>
-      <div class="card-price">Consultar precio</div>
+      <div class="card-price"><span class="price-wrap"><span class="price-text" data-pid="1">Consultar precio</span><button class="edit-price-btn" onclick="editPrice(event,1)">✎</button></span></div>
     </div>
     <div class="card-tag tag-destacado">Destacado</div>
     <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
   </div>
 
   <div class="product-card" data-cat="cartera" data-idx="2" onclick="openModal(2)">
-    <img class="card-img" src="imagenes/abf039e6-b966-4966-a8b4-52f9f404c382.JPG" alt="Coach Field Tote" loading="lazy">
+    <img class="card-img" src="imagenes/abf039e6-b966-4966-a8b4-52f9f404c382.JPG" alt="Coach Field Tote" fetchpriority="high">
     <div class="card-overlay">
       <div class="card-brand">Coach</div>
       <div class="card-name">Field Tote Negro</div>
-      <div class="card-price">Consultar precio</div>
+      <div class="card-price"><span class="price-wrap"><span class="price-text" data-pid="2">Consultar precio</span><button class="edit-price-btn" onclick="editPrice(event,2)">✎</button></span></div>
     </div>
     <div class="card-tag tag-destacado">Destacado</div>
     <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
   </div>
 
   <div class="product-card" data-cat="cartera" data-idx="3" onclick="openModal(3)">
-    <img class="card-img" src="imagenes/980e15c9-b3d5-407c-9e2a-555bfe4eabdc.JPG" alt="Coach Barrel Bag" loading="lazy">
+    <img class="card-img" src="imagenes/980e15c9-b3d5-407c-9e2a-555bfe4eabdc.JPG" alt="Coach Barrel Bag" fetchpriority="high">
     <div class="card-overlay">
       <div class="card-brand">Coach</div>
       <div class="card-name">Barrel Bag Negra</div>
-      <div class="card-price">Consultar precio</div>
+      <div class="card-price"><span class="price-wrap"><span class="price-text" data-pid="3">Consultar precio</span><button class="edit-price-btn" onclick="editPrice(event,3)">✎</button></span></div>
     </div>
     <div class="card-tag tag-nuevo">Nuevo</div>
     <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
   </div>
 
   <div class="product-card" data-cat="cartera" data-idx="4" onclick="openModal(4)">
-    <img class="card-img" src="imagenes/8dd31132-b973-4438-ba8c-8d358f820638.JPG" alt="Tommy Hilfiger Crossbody" loading="lazy">
+    <img class="card-img" src="imagenes/8dd31132-b973-4438-ba8c-8d358f820638.JPG" alt="Tommy Hilfiger Crossbody">
     <div class="card-overlay">
       <div class="card-brand">Tommy Hilfiger</div>
       <div class="card-name">Crossbody Monograma</div>
-      <div class="card-price">Consultar precio</div>
+      <div class="card-price"><span class="price-wrap"><span class="price-text" data-pid="4">Consultar precio</span><button class="edit-price-btn" onclick="editPrice(event,4)">✎</button></span></div>
     </div>
     <div class="card-tag tag-nuevo">Nuevo</div>
     <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
   </div>
 
   <div class="product-card" data-cat="cartera" data-idx="5" onclick="openModal(5)">
-    <img class="card-img" src="imagenes/848647df-ae7f-44eb-89aa-bb4cd93822be.JPG" alt="Tommy Jeans Tote" loading="lazy">
+    <img class="card-img" src="imagenes/848647df-ae7f-44eb-89aa-bb4cd93822be.JPG" alt="Tommy Jeans Tote">
     <div class="card-overlay">
       <div class="card-brand">Tommy Jeans</div>
       <div class="card-name">Tote Bag Negro</div>
-      <div class="card-price">Consultar precio</div>
+      <div class="card-price"><span class="price-wrap"><span class="price-text" data-pid="5">Consultar precio</span><button class="edit-price-btn" onclick="editPrice(event,5)">✎</button></span></div>
     </div>
     <div class="card-tag tag-nuevo">Nuevo</div>
     <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
   </div>
 
   <div class="product-card" data-cat="cartera" data-idx="6" onclick="openModal(6)">
-    <img class="card-img" src="imagenes/f744875a-2345-40bb-b456-3ab1b583aa16.JPG" alt="Tommy Hilfiger Mochila" loading="lazy">
+    <img class="card-img" src="imagenes/f744875a-2345-40bb-b456-3ab1b583aa16.JPG" alt="Tommy Hilfiger Mochila">
     <div class="card-overlay">
       <div class="card-brand">Tommy Hilfiger</div>
       <div class="card-name">Mochila Negra</div>
-      <div class="card-price">Consultar precio</div>
+      <div class="card-price"><span class="price-wrap"><span class="price-text" data-pid="6">Consultar precio</span><button class="edit-price-btn" onclick="editPrice(event,6)">✎</button></span></div>
     </div>
     <div class="card-tag tag-nuevo">Nuevo</div>
     <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
   </div>
 
   <div class="product-card" data-cat="cartera" data-idx="7" onclick="openModal(7)">
-    <img class="card-img" src="imagenes/ec63442e-e64a-4dfd-b039-3f0cbde3008c.JPG" alt="Tommy Hilfiger Bowling Roja" loading="lazy">
+    <img class="card-img" src="imagenes/ec63442e-e64a-4dfd-b039-3f0cbde3008c.JPG" alt="Tommy Hilfiger Bowling Roja">
     <div class="card-overlay">
       <div class="card-brand">Tommy Hilfiger</div>
       <div class="card-name">Bowling Bag Roja</div>
@@ -992,6 +1113,64 @@
   </a>
 </footer>
 
+<!-- ══ ADMIN BAR ══ -->
+<div class="admin-bar hidden" id="adminBar">
+  <span>⚙ Modo Administrador Activo</span>
+  <button class="admin-bar-btn" onclick="openAddModal()">+ Agregar Producto</button>
+  <button class="admin-bar-btn danger" onclick="exitAdmin()">✕ Salir</button>
+</div>
+
+<!-- ══ ADD PRODUCT FAB ══ -->
+<button class="add-fab" onclick="openAddModal()" title="Agregar producto">+</button>
+
+<!-- ══ ADD PRODUCT MODAL ══ -->
+<div class="add-overlay" id="addOverlay" onclick="closeAddModal(event)">
+  <div class="add-modal">
+    <button class="add-close" onclick="closeAddModalDirect()">✕</button>
+    <h3>Agregar Producto</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nombre *</label>
+        <input type="text" id="f-name" placeholder="Ej: Bolso Cuero Negro">
+      </div>
+      <div class="form-group">
+        <label>Marca *</label>
+        <input type="text" id="f-brand" placeholder="Ej: Gucci">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Categoría *</label>
+        <select id="f-cat">
+          <option value="cartera">Cartera</option>
+          <option value="joya">Joya</option>
+          <option value="gorra">Gorra</option>
+          <option value="accesorio">Accesorio</option>
+          <option value="ropa">Ropa</option>
+          <option value="infantil">Infantil</option>
+          <option value="figura">Figura</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Precio *</label>
+        <input type="text" id="f-price" placeholder="Ej: $45 o Consultar precio">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>URL de la imagen *</label>
+      <input type="text" id="f-img" placeholder="https://... o imagenes/nombre.JPG">
+    </div>
+    <div class="form-group">
+      <label>Descripción</label>
+      <textarea id="f-desc" placeholder="Descripción del producto..."></textarea>
+    </div>
+    <button class="btn-save" onclick="saveProduct()">Guardar Producto</button>
+    <p style="font-size:10px;color:#666;text-align:center;margin-top:12px;letter-spacing:1px;">
+      Los productos se guardan en este navegador. Para que aparezcan en todos los dispositivos, agrégalos al código y haz git push.
+    </p>
+  </div>
+</div>
+
 <!-- ══ MODAL ══ -->
 <div class="modal-overlay" id="modal" onclick="closeModal(event)">
   <div class="modal" id="modalBox">
@@ -1018,6 +1197,7 @@
 
 <script>
 const WA = '593969808734';
+const ADMIN_PWD = 'luxury2025'; // ← cambia tu contraseña aquí
 
 const products = [
   /* 0 */ { img:'imagenes/84bff691-0d81-43a1-984f-bddb26ffd087.JPG', brand:'Bimba y Lola', name:'Crossbody Blanca Cadena', cat:'Cartera', price:'Consultar precio', desc:'Elegante bolso crossbody en color blanco roto con cadena plateada y correa ajustable con logo. Cierre de botón giratorio. Ideal para el día a día con estilo y distinción.' },
@@ -1069,24 +1249,50 @@ const products = [
   /* 46 */ { img:'imagenes/e37b3223-0588-4d7b-a4a2-06b527803ca5.JPG', brand:'Seleção Portugal', name:'Figura Ronaldo Portugal', cat:'Figura Coleccionable', price:'Consultar precio', desc:'Figura oficial de Cristiano Ronaldo con la camiseta roja y verde de Portugal #7. Detalles del rostro de alta calidad. Coleccionable premium. Rostro realista y detalles de alta calidad.' },
 ];
 
+// ── STATE ──
 let currentFilter = 'all';
 let currentSearch = '';
+let adminActive = false;
+let customPrices = JSON.parse(localStorage.getItem('lf_prices') || '{}');
+let localProducts = JSON.parse(localStorage.getItem('lf_products') || '[]');
+let allProducts = [...products, ...localProducts];
 
+// ── SKELETON: mark card loaded when image loads ──
+document.querySelectorAll('.card-img').forEach(img => {
+  if (img.complete) {
+    img.closest('.product-card').classList.add('img-loaded');
+  } else {
+    img.addEventListener('load', () => img.closest('.product-card').classList.add('img-loaded'));
+    img.addEventListener('error', () => img.closest('.product-card').classList.add('img-loaded'));
+  }
+});
+
+// ── APPLY SAVED PRICES ON LOAD ──
+function applySavedPrices() {
+  Object.entries(customPrices).forEach(([pid, price]) => {
+    const el = document.querySelector(`.price-text[data-pid="${pid}"]`);
+    if (el) el.textContent = price;
+    if (allProducts[pid]) allProducts[pid].price = price;
+  });
+}
+
+// ── MODAL ──
 function openModal(idx) {
-  const p = products[idx];
+  const p = allProducts[idx];
+  if (!p) return;
+  const savedPrice = customPrices[idx] || p.price;
   document.getElementById('modalImg').src = p.img;
   document.getElementById('modalImg').alt = p.name;
   document.getElementById('modalCategory').textContent = p.cat;
   document.getElementById('modalTitle').textContent = p.name;
   document.getElementById('modalBrand').textContent = p.brand;
   document.getElementById('modalDesc').textContent = p.desc;
-  document.getElementById('modalPrice').textContent = p.price;
-  const msg = encodeURIComponent(`Hola! Me interesa: *${p.name}* de ${p.brand}. ¿Puedes darme más información y el precio? Gracias!`);
+  document.getElementById('modalPrice').textContent = savedPrice;
+  const msg = encodeURIComponent(`Hola! Me interesa: *${p.name}* de ${p.brand}. Precio: ${savedPrice}. ¿Puedes darme más información? Gracias!`);
   document.getElementById('modalWA').href = `https://wa.me/${WA}?text=${msg}`;
   document.getElementById('modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-
 function closeModal(e) {
   if (e.target === document.getElementById('modal')) closeModalDirect();
 }
@@ -1095,49 +1301,149 @@ function closeModalDirect() {
   document.body.style.overflow = '';
 }
 
+// ── FILTERS & SEARCH ──
 function filterCards(cat, btn) {
   currentFilter = cat;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
   applyFilters();
 }
-
 function doSearch(val) {
   currentSearch = val.toLowerCase().trim();
   applyFilters();
 }
-
 function applyFilters() {
   const cards = document.querySelectorAll('.product-card[data-cat]');
   let visible = 0;
   cards.forEach(card => {
     const cat = card.dataset.cat;
     const idx = parseInt(card.dataset.idx);
-    const p = products[idx];
+    const p = allProducts[idx];
+    if (!p) return;
     const matchCat = currentFilter === 'all' || cat === currentFilter;
     const matchSearch = !currentSearch ||
       p.name.toLowerCase().includes(currentSearch) ||
       p.brand.toLowerCase().includes(currentSearch) ||
       p.cat.toLowerCase().includes(currentSearch);
-    if (matchCat && matchSearch) {
-      card.classList.remove('hidden');
-      visible++;
-    } else {
-      card.classList.add('hidden');
-    }
+    card.classList.toggle('hidden', !(matchCat && matchSearch));
+    if (matchCat && matchSearch) visible++;
   });
-  const noRes = document.getElementById('noResults');
-  const countEl = document.getElementById('resultCount');
-  noRes.classList.toggle('visible', visible === 0);
-  countEl.textContent = visible > 0 ? `${visible} producto${visible !== 1 ? 's' : ''}` : '';
+  document.getElementById('noResults').classList.toggle('visible', visible === 0);
+  const c = document.getElementById('resultCount');
+  c.textContent = visible > 0 ? `${visible} producto${visible !== 1 ? 's' : ''}` : '';
 }
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModalDirect();
-});
+// ── PRICE EDITING ──
+function editPrice(e, pid) {
+  e.stopPropagation();
+  const span = document.querySelector(`.price-text[data-pid="${pid}"]`);
+  if (!span) return;
+  const current = span.textContent;
+  const input = document.createElement('input');
+  input.className = 'price-input';
+  input.value = current;
+  span.replaceWith(input);
+  input.focus();
+  input.select();
+  const save = () => {
+    const newPrice = input.value.trim() || current;
+    const newSpan = document.createElement('span');
+    newSpan.className = 'price-text';
+    newSpan.dataset.pid = pid;
+    newSpan.textContent = newPrice;
+    input.replaceWith(newSpan);
+    customPrices[pid] = newPrice;
+    localStorage.setItem('lf_prices', JSON.stringify(customPrices));
+    if (allProducts[pid]) allProducts[pid].price = newPrice;
+  };
+  input.addEventListener('blur', save);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') input.blur(); if (e.key === 'Escape') { input.value = current; input.blur(); } });
+}
 
-// Show count on load
+// ── ADMIN MODE ──
+let footerClicks = 0, footerTimer;
+document.querySelector('.footer-brand').addEventListener('click', () => {
+  footerClicks++;
+  clearTimeout(footerTimer);
+  footerTimer = setTimeout(() => footerClicks = 0, 2000);
+  if (footerClicks >= 3) {
+    footerClicks = 0;
+    const pwd = prompt('🔐 Contraseña de administrador:');
+    if (pwd === ADMIN_PWD) enterAdmin();
+    else if (pwd !== null) alert('Contraseña incorrecta.');
+  }
+});
+function enterAdmin() {
+  adminActive = true;
+  document.body.classList.add('admin-on');
+  document.getElementById('adminBar').classList.remove('hidden');
+  document.body.style.paddingTop = '44px';
+}
+function exitAdmin() {
+  adminActive = false;
+  document.body.classList.remove('admin-on');
+  document.getElementById('adminBar').classList.add('hidden');
+  document.body.style.paddingTop = '';
+}
+
+// ── ADD PRODUCT MODAL ──
+function openAddModal() {
+  document.getElementById('addOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeAddModal(e) {
+  if (e.target === document.getElementById('addOverlay')) closeAddModalDirect();
+}
+function closeAddModalDirect() {
+  document.getElementById('addOverlay').classList.remove('open');
+  document.body.style.overflow = adminActive ? '' : '';
+}
+function saveProduct() {
+  const name  = document.getElementById('f-name').value.trim();
+  const brand = document.getElementById('f-brand').value.trim();
+  const cat   = document.getElementById('f-cat').value;
+  const price = document.getElementById('f-price').value.trim() || 'Consultar precio';
+  const img   = document.getElementById('f-img').value.trim();
+  const desc  = document.getElementById('f-desc').value.trim();
+  if (!name || !brand || !img) { alert('Completa nombre, marca e imagen.'); return; }
+  const newProduct = { img, brand, name, cat, price, desc: desc || `${name} de ${brand}.`, isCustom: true };
+  localProducts.push(newProduct);
+  localStorage.setItem('lf_products', JSON.stringify(localProducts));
+  allProducts = [...products, ...localProducts];
+  renderCustomProduct(newProduct, allProducts.length - 1);
+  applyFilters();
+  ['f-name','f-brand','f-price','f-img','f-desc'].forEach(id => document.getElementById(id).value = '');
+  closeAddModalDirect();
+  alert(`✓ "${name}" agregado al catálogo.`);
+}
+function renderCustomProduct(p, idx) {
+  const grid = document.getElementById('catalog');
+  const noRes = document.getElementById('noResults');
+  const card = document.createElement('div');
+  card.className = 'product-card img-loaded';
+  card.dataset.cat = p.cat;
+  card.dataset.idx = idx;
+  card.onclick = () => openModal(idx);
+  card.innerHTML = `
+    <img class="card-img" src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.background='#2a2520'">
+    <div class="card-overlay">
+      <div class="card-brand">${p.brand}</div>
+      <div class="card-name">${p.name}</div>
+      <div class="card-price"><span class="price-wrap"><span class="price-text" data-pid="${idx}">${p.price}</span><button class="edit-price-btn" onclick="editPrice(event,${idx})">✎</button></span></div>
+    </div>
+    <div class="card-tag tag-custom">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>`;
+  grid.insertBefore(card, noRes);
+}
+
+// ── INIT ──
+localProducts.forEach((p, i) => renderCustomProduct(p, products.length + i));
+applySavedPrices();
 applyFilters();
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModalDirect(); closeAddModalDirect(); }
+});
 </script>
 </body>
 </html>
