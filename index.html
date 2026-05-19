@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luxury Fernández — Catálogo Exclusivo</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8D5A3;
+    --black: #0D0D0D;
+    --cream: #F9F5EF;
+    --warm-gray: #8A7F75;
+    --dark-bg: #141210;
+    --card-bg: #1a1712;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark-bg);
+    color: var(--cream);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    text-align: center;
+    padding: 64px 20px 44px;
+    background: linear-gradient(180deg, #080705 0%, var(--dark-bg) 100%);
+    border-bottom: 1px solid rgba(201,168,76,0.18);
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -80px; left: 50%;
+    transform: translateX(-50%);
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .brand-line {
+    font-size: 10px;
+    letter-spacing: 7px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .brand-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(40px, 8vw, 80px);
+    font-weight: 300;
+    letter-spacing: 5px;
+    line-height: 1;
+    color: var(--cream);
+  }
+  .brand-name span { color: var(--gold); font-style: italic; }
+  .brand-tagline {
+    font-size: 10px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-top: 16px;
+    font-weight: 400;
+  }
+  .gold-divider {
+    display: flex; align-items: center; justify-content: center;
+    gap: 16px; margin: 22px auto 28px; width: 220px;
+  }
+  .gold-divider::before, .gold-divider::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .gold-divider-diamond {
+    width: 5px; height: 5px;
+    background: var(--gold); transform: rotate(45deg);
+  }
+
+  /* ── SEARCH ── */
+  .search-wrap {
+    max-width: 420px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .search-input {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(201,168,76,0.25);
+    color: var(--cream);
+    padding: 11px 44px 11px 18px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .search-input::placeholder { color: var(--warm-gray); }
+  .search-input:focus { border-color: var(--gold); }
+  .search-icon {
+    position: absolute;
+    right: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--warm-gray);
+    pointer-events: none;
+    font-size: 14px;
+  }
+
+  /* ── FILTERS ── */
+  .filters-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 32px 16px 24px;
+  }
+  .filters-wrap::-webkit-scrollbar { display: none; }
+  .filters {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    min-width: max-content;
+    margin: 0 auto;
+  }
+  .filter-btn {
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.28);
+    color: var(--warm-gray);
+    padding: 9px 22px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9.5px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--black);
+    font-weight: 500;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    padding: 8px 0 20px;
+  }
+  .result-count {
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--warm-gray);
+    padding-bottom: 20px;
+  }
+
+  /* ── GRID ── */
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2px;
+    padding: 0 2px 4px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* ── CARD ── */
+  .product-card {
+    position: relative;
+    background: var(--card-bg);
+    cursor: pointer;
+    overflow: hidden;
+    aspect-ratio: 3/4;
+    transition: transform 0.4s ease;
+  }
+  .product-card:hover { transform: scale(1.01); z-index: 2; }
+  .product-card.hidden { display: none !important; }
+
+  .card-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s ease, filter 0.4s ease;
+    display: block;
+  }
+  .product-card:hover .card-img {
+    transform: scale(1.07);
+    filter: brightness(0.68);
+  }
+  .card-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(8,7,5,0.96) 0%, rgba(8,7,5,0.35) 45%, transparent 72%);
+    display: flex; flex-direction: column;
+    justify-content: flex-end;
+    padding: 22px 20px;
+  }
+  .card-brand {
+    font-size: 8.5px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+  .card-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 21px;
+    font-weight: 400;
+    color: var(--cream);
+    line-height: 1.2;
+    margin-bottom: 7px;
+  }
+  .card-price {
+    font-size: 14px;
+    color: var(--gold);
+    font-weight: 500;
+    letter-spacing: 1px;
+  }
+  .card-tag {
+    position: absolute;
+    top: 14px; right: 14px;
+    font-size: 7.5px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    font-weight: 600;
+  }
+  .card-tag.tag-exclusivo { background: var(--gold); color: var(--black); }
+  .card-tag.tag-destacado { background: #fff; color: var(--black); }
+  .card-tag.tag-nuevo { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
+  .card-tag.tag-oferta { background: #e74c3c; color: #fff; }
+
+  .card-hover-cta {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.3s ease;
+  }
+  .product-card:hover .card-hover-cta { opacity: 1; }
+  .cta-btn-hover {
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    background: rgba(8,7,5,0.65);
+    padding: 11px 28px;
+    font-size: 9px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: all 0.22s;
+  }
+  .cta-btn-hover:hover { background: var(--gold); color: var(--black); }
+
+  /* ── NO RESULTS ── */
+  .no-results {
+    text-align: center;
+    padding: 80px 20px;
+    display: none;
+    grid-column: 1 / -1;
+  }
+  .no-results.visible { display: block; }
+  .no-results p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    color: var(--warm-gray);
+    font-style: italic;
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.93);
+    z-index: 1000;
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.35s ease;
+    backdrop-filter: blur(10px);
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--card-bg);
+    max-width: 860px; width: 100%;
+    display: grid; grid-template-columns: 1fr 1fr;
+    max-height: 92vh;
+    overflow: hidden; position: relative;
+    border: 1px solid rgba(201,168,76,0.14);
+    transform: translateY(32px) scale(0.97);
+    transition: transform 0.35s ease;
+  }
+  .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+  .modal-img-wrap { position: relative; overflow: hidden; }
+  .modal-img {
+    width: 100%; height: 100%;
+    object-fit: cover; min-height: 420px;
+    display: block;
+  }
+  .modal-body {
+    padding: 44px 38px;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    overflow-y: auto;
+  }
+  .modal-category {
+    font-size: 9px; letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold); margin-bottom: 10px; font-weight: 500;
+  }
+  .modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px; font-weight: 400;
+    color: var(--cream); line-height: 1.15; margin-bottom: 6px;
+  }
+  .modal-brand {
+    font-size: 10px; letter-spacing: 3px;
+    color: var(--warm-gray); text-transform: uppercase; margin-bottom: 20px;
+  }
+  .modal-divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    margin-bottom: 20px;
+  }
+  .modal-desc {
+    font-size: 13px; line-height: 1.9;
+    color: #b0a598; margin-bottom: 28px;
+  }
+  .modal-price {
+    font-size: 26px; color: var(--gold);
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600; margin-bottom: 26px;
+  }
+  .whatsapp-btn {
+    display: flex; align-items: center; gap: 11px;
+    background: #25D366; color: #fff;
+    padding: 14px 22px; text-decoration: none;
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif; font-weight: 500;
+    transition: background 0.2s; border: none; cursor: pointer;
+    width: 100%; justify-content: center;
+  }
+  .whatsapp-btn:hover { background: #1aab52; }
+  .whatsapp-icon { width: 18px; height: 18px; flex-shrink: 0; }
+  .modal-close {
+    position: absolute; top: 14px; right: 14px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(201,168,76,0.28);
+    color: var(--cream); width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px; z-index: 10;
+    transition: all 0.2s;
+  }
+  .modal-close:hover { background: var(--gold); color: var(--black); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 52px 20px;
+    border-top: 1px solid rgba(201,168,76,0.1);
+    margin-top: 56px;
+  }
+  .footer-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px; color: var(--gold);
+    letter-spacing: 4px; font-style: italic; font-weight: 300;
+    margin-bottom: 10px;
+  }
+  footer p {
+    font-size: 10px; letter-spacing: 3px;
+    color: var(--warm-gray); text-transform: uppercase; margin-bottom: 6px;
+  }
+  footer a.footer-wa {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 16px; color: #25D366;
+    text-decoration: none; font-size: 11px; letter-spacing: 2px;
+    transition: opacity 0.2s;
+  }
+  footer a.footer-wa:hover { opacity: 0.8; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .product-card { animation: fadeUp 0.5s ease both; }
+  .product-card:nth-child(1)  { animation-delay: 0.04s; }
+  .product-card:nth-child(2)  { animation-delay: 0.08s; }
+  .product-card:nth-child(3)  { animation-delay: 0.12s; }
+  .product-card:nth-child(4)  { animation-delay: 0.16s; }
+  .product-card:nth-child(5)  { animation-delay: 0.20s; }
+  .product-card:nth-child(6)  { animation-delay: 0.24s; }
+  .product-card:nth-child(7)  { animation-delay: 0.28s; }
+  .product-card:nth-child(8)  { animation-delay: 0.32s; }
+  .product-card:nth-child(9)  { animation-delay: 0.36s; }
+  .product-card:nth-child(10) { animation-delay: 0.40s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .modal { grid-template-columns: 1fr; }
+    .modal-img { min-height: 260px; max-height: 300px; }
+    .modal-body { padding: 26px 22px; }
+    .modal-title { font-size: 26px; }
+    .catalog-grid { grid-template-columns: repeat(2, 1fr); gap: 1px; padding: 0 1px 2px; }
+    .card-name { font-size: 17px; }
+    .filters { justify-content: flex-start; padding-left: 8px; }
+  }
+  @media (min-width: 641px) and (max-width: 900px) {
+    .catalog-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <div class="brand-line">✦ Colección Exclusiva ✦</div>
+  <h1 class="brand-name">Luxury <span>Fernández</span></h1>
+  <p class="brand-tagline">Carteras · Joyas · Moda · Accesorios</p>
+  <div class="gold-divider"><div class="gold-divider-diamond"></div></div>
+  <div class="search-wrap">
+    <input type="text" id="searchInput" class="search-input" placeholder="Buscar productos, marcas…" oninput="doSearch(this.value)">
+    <span class="search-icon">⌕</span>
+  </div>
+</header>
+
+<!-- ══ FILTERS ══ -->
+<div class="filters-wrap">
+  <div class="filters" id="filterBar">
+    <button class="filter-btn active" onclick="filterCards('all', this)">Todo</button>
+    <button class="filter-btn" onclick="filterCards('cartera', this)">Carteras</button>
+    <button class="filter-btn" onclick="filterCards('joya', this)">Joyas</button>
+    <button class="filter-btn" onclick="filterCards('gorra', this)">Gorras</button>
+    <button class="filter-btn" onclick="filterCards('accesorio', this)">Accesorios</button>
+    <button class="filter-btn" onclick="filterCards('ropa', this)">Ropa</button>
+    <button class="filter-btn" onclick="filterCards('infantil', this)">Infantil</button>
+    <button class="filter-btn" onclick="filterCards('figura', this)">Figuras</button>
+  </div>
+</div>
+
+<div class="result-count" id="resultCount"></div>
+
+<!-- ══ GRID ══ -->
+<div class="catalog-grid" id="catalog">
+
+  <!-- ─ CARTERAS ─ -->
+  <div class="product-card" data-cat="cartera" data-idx="0" onclick="openModal(0)">
+    <img class="card-img" src="imagenes/84bff691-0d81-43a1-984f-bddb26ffd087.JPG" alt="Bimba y Lola Crossbody" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Bimba y Lola</div>
+      <div class="card-name">Crossbody Blanca</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="1" onclick="openModal(1)">
+    <img class="card-img" src="imagenes/5ad0fb87-9c0f-4f00-a822-e790bf98da00.JPG" alt="Bimba y Lola Tote" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Bimba y Lola</div>
+      <div class="card-name">Canvas Tote Bag</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-destacado">Destacado</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="2" onclick="openModal(2)">
+    <img class="card-img" src="imagenes/abf039e6-b966-4966-a8b4-52f9f404c382.JPG" alt="Coach Field Tote" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Coach</div>
+      <div class="card-name">Field Tote Negro</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-destacado">Destacado</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="3" onclick="openModal(3)">
+    <img class="card-img" src="imagenes/980e15c9-b3d5-407c-9e2a-555bfe4eabdc.JPG" alt="Coach Barrel Bag" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Coach</div>
+      <div class="card-name">Barrel Bag Negra</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="4" onclick="openModal(4)">
+    <img class="card-img" src="imagenes/8dd31132-b973-4438-ba8c-8d358f820638.JPG" alt="Tommy Hilfiger Crossbody" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Tommy Hilfiger</div>
+      <div class="card-name">Crossbody Monograma</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="5" onclick="openModal(5)">
+    <img class="card-img" src="imagenes/848647df-ae7f-44eb-89aa-bb4cd93822be.JPG" alt="Tommy Jeans Tote" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Tommy Jeans</div>
+      <div class="card-name">Tote Bag Negro</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="6" onclick="openModal(6)">
+    <img class="card-img" src="imagenes/f744875a-2345-40bb-b456-3ab1b583aa16.JPG" alt="Tommy Hilfiger Mochila" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Tommy Hilfiger</div>
+      <div class="card-name">Mochila Negra</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="7" onclick="openModal(7)">
+    <img class="card-img" src="imagenes/ec63442e-e64a-4dfd-b039-3f0cbde3008c.JPG" alt="Tommy Hilfiger Bowling Roja" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Tommy Hilfiger</div>
+      <div class="card-name">Bowling Bag Roja</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-destacado">Destacado</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="8" onclick="openModal(8)">
+    <img class="card-img" src="imagenes/3f2a961e-4196-495c-881f-4deb87450ed2.JPG" alt="Chloe Hobo" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Chloé</div>
+      <div class="card-name">Hobo Bag Negra</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-exclusivo">Exclusivo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="9" onclick="openModal(9)">
+    <img class="card-img" src="imagenes/a353f3a0-2acc-4ba0-ac51-bebe4400e1c8.JPG" alt="TOUS Fucsia" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">TOUS</div>
+      <div class="card-name">Bolso Acolchado Fucsia</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="10" onclick="openModal(10)">
+    <img class="card-img" src="imagenes/f4be6449-82ac-4540-8138-4ac88e50f05b.JPG" alt="TOUS Tote" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">TOUS</div>
+      <div class="card-name">Canvas Tote Crema</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="11" onclick="openModal(11)">
+    <img class="card-img" src="imagenes/4a7f4fc1-2846-483c-8876-c23a72377bbf.JPG" alt="TOUS Celular" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">TOUS</div>
+      <div class="card-name">Carterita Celular</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="12" onclick="openModal(12)">
+    <img class="card-img" src="imagenes/a2576dc4-9a3a-401f-83b7-bfb465c6b5be.JPG" alt="John Charis Bolso" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">John Charis</div>
+      <div class="card-name">Bolso Monograma Marrón</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="13" onclick="openModal(13)">
+    <img class="card-img" src="imagenes/108785d4-bd3f-48f1-a240-5aa383853c59.JPG" alt="Monogram Hobo" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Monogram Style</div>
+      <div class="card-name">Hobo Bag Marrón</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="14" onclick="openModal(14)">
+    <img class="card-img" src="imagenes/2e6a54a6-4c5b-4592-b36d-c28c506843fa.JPG" alt="Alo Yoga Riñonera" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Alo Yoga</div>
+      <div class="card-name">Riñonera Crossbody</div>
+      <div class="card-price">$20</div>
+    </div>
+    <div class="card-tag tag-oferta">Oferta</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="15" onclick="openModal(15)">
+    <img class="card-img" src="imagenes/f8715cd6-2cd3-4ee3-9047-923fde35b5c9.JPG" alt="Christian Dior Book Tote" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Christian Dior</div>
+      <div class="card-name">Book Tote Oblique</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-exclusivo">Exclusivo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="16" onclick="openModal(16)">
+    <img class="card-img" src="imagenes/56eaca01-c95a-4841-9f09-e0808b6e5f71.JPG" alt="Gucci Ophidia" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Gucci</div>
+      <div class="card-name">Ophidia Boston GG</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-exclusivo">Exclusivo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="17" onclick="openModal(17)">
+    <img class="card-img" src="imagenes/922d9290-4857-4d42-9736-fcea599a5eaf.JPG" alt="Michael Kors Jet Set" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Michael Kors</div>
+      <div class="card-name">Jet Set Charm Negra</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="18" onclick="openModal(18)">
+    <img class="card-img" src="imagenes/2e5853d9-0fca-4bc9-95ec-776d7888c318.JPG" alt="Guess Rosa" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Guess</div>
+      <div class="card-name">Quilted Flap Rosa</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="19" onclick="openModal(19)">
+    <img class="card-img" src="imagenes/c8516528-d154-45dd-bc8c-8ee3507727af.JPG" alt="Carolina Herrera Billetera" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Carolina Herrera</div>
+      <div class="card-name">Billetera Monograma CH</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="cartera" data-idx="20" onclick="openModal(20)">
+    <img class="card-img" src="imagenes/7ff5367f-355b-4730-8d78-49aa356a50f9.JPG" alt="Carolina Herrera Billetera Marron" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Carolina Herrera</div>
+      <div class="card-name">Billetera Monograma Marrón</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <!-- ─ JOYAS ─ -->
+  <div class="product-card" data-cat="joya" data-idx="21" onclick="openModal(21)">
+    <img class="card-img" src="imagenes/1274086b-d3c1-4edc-8e85-65af047350c0.JPG" alt="Anillo TOUS Dorado" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">TOUS</div>
+      <div class="card-name">Anillo Dorado</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-destacado">Destacado</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="joya" data-idx="22" onclick="openModal(22)">
+    <img class="card-img" src="imagenes/40c542df-7092-43a2-8599-93ecc0cf388d.JPG" alt="Pulsera Pandora Rose Gold" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Pandora</div>
+      <div class="card-name">Pulsera Rose Gold Brillantes</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="joya" data-idx="23" onclick="openModal(23)">
+    <img class="card-img" src="imagenes/35d1f86c-430b-4448-9271-e62760b64e72.JPG" alt="Pulsera Pandora Corazon" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Pandora</div>
+      <div class="card-name">Pulsera Corazón Rose Gold</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="joya" data-idx="24" onclick="openModal(24)">
+    <img class="card-img" src="imagenes/e881a8da-7111-46d5-889e-6e7ce83db6c1.JPG" alt="Pulsera Plata 925 Redonda" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Plata 925</div>
+      <div class="card-name">Pulsera Plata Brillo Redondo</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="joya" data-idx="25" onclick="openModal(25)">
+    <img class="card-img" src="imagenes/fe109d6f-d0ba-4ac1-a506-d901f8ee8237.JPG" alt="Pulsera Plata Corazon" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Plata 925</div>
+      <div class="card-name">Pulsera Plata Corazón</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="joya" data-idx="26" onclick="openModal(26)">
+    <img class="card-img" src="imagenes/8806423e-4621-413d-8036-25464ac0e384.JPG" alt="Pulsera Plata Cuadrada" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Plata 925</div>
+      <div class="card-name">Pulsera Plata Cierre Cuadrado</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <!-- ─ GORRAS ─ -->
+  <div class="product-card" data-cat="gorra" data-idx="27" onclick="openModal(27)">
+    <img class="card-img" src="imagenes/04df4318-3abd-499c-af05-e5745c30e2cd.JPG" alt="Prada Gorra" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Prada</div>
+      <div class="card-name">Gorra Negra Prada</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-exclusivo">Exclusivo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="gorra" data-idx="28" onclick="openModal(28)">
+    <img class="card-img" src="imagenes/c575d4a2-d59c-4beb-8f55-4b5f99757d34.JPG" alt="Dior Gorra" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Christian Dior</div>
+      <div class="card-name">Gorra Dior Park</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-exclusivo">Exclusivo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <!-- ─ ACCESORIOS ─ -->
+  <div class="product-card" data-cat="accesorio" data-idx="29" onclick="openModal(29)">
+    <img class="card-img" src="imagenes/633ee04a-d5bf-4e44-994c-92ddf3f6cbde.JPG" alt="Fendi Cinturon" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Fendi</div>
+      <div class="card-name">Cinturón Monograma FF</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-exclusivo">Exclusivo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="accesorio" data-idx="30" onclick="openModal(30)">
+    <img class="card-img" src="imagenes/ee33fb9c-4935-4807-b72f-8b734ad43e35.JPG" alt="Chale Reversible" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Céline Style</div>
+      <div class="card-name">Chalé Reversible Bicolor</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="accesorio" data-idx="31" onclick="openModal(31)">
+    <img class="card-img" src="imagenes/d633efb5-e5f5-4d18-95b9-ee218716af64.JPG" alt="Joyero Rosa" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Premium</div>
+      <div class="card-name">Joyero Rosa Viajero</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <!-- ─ ROPA MUJER ─ -->
+  <div class="product-card" data-cat="ropa" data-idx="32" onclick="openModal(32)">
+    <img class="card-img" src="imagenes/ef95af13-6b8d-472d-bb5d-ff4d4fb8ecdb.JPG" alt="Buzo Geometrico Rosa" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Cleovive</div>
+      <div class="card-name">Buzo Geométrico Rosa</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="ropa" data-idx="33" onclick="openModal(33)">
+    <img class="card-img" src="imagenes/900a3c93-b83c-4d59-993e-b70041a91a87.JPG" alt="Saco Abierto Gris" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Moda Mujer</div>
+      <div class="card-name">Saco Abierto Gris</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="ropa" data-idx="34" onclick="openModal(34)">
+    <img class="card-img" src="imagenes/47967802-28e6-4eab-9b2f-228da053b7fa.JPG" alt="Capucha Cierre Crema" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Moda Mujer</div>
+      <div class="card-name">Capucha Cierre Crema</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="ropa" data-idx="35" onclick="openModal(35)">
+    <img class="card-img" src="imagenes/3889c68c-104a-4e89-bded-7a811920a2e1.JPG" alt="Buzo Cuello V Negro" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Moda Unisex</div>
+      <div class="card-name">Buzo Cuello V Negro</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="ropa" data-idx="36" onclick="openModal(36)">
+    <img class="card-img" src="imagenes/93e4b1ea-a4e9-44b1-a2c0-3827ef793c97.JPG" alt="Saco Beige Botones" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Moda Mujer</div>
+      <div class="card-name">Saco Beige Clásico</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="ropa" data-idx="37" onclick="openModal(37)">
+    <img class="card-img" src="imagenes/b7227123-f561-4803-87a3-cafb1d2ea5d0.JPG" alt="Buzo Geometrico Verde" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Moda Mujer</div>
+      <div class="card-name">Buzo Geométrico Verde</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="ropa" data-idx="38" onclick="openModal(38)">
+    <img class="card-img" src="imagenes/ef9cdb35-1d1a-45ca-8043-adf8dd508535.JPG" alt="Conjunto Dormir Gris" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Moda Mujer</div>
+      <div class="card-name">Conjunto Dormir Gris</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="ropa" data-idx="39" onclick="openModal(39)">
+    <img class="card-img" src="imagenes/8f9bfc19-949f-4b70-ab17-07f73c0201bd.JPG" alt="Terno Dormir Beige" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Le Murph</div>
+      <div class="card-name">Terno Dormir Mujer Beige</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <!-- ─ INFANTIL ─ -->
+  <div class="product-card" data-cat="infantil" data-idx="40" onclick="openModal(40)">
+    <img class="card-img" src="imagenes/a0170c86-2680-48cd-bfb1-a1860d3ce1cc.JPG" alt="Conjunto Bebe Gatito" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Bebé</div>
+      <div class="card-name">Conjunto Bebé Gatito</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="infantil" data-idx="41" onclick="openModal(41)">
+    <img class="card-img" src="imagenes/c076d5b5-90ac-442c-bf9e-d87c9d2625f2.JPG" alt="Conjunto Nina Lila" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Niña</div>
+      <div class="card-name">Conjunto Niña Lila</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="infantil" data-idx="42" onclick="openModal(42)">
+    <img class="card-img" src="imagenes/90e0f7c4-aa91-4140-812f-e2419ab6c9f0.JPG" alt="Buzo Nino Azul" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Niño</div>
+      <div class="card-name">Buzo Niño Azul Marino</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="infantil" data-idx="43" onclick="openModal(43)">
+    <img class="card-img" src="imagenes/b199bd6b-0625-4e06-a754-6d3859522946.JPG" alt="Manta Bebe Brilla" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Bebé Premium</div>
+      <div class="card-name">Manta Brilla en Oscuridad</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-destacado">Destacado</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <!-- ─ FIGURAS ─ -->
+  <div class="product-card" data-cat="figura" data-idx="44" onclick="openModal(44)">
+    <img class="card-img" src="imagenes/5963ac69-2c3e-4f13-a49e-3073154fc256.JPG" alt="Figura Ronaldo Al Nassr" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Al Nassr FC</div>
+      <div class="card-name">Figura Ronaldo</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="figura" data-idx="45" onclick="openModal(45)">
+    <img class="card-img" src="imagenes/b9478990-d14b-4544-aa8f-522861144ec5.JPG" alt="Figura Messi Inter Miami" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Inter Miami CF</div>
+      <div class="card-name">Figura Messi</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-nuevo">Nuevo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="product-card" data-cat="figura" data-idx="46" onclick="openModal(46)">
+    <img class="card-img" src="imagenes/e37b3223-0588-4d7b-a4a2-06b527803ca5.JPG" alt="Figura Ronaldo Portugal" loading="lazy">
+    <div class="card-overlay">
+      <div class="card-brand">Seleção Portugal</div>
+      <div class="card-name">Figura Ronaldo Portugal</div>
+      <div class="card-price">Consultar precio</div>
+    </div>
+    <div class="card-tag tag-exclusivo">Exclusivo</div>
+    <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
+  </div>
+
+  <div class="no-results" id="noResults">
+    <p>No se encontraron productos</p>
+  </div>
+
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-brand">Luxury Fernández</div>
+  <p>✦ Carteras · Joyas · Moda · Accesorios ✦</p>
+  <p>Ecuador</p>
+  <a class="footer-wa" href="https://wa.me/593969808734" target="_blank">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+    +593 96 980 8734
+  </a>
+</footer>
+
+<!-- ══ MODAL ══ -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal" id="modalBox">
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    <div class="modal-img-wrap">
+      <img class="modal-img" id="modalImg" src="" alt="">
+    </div>
+    <div class="modal-body">
+      <div class="modal-category" id="modalCategory"></div>
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <div class="modal-brand" id="modalBrand"></div>
+      <div class="modal-divider"></div>
+      <p class="modal-desc" id="modalDesc"></p>
+      <div class="modal-price" id="modalPrice"></div>
+      <a class="whatsapp-btn" id="modalWA" href="#" target="_blank" rel="noopener">
+        <svg class="whatsapp-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        Consultar por WhatsApp
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+const WA = '593969808734';
+
+const products = [
+  /* 0 */ { img:'imagenes/84bff691-0d81-43a1-984f-bddb26ffd087.JPG', brand:'Bimba y Lola', name:'Crossbody Blanca Cadena', cat:'Cartera', price:'Consultar precio', desc:'Elegante bolso crossbody en color blanco roto con cadena plateada y correa ajustable con logo. Cierre de botón giratorio. Ideal para el día a día con estilo y distinción.' },
+  /* 1 */ { img:'imagenes/5ad0fb87-9c0f-4f00-a822-e790bf98da00.JPG', brand:'Bimba y Lola', name:'Canvas Tote Bag', cat:'Cartera', price:'Consultar precio', desc:'Icónico tote bag en lona beige con lettering gráfico oversized "Bimbaya Lola · From Spain to the World". Asas de cuero negro y coordenadas de origen. Incluye tarjeta original.' },
+  /* 2 */ { img:'imagenes/abf039e6-b966-4966-a8b4-52f9f404c382.JPG', brand:'Coach', name:'Field Tote Negro + Billetera', cat:'Cartera', price:'Consultar precio', desc:'Set exclusivo: Tote bag en cuero granulado negro con logo Coach Leatherware bordado, incluye billetera a juego. Correa ajustable con detalle de rayas doradas. Herrajes envejecidos.' },
+  /* 3 */ { img:'imagenes/980e15c9-b3d5-407c-9e2a-555bfe4eabdc.JPG', brand:'Coach', name:'Barrel Bag Negra', cat:'Cartera', price:'Consultar precio', desc:'Bolso barrel en cuero liso negro con herrajes dorados y logo Coach. Bolsillo frontal con cremallera doble. Incluye etiqueta y tarjeta de autenticidad Coach New York. Est. 1941.' },
+  /* 4 */ { img:'imagenes/8dd31132-b973-4438-ba8c-8d358f820638.JPG', brand:'Tommy Hilfiger', name:'Crossbody Monograma', cat:'Cartera', price:'Consultar precio', desc:'Camera bag con monograma TH en negro y franja signature en rojo, blanco y azul. Herrajes dorados con logo. Correa de cuero ajustable y removible. Diseño urbano y sofisticado.' },
+  /* 5 */ { img:'imagenes/848647df-ae7f-44eb-89aa-bb4cd93822be.JPG', brand:'Tommy Jeans', name:'Tote Bag Negro', cat:'Cartera', price:'Consultar precio', desc:'Bolso tote en nylon negro con franjas multicolor y logo TH dorado. Capacidad amplia ideal para el día a día. Correa de cuero ajustable. Incluye etiqueta original Tommy Jeans.' },
+  /* 6 */ { img:'imagenes/f744875a-2345-40bb-b456-3ab1b583aa16.JPG', brand:'Tommy Hilfiger', name:'Mochila Negra', cat:'Cartera', price:'Consultar precio', desc:'Mochila en nylon negro con logo Tommy Hilfiger Est. 1985 bordado. Bolsillo frontal con cremallera. Múltiples compartimentos. Diseño clásico y deportivo para uso diario.' },
+  /* 7 */ { img:'imagenes/ec63442e-e64a-4dfd-b039-3f0cbde3008c.JPG', brand:'Tommy Hilfiger', name:'Bowling Bag Roja', cat:'Cartera', price:'Consultar precio', desc:'Bolso bowling en cuero rojo intenso con rayas signature de la marca y monograma TH dorado. Asas superiores y correa de hombro removible. Herrajes dorados. Diseño icónico.' },
+  /* 8 */ { img:'imagenes/3f2a961e-4196-495c-881f-4deb87450ed2.JPG', brand:'Chloé', name:'Hobo Bag Negra', cat:'Cartera', price:'Consultar precio', desc:'Bolso hobo en cuero negro con asa de lona con logo Chloé estampado. Cierre de cremallera. Fendi FF belt incluido en outfit. Elegante y funcional para cualquier ocasión sofisticada.' },
+  /* 9 */ { img:'imagenes/a353f3a0-2acc-4ba0-ac51-bebe4400e1c8.JPG', brand:'TOUS', name:'Bolso Acolchado Fucsia', cat:'Cartera', price:'Consultar precio', desc:'Bolso acolchado en fucsia vibrante con flap de cuero y logo TOUS en relieve. Múltiples compartimentos interiores. Asa de tela trenzada. Estilo · Comodidad · Actitud.' },
+  /* 10 */ { img:'imagenes/f4be6449-82ac-4540-8138-4ac88e50f05b.JPG', brand:'TOUS', name:'Canvas Tote Crema', cat:'Cartera', price:'Consultar precio', desc:'Icónico tote bag en canvas crema con logo TOUS circular en negro. Asas de cuero negro y forro interior con bolsillo. Capacidad amplia. Incluye tarjeta original TOUS.' },
+  /* 11 */ { img:'imagenes/4a7f4fc1-2846-483c-8876-c23a72377bbf.JPG', brand:'TOUS', name:'Carterita Celular Crema', cat:'Cartera', price:'Consultar precio', desc:'Mini bolso porta-celular TOUS en crema con logo en relieve. Espacio para celular, tarjetas y billetes. Cierre de cremallera suave. Correa ajustable unisex. Ideal para regalar.' },
+  /* 12 */ { img:'imagenes/a2576dc4-9a3a-401f-83b7-bfb465c6b5be.JPG', brand:'John Charis', name:'Bolso Monograma Marrón', cat:'Cartera', price:'Consultar precio', desc:'Elegante bolso en cuero marrón con monograma John Charis en relieve. Cierres dorados de alta calidad. Diseño atemporal con asa superior y correa de hombro ajustable.' },
+  /* 13 */ { img:'imagenes/108785d4-bd3f-48f1-a240-5aa383853c59.JPG', brand:'Monogram Style', name:'Hobo Bag Marrón', cat:'Cartera', price:'Consultar precio', desc:'Bolso hobo en cuero marrón con monograma floral repetido. Correa ajustable de cuero. Fular decorativo incluido. Amplio espacio interior. Estilo elegante y casual a la vez.' },
+  /* 14 */ { img:'imagenes/2e6a54a6-4c5b-4592-b36d-c28c506843fa.JPG', brand:'Alo Yoga', name:'Riñonera Crossbody Gris', cat:'Cartera', price:'$20', desc:'Riñonera funcional en nylon gris oscuro con múltiples bolsillos y correa ajustable con broche de seguridad. Logo Alo parche. Ideal para el deporte o el día a día casual.' },
+  /* 15 */ { img:'imagenes/f8715cd6-2cd3-4ee3-9047-923fde35b5c9.JPG', brand:'Christian Dior', name:'Book Tote Oblique Camel', cat:'Cartera', price:'Consultar precio', desc:'Icónico tote bag en cuero camel con monograma Oblique en relieve tonal. "Christian Dior Paris" estampado. Capacidad amplia con asas de cuero. Incluye tarjeta original. Pieza de lujo.' },
+  /* 16 */ { img:'imagenes/56eaca01-c95a-4841-9f09-e0808b6e5f71.JPG', brand:'Gucci', name:'Ophidia Boston GG', cat:'Cartera', price:'Consultar precio', desc:'Mini bolso bowling en lona GG Supreme beige-ébano con franja web rojo/verde. Doble G en metal envejecido. Incluye tarjeta de autenticidad Gucci. Pieza icónica de la maison italiana.' },
+  /* 17 */ { img:'imagenes/922d9290-4857-4d42-9736-fcea599a5eaf.JPG', brand:'Michael Kors', name:'Jet Set Charm Negra', cat:'Cartera', price:'Consultar precio', desc:'Bolso de cuero genuino negro con logo MK dorado. Incluye etiquetas originales y caja. Jet Set Charm Collection. Diseño sofisticado y funcional para cualquier ocasión.' },
+  /* 18 */ { img:'imagenes/2e5853d9-0fca-4bc9-95ec-776d7888c318.JPG', brand:'Guess', name:'Quilted Flap Rosa', cat:'Cartera', price:'Consultar precio', desc:'Bolso de solapa acolchado en rosa blush con cadenas y herrajes dorados. Logo Guess Est. 1981 al frente. Correa de hombro ajustable. Diseño elegante y muy femenino.' },
+  /* 19 */ { img:'imagenes/c8516528-d154-45dd-bc8c-8ee3507727af.JPG', brand:'Carolina Herrera', name:'Billetera Monograma CH', cat:'Cartera', price:'Consultar precio', desc:'Billetera compacta con monograma CH en crema y negro. Cierre tipo broche en charol negro con logo dorado. Múltiples compartimentos. Incluye caja roja y tarjeta de autenticidad.' },
+  /* 20 */ { img:'imagenes/7ff5367f-355b-4730-8d78-49aa356a50f9.JPG', brand:'Carolina Herrera', name:'Billetera Monograma Marrón', cat:'Cartera', price:'Consultar precio', desc:'Billetera en cuero marrón con monograma CH clásico. Múltiples compartimentos para tarjetas y billete. Herrajes dorados con iniciales CH. Incluye caja CH original.' },
+  /* 21 */ { img:'imagenes/1274086b-d3c1-4edc-8e85-65af047350c0.JPG', brand:'TOUS', name:'Anillo Dorado TOUS', cat:'Joya', price:'Consultar precio', desc:'Anillo en baño de oro 18k con el icónico osito TOUS. Diseño acanalado que aporta elegancia y modernidad. Hipoalergénico, sin níquel. Resistente y duradero. Ideal para regalar.' },
+  /* 22 */ { img:'imagenes/40c542df-7092-43a2-8599-93ecc0cf388d.JPG', brand:'Pandora', name:'Pulsera Rose Gold Brillantes', cat:'Joya', price:'Consultar precio', desc:'Pulsera de cadena snake en plata con detalles en rose gold. Cierre circular con pavé de brillantes. Estilo romántico y sofisticado. Perfecta para lucir sola o apilar.' },
+  /* 23 */ { img:'imagenes/35d1f86c-430b-4448-9271-e62760b64e72.JPG', brand:'Pandora', name:'Pulsera Corazón Rose Gold', cat:'Joya', price:'Consultar precio', desc:'Pulsera de cadena snake en plata con cierre corazón en rose gold con cristales pavé. Diseño delicado y romántico. Muy versátil para uso diario. Perfecta como regalo especial.' },
+  /* 24 */ { img:'imagenes/e881a8da-7111-46d5-889e-6e7ce83db6c1.JPG', brand:'Plata 925', name:'Pulsera Plata Brillo Redondo', cat:'Joya', price:'Consultar precio', desc:'Pulsera snake de plata de ley 925 con cierre circular de zircones brillantes. Acabado premium de alta calidad. Material hipoalergénico y muy duradero. Ideal para regalar.' },
+  /* 25 */ { img:'imagenes/fe109d6f-d0ba-4ac1-a506-d901f8ee8237.JPG', brand:'Plata 925', name:'Pulsera Plata Corazón', cat:'Joya', price:'Consultar precio', desc:'Pulsera snake de plata 925 con cierre en forma de corazón con pavé de cristales. Diseño romántico y atemporal. Certificado de plata de ley. Ideal como regalo del día del amor.' },
+  /* 26 */ { img:'imagenes/8806423e-4621-413d-8036-25464ac0e384.JPG', brand:'Plata 925', name:'Pulsera Plata Cierre Cuadrado', cat:'Joya', price:'Consultar precio', desc:'Pulsera snake de plata de ley 925 con cierre cuadrado rose gold y flor de cristales. Diseño minimalista y elegante. Ideal para usar sola o combinar con otras pulseras.' },
+  /* 27 */ { img:'imagenes/04df4318-3abd-499c-af05-e5745c30e2cd.JPG', brand:'Prada', name:'Gorra Negra Prada', cat:'Gorra', price:'Consultar precio', desc:'Gorra de béisbol negra con logo Prada bordado en blanco. Visera con borde blanco contrastante. Incluye etiqueta original. Calidad premium con acabados detallados. Colección Milano.' },
+  /* 28 */ { img:'imagenes/c575d4a2-d59c-4beb-8f55-4b5f99757d34.JPG', brand:'Christian Dior', name:'Gorra Dior Park', cat:'Gorra', price:'Consultar precio', desc:'Gorra negra Dior Park con lettering gráfico en gris y visera con monograma Dior oblique. Calidad premium con acabados exclusivos. Incluye etiqueta original Christian Dior.' },
+  /* 29 */ { img:'imagenes/633ee04a-d5bf-4e44-994c-92ddf3f6cbde.JPG', brand:'Fendi', name:'Cinturón Monograma FF', cat:'Accesorio', price:'Consultar precio', desc:'Cinturón reversible en cuero con icónico monograma FF. Hebilla dorada con detalle Fendi Roma. Presentación en caja amarilla exclusiva. Materiales de lujo de primera calidad.' },
+  /* 30 */ { img:'imagenes/ee33fb9c-4935-4807-b72f-8b734ad43e35.JPG', brand:'Céline Style', name:'Chalé Reversible Bicolor', cat:'Accesorio', price:'Consultar precio', desc:'Elegante chalé reversible con monograma en negro y gris. Dos estilos en una sola pieza. Material suave y cálido, ligero y confortable. Detalle de flecos y acabados premium.' },
+  /* 31 */ { img:'imagenes/d633efb5-e5f5-4d18-95b9-ee218716af64.JPG', brand:'Premium', name:'Joyero Rosa Viajero', cat:'Accesorio', price:'Consultar precio', desc:'Joyero compacto en cuero rosa con textura tipo escamas. Interior de terciopelo crema con espejo, compartimentos para anillos y aretes. Broche metálico seguro. Ideal de regalo.' },
+  /* 32 */ { img:'imagenes/ef95af13-6b8d-472d-bb5d-ff4d4fb8ecdb.JPG', brand:'Cleovive', name:'Buzo Geométrico Rosa', cat:'Ropa Mujer', price:'Consultar precio', desc:'Buzo premium de mujer con estampado geométrico en tonos rosa y crema. Tela gruesa suave al tacto, cálida y confortable. Talla M. Diseño moderno para climas fríos.' },
+  /* 33 */ { img:'imagenes/900a3c93-b83c-4d59-993e-b70041a91a87.JPG', brand:'Moda Mujer', name:'Saco Abierto Gris', cat:'Ropa Mujer', price:'Consultar precio', desc:'Saco abierto con cuello doblado en V. Tela delgada acanalada, ligera y transpirable. Talla M. Ligero y cómodo, ideal para cualquier ocasión. Combina con todo tu closet.' },
+  /* 34 */ { img:'imagenes/47967802-28e6-4eab-9b2f-228da053b7fa.JPG', brand:'Moda Mujer', name:'Capucha Cierre Crema', cat:'Ropa Mujer', price:'Consultar precio', desc:'Capucha con cierre frontal en crema y broches desprendibles que crean efecto capa. Tela suave, ligera y transpirable. Tallas M-L. Perfecta para uso diario, oficina o viaje.' },
+  /* 35 */ { img:'imagenes/3889c68c-104a-4e89-bded-7a811920a2e1.JPG', brand:'Moda Unisex', name:'Buzo Cuello V Negro', cat:'Ropa Mujer', price:'Consultar precio', desc:'Buzo de tejido acanalado con cuello tipo camisa en V. Negro, unisex. Talla S. Suave, elástico y transpirable. Diseño atemporal que eleva cualquier outfit.' },
+  /* 36 */ { img:'imagenes/93e4b1ea-a4e9-44b1-a2c0-3827ef793c97.JPG', brand:'Moda Mujer', name:'Saco Beige Clásico', cat:'Ropa Mujer', price:'Consultar precio', desc:'Saco de mujer en tejido acanalado beige con botones decorativos dorados. Cuello redondo clásico. Talla M. Ligero y transpirable. Muy versátil para cualquier ocasión.' },
+  /* 37 */ { img:'imagenes/b7227123-f561-4803-87a3-cafb1d2ea5d0.JPG', brand:'Moda Mujer', name:'Buzo Geométrico Verde', cat:'Ropa Mujer', price:'Consultar precio', desc:'Buzo de cuello redondo con estampado geométrico en verde oliva y crema. Tela gruesa premium, suave al tacto. Tallas M-L. Abrigado y elegante para días fríos.' },
+  /* 38 */ { img:'imagenes/ef9cdb35-1d1a-45ca-8043-adf8dd508535.JPG', brand:'Moda Mujer', name:'Conjunto Dormir Gris', cat:'Ropa Mujer', price:'Consultar precio', desc:'Conjunto pijama de mujer en tela ligera y fresca color gris. Corte relajado con cintura elástica. Talla M. Fresco, transpirable y muy cómodo para el descanso.' },
+  /* 39 */ { img:'imagenes/8f9bfc19-949f-4b70-ab17-07f73c0201bd.JPG', brand:'Le Murph', name:'Terno Dormir Mujer Beige', cat:'Ropa Mujer', price:'Consultar precio', desc:'Conjunto de dormir en tela suave y ligera color beige. Cuello redondo y cintura elástica. Talla M. Transpirable, cómodo y delicado. Perfecto para regalar o uso personal.' },
+  /* 40 */ { img:'imagenes/a0170c86-2680-48cd-bfb1-a1860d3ce1cc.JPG', brand:'Bebé', name:'Conjunto Bebé Gatito', cat:'Infantil', price:'Consultar precio', desc:'Conjunto dos piezas para bebé con adorable estampado de gatito en gris y rosa. Tela suave y cálida con diadema a juego. Diseño tierno y práctico para las más pequeñas.' },
+  /* 41 */ { img:'imagenes/c076d5b5-90ac-442c-bf9e-d87c9d2625f2.JPG', brand:'Niña', name:'Conjunto Niña Lila', cat:'Infantil', price:'Consultar precio', desc:'Conjunto tres piezas para niña: camiseta blanca con broche floral, chaleco y pantalón en lila tornasol con brillo. Elegante y cómodo para cualquier ocasión especial.' },
+  /* 42 */ { img:'imagenes/90e0f7c4-aa91-4140-812f-e2419ab6c9f0.JPG', brand:'Niño', name:'Buzo Niño Azul Marino', cat:'Infantil', price:'Consultar precio', desc:'Buzo de manga larga para niño en azul marino. Cuello redondo y puños acanalados. Talla para 11-12 años. Cómodo, abrigado y resistente para uso escolar y tiempo de juego.' },
+  /* 43 */ { img:'imagenes/b199bd6b-0625-4e06-a754-6d3859522946.JPG', brand:'Bebé Premium', name:'Manta Brilla en Oscuridad', cat:'Infantil', price:'Consultar precio', desc:'Manta bebé en lila con diseños mágicos que brillan en la oscuridad. Tela afelpada extra suave y cálida. Lavable a máquina. Ideal para dulces sueños y regalo especial.' },
+  /* 44 */ { img:'imagenes/5963ac69-2c3e-4f13-a49e-3073154fc256.JPG', brand:'Al Nassr FC', name:'Figura Ronaldo Al Nassr', cat:'Figura Coleccionable', price:'Consultar precio', desc:'Figura oficial de Cristiano Ronaldo con el uniforme del Al Nassr FC #7. Calidad premium con detalles realistas. Diseño oficial. Coleccionable de alta calidad. Ideal para regalar.' },
+  /* 45 */ { img:'imagenes/b9478990-d14b-4544-aa8f-522861144ec5.JPG', brand:'Inter Miami CF', name:'Figura Messi Inter Miami', cat:'Figura Coleccionable', price:'Consultar precio', desc:'Figura oficial de Lionel Messi con el uniforme rosa del Inter Miami CF #10. Detalles realistas premium. Diseño oficial exclusivo. El regalo perfecto para los fanáticos del deporte.' },
+  /* 46 */ { img:'imagenes/e37b3223-0588-4d7b-a4a2-06b527803ca5.JPG', brand:'Seleção Portugal', name:'Figura Ronaldo Portugal', cat:'Figura Coleccionable', price:'Consultar precio', desc:'Figura oficial de Cristiano Ronaldo con la camiseta roja y verde de Portugal #7. Detalles del rostro de alta calidad. Coleccionable premium. Rostro realista y detalles de alta calidad.' },
+];
+
+let currentFilter = 'all';
+let currentSearch = '';
+
+function openModal(idx) {
+  const p = products[idx];
+  document.getElementById('modalImg').src = p.img;
+  document.getElementById('modalImg').alt = p.name;
+  document.getElementById('modalCategory').textContent = p.cat;
+  document.getElementById('modalTitle').textContent = p.name;
+  document.getElementById('modalBrand').textContent = p.brand;
+  document.getElementById('modalDesc').textContent = p.desc;
+  document.getElementById('modalPrice').textContent = p.price;
+  const msg = encodeURIComponent(`Hola! Me interesa: *${p.name}* de ${p.brand}. ¿Puedes darme más información y el precio? Gracias!`);
+  document.getElementById('modalWA').href = `https://wa.me/${WA}?text=${msg}`;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal')) closeModalDirect();
+}
+function closeModalDirect() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function filterCards(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  applyFilters();
+}
+
+function doSearch(val) {
+  currentSearch = val.toLowerCase().trim();
+  applyFilters();
+}
+
+function applyFilters() {
+  const cards = document.querySelectorAll('.product-card[data-cat]');
+  let visible = 0;
+  cards.forEach(card => {
+    const cat = card.dataset.cat;
+    const idx = parseInt(card.dataset.idx);
+    const p = products[idx];
+    const matchCat = currentFilter === 'all' || cat === currentFilter;
+    const matchSearch = !currentSearch ||
+      p.name.toLowerCase().includes(currentSearch) ||
+      p.brand.toLowerCase().includes(currentSearch) ||
+      p.cat.toLowerCase().includes(currentSearch);
+    if (matchCat && matchSearch) {
+      card.classList.remove('hidden');
+      visible++;
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+  const noRes = document.getElementById('noResults');
+  const countEl = document.getElementById('resultCount');
+  noRes.classList.toggle('visible', visible === 0);
+  countEl.textContent = visible > 0 ? `${visible} producto${visible !== 1 ? 's' : ''}` : '';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModalDirect();
+});
+
+// Show count on load
+applyFilters();
+</script>
+</body>
+</html>
