@@ -237,6 +237,9 @@
   .card-tag.tag-destacado { background: #fff; color: var(--black); }
   .card-tag.tag-nuevo { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
   .card-tag.tag-oferta { background: #e74c3c; color: #fff; }
+  .card-tag.tag-promocion { background: #25D366; color: #07140b; }
+  .card-tag.tag-vendido { background: #5f6b7a; color: #fff; }
+  .card-tag.tag-reservado { background: #8e44ad; color: #fff; }
 
   .card-hover-cta {
     position: absolute; inset: 0;
@@ -521,6 +524,15 @@
 
   /* custom product card badge */
   .card-tag.tag-custom { background: #6c5ce7; color: #fff; }
+  .product-card.admin-hidden,
+  .product-card.admin-deleted { opacity: 0.45; outline: 1px dashed rgba(201,168,76,0.55); outline-offset: -6px; }
+  .product-card.admin-deleted { filter: grayscale(0.85); }
+  .admin-card-state {
+    position: absolute; left: 14px; top: 14px; z-index: 3;
+    font-size: 7.5px; letter-spacing: 3px; text-transform: uppercase;
+    background: rgba(0,0,0,0.72); border: 1px solid rgba(201,168,76,0.45);
+    color: var(--gold); padding: 5px 9px; font-weight: 600;
+  }
 
   /* ── MODAL ADMIN PANEL ── */
   .modal-admin-panel {
@@ -547,6 +559,13 @@
     transition: border-color 0.2s;
   }
   .modal-admin-input:focus { border-color: var(--gold); }
+  .modal-admin-textarea { min-height: 76px; resize: vertical; line-height: 1.6; }
+  .modal-admin-toggle {
+    display: flex; align-items: center; gap: 9px;
+    margin-top: 13px; color: var(--cream); font-size: 11px; letter-spacing: 1px;
+  }
+  .modal-admin-toggle input { width: 15px; height: 15px; accent-color: var(--gold); }
+  .modal-admin-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
   .modal-admin-save {
     width: 100%; background: var(--gold); color: var(--black);
     border: none; padding: 11px; cursor: pointer;
@@ -555,6 +574,13 @@
     margin-top: 12px; transition: opacity 0.2s;
   }
   .modal-admin-save:hover { opacity: 0.85; }
+  .modal-admin-danger {
+    width: 100%; background: #9f2d22; color: #fff; border: none; padding: 11px;
+    cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 10px;
+    letter-spacing: 3px; text-transform: uppercase; font-weight: 600;
+    transition: opacity 0.2s;
+  }
+  .modal-admin-danger:hover { opacity: 0.85; }
 
   /* ── SHARE BUTTONS ── */
   .share-row {
@@ -1181,7 +1207,7 @@
   <div class="footer-brand">Luxury Fernández</div>
   <p>✦ Carteras · Joyas · Moda · Accesorios ✦</p>
   <p>Ecuador</p>
-  <a class="footer-wa" href="https://wa.me/593969808734" target="_blank">
+  <a class="footer-wa" href="https://wa.me/593998894744" target="_blank">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
     </svg>
@@ -1193,6 +1219,7 @@
 <div class="admin-bar hidden" id="adminBar">
   <span>⚙ Modo Administrador Activo</span>
   <button class="admin-bar-btn" onclick="openAddModal()">+ Agregar Producto</button>
+  <button class="admin-bar-btn" id="toggleHiddenBtn" onclick="toggleHiddenProducts()">Ver ocultos</button>
   <button class="admin-bar-btn danger" onclick="exitAdmin()">✕ Salir</button>
 </div>
 
@@ -1290,8 +1317,35 @@
       </div>
       <div class="modal-admin-panel">
         <div class="modal-admin-panel-title">⚙ Editar Producto</div>
+        <label>Nombre</label>
+        <input type="text" class="modal-admin-input" id="modalEditName" placeholder="Nombre del producto">
+        <label>Marca</label>
+        <input type="text" class="modal-admin-input" id="modalEditBrand" placeholder="Marca">
+        <label>Categoría</label>
+        <select class="modal-admin-input" id="modalEditCat">
+          <option value="cartera">Cartera</option>
+          <option value="joya">Joya</option>
+          <option value="gorra">Gorra</option>
+          <option value="accesorio">Accesorio</option>
+          <option value="ropa">Ropa</option>
+          <option value="infantil">Infantil</option>
+          <option value="figura">Figura</option>
+        </select>
         <label>Precio</label>
         <input type="text" class="modal-admin-input" id="modalEditPrice" placeholder="Ej: $45 o Consultar precio">
+        <label>Etiqueta</label>
+        <select class="modal-admin-input" id="modalEditTag">
+          <option value="">Sin etiqueta</option>
+          <option value="nuevo">Nuevo</option>
+          <option value="destacado">Destacado</option>
+          <option value="exclusivo">Exclusivo</option>
+          <option value="oferta">Oferta</option>
+          <option value="promocion">Promoción</option>
+          <option value="reservado">Reservado</option>
+          <option value="vendido">Vendido</option>
+        </select>
+        <label>Descripción</label>
+        <textarea class="modal-admin-input modal-admin-textarea" id="modalEditDesc" placeholder="Descripción del producto"></textarea>
         <label>Nueva imagen (URL o Google Drive)</label>
         <input type="text" class="modal-admin-input" id="modalEditImgUrl" placeholder="Pegar URL de imagen...">
         <div class="img-or-divider" style="margin:7px 0">— o sube desde tu dispositivo —</div>
@@ -1299,14 +1353,22 @@
           📷 Seleccionar imagen
           <input type="file" id="modalEditImgFile" accept="image/*" onchange="handleModalImgFile(event)" style="display:none">
         </label>
+        <label class="modal-admin-toggle">
+          <input type="checkbox" id="modalEditVisible">
+          Visible en catálogo
+        </label>
         <button class="modal-admin-save" onclick="saveModalEdit()">Guardar cambios</button>
+        <div class="modal-admin-actions">
+          <button class="modal-admin-save" type="button" id="modalRestoreBtn" onclick="restoreCurrentProduct()">Restaurar</button>
+          <button class="modal-admin-danger" type="button" onclick="deleteCurrentProduct()">Eliminar</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-const WA = '593969808734';
+const WA = '593998894744';
 const ADMIN_PWD = 'luxury2025'; // ← cambia tu contraseña aquí
 const SITE_URL = 'https://luxury-fernandez.shop';
 let _tempImgData = null;
@@ -1367,9 +1429,135 @@ const products = [
 let currentFilter = 'all';
 let currentSearch = '';
 let adminActive = false;
+let showHiddenProducts = false;
 let customPrices = JSON.parse(localStorage.getItem('lf_prices') || '{}');
 let localProducts = JSON.parse(localStorage.getItem('lf_products') || '[]');
-let allProducts = [...products, ...localProducts];
+let productEdits = JSON.parse(localStorage.getItem('lf_product_edits') || '{}');
+let allProducts = [];
+
+const TAG_LABELS = {
+  nuevo: 'Nuevo',
+  destacado: 'Destacado',
+  exclusivo: 'Exclusivo',
+  oferta: 'Oferta',
+  promocion: 'Promoción',
+  reservado: 'Reservado',
+  vendido: 'Vendido'
+};
+
+function getProductFilterCat(cat) {
+  const normalized = (cat || '').toString().toLowerCase();
+  if (normalized.includes('cartera')) return 'cartera';
+  if (normalized.includes('joya')) return 'joya';
+  if (normalized.includes('gorra')) return 'gorra';
+  if (normalized.includes('accesorio')) return 'accesorio';
+  if (normalized.includes('ropa')) return 'ropa';
+  if (normalized.includes('infantil')) return 'infantil';
+  if (normalized.includes('figura')) return 'figura';
+  return normalized || 'accesorio';
+}
+
+function getCardTagData(idx) {
+  const tag = document.querySelector(`.product-card[data-idx="${idx}"] .card-tag`);
+  if (!tag) return { tag: '', label: '' };
+  const tagClass = [...tag.classList].find(cls => cls.startsWith('tag-') && cls !== 'card-tag');
+  return {
+    tag: tagClass ? tagClass.replace('tag-', '') : '',
+    label: tag.textContent.trim()
+  };
+}
+
+function getProductTag(product, idx) {
+  if (Object.prototype.hasOwnProperty.call(product, 'tag')) return product.tag || '';
+  return getCardTagData(idx).tag;
+}
+
+function getProductTagLabel(tag, product, idx) {
+  if (!tag) return '';
+  if (TAG_LABELS[tag]) return TAG_LABELS[tag];
+  return product.tagLabel || getCardTagData(idx).label || tag;
+}
+
+function rebuildAllProducts() {
+  allProducts = [...products, ...localProducts].map((product, idx) => {
+    const edits = productEdits[idx] || {};
+    const edited = { ...product, ...edits };
+    if (customPrices[idx]) edited.price = customPrices[idx];
+    return edited;
+  });
+}
+
+function updateWhatsAppLink(product, price) {
+  const msg = encodeURIComponent(`Hola! Me interesa: *${product.name}* de ${product.brand}. Precio: ${price}. ¿Puedes darme más información? Gracias!`);
+  document.getElementById('modalWA').href = `https://wa.me/${WA}?text=${msg}`;
+}
+
+function updateProductCard(idx) {
+  const p = allProducts[idx];
+  const card = document.querySelector(`.product-card[data-idx="${idx}"]`);
+  if (!p || !card) return;
+
+  card.dataset.cat = getProductFilterCat(p.cat);
+  card.classList.toggle('admin-hidden', !!p.hidden && !p.deleted);
+  card.classList.toggle('admin-deleted', !!p.deleted);
+  const img = card.querySelector('.card-img');
+  const brand = card.querySelector('.card-brand');
+  const name = card.querySelector('.card-name');
+  const price = card.querySelector('.card-price');
+  const currentTag = card.querySelector('.card-tag');
+  const currentState = card.querySelector('.admin-card-state');
+  const tag = getProductTag(p, idx);
+
+  if (img) {
+    img.src = p.img;
+    img.alt = p.name;
+  }
+  if (brand) brand.textContent = p.brand;
+  if (name) name.textContent = p.name;
+  if (price) {
+    price.innerHTML = '';
+    const wrap = document.createElement('span');
+    wrap.className = 'price-wrap';
+    const priceText = document.createElement('span');
+    priceText.className = 'price-text';
+    priceText.dataset.pid = idx;
+    priceText.textContent = p.price;
+    const btn = document.createElement('button');
+    btn.className = 'edit-price-btn';
+    btn.type = 'button';
+    btn.textContent = '✎';
+    btn.addEventListener('click', event => editPrice(event, idx));
+    wrap.append(priceText, btn);
+    price.appendChild(wrap);
+  }
+  if (currentTag) currentTag.remove();
+  if (tag) {
+    const tagEl = document.createElement('div');
+    tagEl.className = `card-tag tag-${tag}`;
+    tagEl.textContent = getProductTagLabel(tag, p, idx);
+    card.appendChild(tagEl);
+  }
+  if (currentState) currentState.remove();
+  if (p.deleted || p.hidden) {
+    const stateEl = document.createElement('div');
+    stateEl.className = 'admin-card-state';
+    stateEl.textContent = p.deleted ? 'Eliminado' : 'Oculto';
+    card.appendChild(stateEl);
+  }
+}
+
+function saveProductData(idx) {
+  const localIdx = idx - products.length;
+  if (localIdx >= 0 && localProducts[localIdx]) {
+    localProducts[localIdx] = { ...allProducts[idx] };
+    localStorage.setItem('lf_products', JSON.stringify(localProducts));
+  } else {
+    productEdits[idx] = { ...productEdits[idx], ...allProducts[idx] };
+    localStorage.setItem('lf_product_edits', JSON.stringify(productEdits));
+  }
+}
+
+rebuildAllProducts();
 
 // ── SKELETON: mark card loaded when image loads ──
 document.querySelectorAll('.card-img').forEach(img => {
@@ -1384,9 +1572,8 @@ document.querySelectorAll('.card-img').forEach(img => {
 // ── APPLY SAVED PRICES ON LOAD ──
 function applySavedPrices() {
   Object.entries(customPrices).forEach(([pid, price]) => {
-    const el = document.querySelector(`.price-text[data-pid="${pid}"]`);
-    if (el) el.textContent = price;
     if (allProducts[pid]) allProducts[pid].price = price;
+    updateProductCard(pid);
   });
 }
 
@@ -1403,14 +1590,20 @@ function openModal(idx) {
   document.getElementById('modalBrand').textContent = p.brand;
   document.getElementById('modalDesc').textContent = p.desc;
   document.getElementById('modalPrice').textContent = savedPrice;
-  const msg = encodeURIComponent(`Hola! Me interesa: *${p.name}* de ${p.brand}. Precio: ${savedPrice}. ¿Puedes darme más información? Gracias!`);
-  document.getElementById('modalWA').href = `https://wa.me/${WA}?text=${msg}`;
+  updateWhatsAppLink(p, savedPrice);
   document.getElementById('modal').classList.add('open');
   document.body.style.overflow = 'hidden';
   // pre-fill admin panel
+  document.getElementById('modalEditName').value = p.name;
+  document.getElementById('modalEditBrand').value = p.brand;
+  document.getElementById('modalEditCat').value = getProductFilterCat(p.cat);
   document.getElementById('modalEditPrice').value = savedPrice !== 'Consultar precio' ? savedPrice : '';
+  document.getElementById('modalEditTag').value = getProductTag(p, idx);
+  document.getElementById('modalEditDesc').value = p.desc || '';
   document.getElementById('modalEditImgUrl').value = '';
   document.getElementById('modalEditImgFile').value = '';
+  document.getElementById('modalEditVisible').checked = !p.hidden && !p.deleted;
+  document.getElementById('modalRestoreBtn').style.display = (p.hidden || p.deleted) ? 'block' : 'none';
   _modalTempImg = null;
 }
 function closeModal(e) {
@@ -1440,6 +1633,11 @@ function applyFilters() {
     const idx = parseInt(card.dataset.idx);
     const p = allProducts[idx];
     if (!p) return;
+    const adminCanSee = adminActive && showHiddenProducts;
+    if ((p.hidden || p.deleted) && !adminCanSee) {
+      card.classList.add('hidden');
+      return;
+    }
     const matchCat = currentFilter === 'all' || cat === currentFilter;
     const matchSearch = !currentSearch ||
       p.name.toLowerCase().includes(currentSearch) ||
@@ -1501,9 +1699,17 @@ function enterAdmin() {
 }
 function exitAdmin() {
   adminActive = false;
+  showHiddenProducts = false;
   document.body.classList.remove('admin-on');
   document.getElementById('adminBar').classList.add('hidden');
   document.body.style.paddingTop = '';
+  document.getElementById('toggleHiddenBtn').textContent = 'Ver ocultos';
+  applyFilters();
+}
+function toggleHiddenProducts() {
+  showHiddenProducts = !showHiddenProducts;
+  document.getElementById('toggleHiddenBtn').textContent = showHiddenProducts ? 'Ocultar inactivos' : 'Ver ocultos';
+  applyFilters();
 }
 
 // ── ADD PRODUCT MODAL ──
@@ -1528,10 +1734,10 @@ function saveProduct() {
   if (_tempImgData) img = _tempImgData;
   else if (img) img = convertGDriveUrl(img);
   if (!name || !brand || !img) { alert('Completa nombre, marca e imagen.'); return; }
-  const newProduct = { img, brand, name, cat, price, desc: desc || `${name} de ${brand}.`, isCustom: true };
+  const newProduct = { img, brand, name, cat, price, desc: desc || `${name} de ${brand}.`, tag: 'nuevo', hidden: false, deleted: false, isCustom: true };
   localProducts.push(newProduct);
   localStorage.setItem('lf_products', JSON.stringify(localProducts));
-  allProducts = [...products, ...localProducts];
+  rebuildAllProducts();
   renderCustomProduct(newProduct, allProducts.length - 1);
   applyFilters();
   ['f-name','f-brand','f-price','f-img','f-desc'].forEach(id => document.getElementById(id).value = '');
@@ -1546,7 +1752,7 @@ function renderCustomProduct(p, idx) {
   const noRes = document.getElementById('noResults');
   const card = document.createElement('div');
   card.className = 'product-card img-loaded';
-  card.dataset.cat = p.cat;
+  card.dataset.cat = getProductFilterCat(p.cat);
   card.dataset.idx = idx;
   card.onclick = () => openModal(idx);
   card.innerHTML = `
@@ -1556,7 +1762,7 @@ function renderCustomProduct(p, idx) {
       <div class="card-name">${p.name}</div>
       <div class="card-price"><span class="price-wrap"><span class="price-text" data-pid="${idx}">${p.price}</span><button class="edit-price-btn" onclick="editPrice(event,${idx})">✎</button></span></div>
     </div>
-    <div class="card-tag tag-custom">Nuevo</div>
+    <div class="card-tag tag-${p.tag || 'nuevo'}">${getProductTagLabel(p.tag || 'nuevo', p, idx)}</div>
     <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>`;
   grid.insertBefore(card, noRes);
 }
@@ -1574,7 +1780,7 @@ function handleModalImgFile(event) {
   reader.readAsDataURL(file);
 }
 
-function saveModalEdit() {
+function saveModalEditLegacy() {
   if (currentModalIdx < 0) return;
   const priceVal = document.getElementById('modalEditPrice').value.trim();
   const imgUrlVal = document.getElementById('modalEditImgUrl').value.trim();
@@ -1618,6 +1824,91 @@ function saveModalEdit() {
 }
 
 // ── GOOGLE DRIVE URL CONVERSION ──
+function saveModalEdit() {
+  if (currentModalIdx < 0) return;
+  const p = allProducts[currentModalIdx];
+  if (!p) return;
+
+  const nameVal = document.getElementById('modalEditName').value.trim();
+  const brandVal = document.getElementById('modalEditBrand').value.trim();
+  const catVal = document.getElementById('modalEditCat').value;
+  const priceVal = document.getElementById('modalEditPrice').value.trim() || 'Consultar precio';
+  const tagVal = document.getElementById('modalEditTag').value;
+  const descVal = document.getElementById('modalEditDesc').value.trim();
+  const visibleVal = document.getElementById('modalEditVisible').checked;
+  const imgUrlVal = document.getElementById('modalEditImgUrl').value.trim();
+  const newImg = _modalTempImg || (imgUrlVal ? convertGDriveUrl(imgUrlVal) : null);
+  let changed = false;
+
+  if (!nameVal || !brandVal) {
+    showToast('Completa nombre y marca.');
+    return;
+  }
+
+  if (p.name !== nameVal) { p.name = nameVal; changed = true; }
+  if (p.brand !== brandVal) { p.brand = brandVal; changed = true; }
+  if (getProductFilterCat(p.cat) !== catVal) { p.cat = catVal; changed = true; }
+  if (getProductTag(p, currentModalIdx) !== tagVal) { p.tag = tagVal; changed = true; }
+  if (p.price !== priceVal) {
+    p.price = priceVal;
+    customPrices[currentModalIdx] = priceVal;
+    localStorage.setItem('lf_prices', JSON.stringify(customPrices));
+    changed = true;
+  }
+  if ((p.desc || '') !== descVal) { p.desc = descVal; changed = true; }
+  if (!!p.hidden === visibleVal) { p.hidden = !visibleVal; changed = true; }
+  if (visibleVal && p.deleted) { p.deleted = false; changed = true; }
+  if (newImg) { p.img = newImg; changed = true; }
+
+  document.getElementById('modalImg').src = p.img;
+  document.getElementById('modalImg').alt = p.name;
+  document.getElementById('modalCategory').textContent = p.cat;
+  document.getElementById('modalTitle').textContent = p.name;
+  document.getElementById('modalBrand').textContent = p.brand;
+  document.getElementById('modalDesc').textContent = p.desc;
+  document.getElementById('modalPrice').textContent = p.price;
+  updateWhatsAppLink(p, p.price);
+  updateProductCard(currentModalIdx);
+
+  if (changed) saveProductData(currentModalIdx);
+  applyFilters();
+  document.getElementById('modalRestoreBtn').style.display = (p.hidden || p.deleted) ? 'block' : 'none';
+  _modalTempImg = null;
+  document.getElementById('modalEditImgFile').value = '';
+  document.getElementById('modalEditImgUrl').value = '';
+  showToast(changed ? '¡Cambios guardados!' : 'No hay cambios para guardar.');
+}
+
+function deleteCurrentProduct() {
+  if (currentModalIdx < 0) return;
+  const p = allProducts[currentModalIdx];
+  if (!p) return;
+  if (!confirm(`¿Eliminar "${p.name}" del catálogo? Podrás restaurarlo con "Ver ocultos".`)) return;
+
+  p.deleted = true;
+  p.hidden = true;
+  saveProductData(currentModalIdx);
+  updateProductCard(currentModalIdx);
+  applyFilters();
+  closeModalDirect();
+  showToast('Producto eliminado del catálogo.');
+}
+
+function restoreCurrentProduct() {
+  if (currentModalIdx < 0) return;
+  const p = allProducts[currentModalIdx];
+  if (!p) return;
+
+  p.deleted = false;
+  p.hidden = false;
+  saveProductData(currentModalIdx);
+  document.getElementById('modalEditVisible').checked = true;
+  document.getElementById('modalRestoreBtn').style.display = 'none';
+  updateProductCard(currentModalIdx);
+  applyFilters();
+  showToast('Producto restaurado.');
+}
+
 function convertGDriveUrl(url) {
   let m = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
   if (m) return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w1200`;
@@ -1695,6 +1986,7 @@ function showToast(msg) {
 // ── INIT ──
 localProducts.forEach((p, i) => renderCustomProduct(p, products.length + i));
 applySavedPrices();
+allProducts.forEach((_, idx) => updateProductCard(idx));
 applyFilters();
 
 document.addEventListener('keydown', e => {
