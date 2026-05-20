@@ -311,6 +311,7 @@
     display: flex; flex-direction: column;
     justify-content: center;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .modal-category {
     font-size: 9px; letter-spacing: 5px;
@@ -557,6 +558,7 @@
     color: var(--cream); padding: 9px 12px;
     font-family: 'Montserrat', sans-serif; font-size: 12px; outline: none;
     transition: border-color 0.2s;
+    border-radius: 0;
   }
   .modal-admin-input:focus { border-color: var(--gold); }
   .modal-admin-textarea { min-height: 76px; resize: vertical; line-height: 1.6; }
@@ -572,6 +574,7 @@
     font-family: 'Montserrat', sans-serif; font-size: 10px;
     letter-spacing: 3px; text-transform: uppercase; font-weight: 600;
     margin-top: 12px; transition: opacity 0.2s;
+    min-height: 42px;
   }
   .modal-admin-save:hover { opacity: 0.85; }
   .modal-admin-danger {
@@ -579,6 +582,7 @@
     cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 10px;
     letter-spacing: 3px; text-transform: uppercase; font-weight: 600;
     transition: opacity 0.2s;
+    min-height: 42px;
   }
   .modal-admin-danger:hover { opacity: 0.85; }
 
@@ -625,16 +629,108 @@
   }
 
   /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .modal-overlay {
+      align-items: flex-start;
+      padding: 10px;
+      overflow-y: auto;
+    }
+    .modal {
+      grid-template-columns: 1fr;
+      max-height: none;
+      min-height: auto;
+      margin: 8px 0 18px;
+      overflow: visible;
+    }
+    .modal-img-wrap { max-height: 340px; }
+    .modal-img {
+      min-height: 220px;
+      height: min(42vh, 340px);
+      max-height: 340px;
+    }
+    .modal-body {
+      padding: 30px 28px;
+      justify-content: flex-start;
+      overflow: visible;
+    }
+    .modal-admin-panel {
+      padding: 18px;
+      margin-top: 18px;
+    }
+    .modal-admin-input,
+    .file-upload-btn {
+      min-height: 44px;
+      font-size: 16px;
+    }
+    .modal-admin-textarea { min-height: 110px; }
+    .modal-admin-save,
+    .modal-admin-danger {
+      min-height: 46px;
+      font-size: 10px;
+    }
+  }
   @media (max-width: 640px) {
-    .modal { grid-template-columns: 1fr; }
-    .modal-img { min-height: 260px; max-height: 300px; }
-    .modal-body { padding: 26px 22px; }
+    .modal-overlay {
+      padding: 0;
+      background: rgba(0,0,0,0.96);
+    }
+    .modal {
+      width: 100%;
+      min-height: 100svh;
+      margin: 0;
+      border-left: none;
+      border-right: none;
+    }
+    .modal-img-wrap { max-height: 240px; }
+    .modal-img { min-height: 190px; height: 34vh; max-height: 240px; }
+    .modal-body { padding: 24px 18px 32px; }
     .modal-title { font-size: 26px; }
+    .modal-brand { margin-bottom: 14px; }
+    .modal-desc { margin-bottom: 20px; }
+    .modal-price { margin-bottom: 20px; }
+    .modal-close {
+      top: 10px; right: 10px;
+      width: 42px; height: 42px;
+      font-size: 18px;
+    }
+    .whatsapp-btn {
+      min-height: 48px;
+      padding: 13px 14px;
+      letter-spacing: 2px;
+    }
+    .share-row {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .share-label { width: 100%; }
+    .share-btn { width: 42px; height: 42px; }
+    .modal-admin-panel {
+      padding: 16px 14px;
+      margin-left: -2px;
+      margin-right: -2px;
+    }
+    .modal-admin-panel label {
+      margin-top: 14px;
+      letter-spacing: 1.5px;
+    }
+    .modal-admin-actions { grid-template-columns: 1fr; }
+    .modal-admin-save,
+    .modal-admin-danger,
+    .file-upload-btn {
+      letter-spacing: 2px;
+      white-space: normal;
+    }
+    .modal-admin-toggle {
+      min-height: 44px;
+      align-items: center;
+    }
+    .modal-admin-toggle input { width: 20px; height: 20px; }
     .catalog-grid { grid-template-columns: repeat(2, 1fr); gap: 1px; padding: 0 1px 2px; }
     .card-name { font-size: 17px; }
     .filters { justify-content: flex-start; padding-left: 8px; }
   }
   @media (min-width: 641px) and (max-width: 900px) {
+    .modal { max-width: 720px; }
     .catalog-grid { grid-template-columns: repeat(3, 1fr); }
   }
 </style>
