@@ -362,6 +362,9 @@
     transition: all 0.2s;
   }
   .modal-close:hover { background: var(--gold); color: var(--black); }
+  .modal-mobile-footer {
+    display: none;
+  }
 
   /* ── FOOTER ── */
   footer {
@@ -633,14 +636,15 @@
     .modal-overlay {
       align-items: flex-start;
       padding: 10px;
-      overflow-y: auto;
+      overflow: hidden;
     }
     .modal {
       grid-template-columns: 1fr;
-      max-height: none;
+      max-height: calc(100svh - 20px);
       min-height: auto;
       margin: 8px 0 18px;
-      overflow: visible;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
     .modal-img-wrap { max-height: 340px; }
     .modal-img {
@@ -676,14 +680,17 @@
     }
     .modal {
       width: 100%;
+      height: 100svh;
+      max-height: 100svh;
       min-height: 100svh;
       margin: 0;
       border-left: none;
       border-right: none;
+      padding-bottom: 76px;
     }
     .modal-img-wrap { max-height: 240px; }
     .modal-img { min-height: 190px; height: 34vh; max-height: 240px; }
-    .modal-body { padding: 24px 18px 32px; }
+    .modal-body { padding: 24px 18px 34px; }
     .modal-title { font-size: 26px; }
     .modal-brand { margin-bottom: 14px; }
     .modal-desc { margin-bottom: 20px; }
@@ -725,6 +732,42 @@
       align-items: center;
     }
     .modal-admin-toggle input { width: 20px; height: 20px; }
+    .modal-mobile-footer {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      z-index: 1200;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+      background: rgba(13,13,13,0.94);
+      border-top: 1px solid rgba(201,168,76,0.28);
+      backdrop-filter: blur(10px);
+    }
+    .modal-mobile-footer button {
+      min-height: 46px;
+      border: 1px solid rgba(201,168,76,0.5);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .modal-mobile-footer .mobile-edit-btn {
+      background: transparent;
+      color: var(--gold);
+    }
+    .modal-mobile-footer .mobile-save-btn {
+      background: var(--gold);
+      color: var(--black);
+      font-weight: 600;
+    }
+    body:not(.admin-on) .modal-mobile-footer {
+      grid-template-columns: 1fr;
+    }
+    body:not(.admin-on) .mobile-save-btn {
+      display: none;
+    }
     .catalog-grid { grid-template-columns: repeat(2, 1fr); gap: 1px; padding: 0 1px 2px; }
     .card-name { font-size: 17px; }
     .filters { justify-content: flex-start; padding-left: 8px; }
@@ -1459,6 +1502,10 @@
           <button class="modal-admin-danger" type="button" onclick="deleteCurrentProduct()">Eliminar</button>
         </div>
       </div>
+      <div class="modal-mobile-footer">
+        <button class="mobile-edit-btn" type="button" onclick="scrollModalToAdmin()">Editar producto</button>
+        <button class="mobile-save-btn" type="button" onclick="saveModalEdit()">Guardar cambios</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1708,6 +1755,19 @@ function closeModal(e) {
 function closeModalDirect() {
   document.getElementById('modal').classList.remove('open');
   document.body.style.overflow = '';
+}
+function scrollModalToAdmin() {
+  const adminPanel = document.querySelector('.modal-admin-panel');
+  const modalBox = document.getElementById('modalBox');
+  if (!adminActive || !adminPanel) {
+    document.getElementById('modalWA')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  if (modalBox && window.matchMedia('(max-width: 900px)').matches) {
+    modalBox.scrollTo({ top: adminPanel.offsetTop - 12, behavior: 'smooth' });
+  } else {
+    adminPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
 // ── FILTERS & SEARCH ──
