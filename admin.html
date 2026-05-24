@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin productos - Luxury Fernandez</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #111;
+    --muted: #746f68;
+    --line: rgba(17,17,17,0.12);
+    --paper: #f7f3ec;
+    --white: #fff;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: Montserrat, sans-serif; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 22px; border-bottom: 1px solid var(--line); background: var(--white); position: sticky; top: 0; z-index: 5; }
+  h1 { margin: 0; font-family: "Cormorant Garamond", serif; font-size: 34px; line-height: 1; }
+  .top-actions { display: flex; gap: 10px; align-items: center; }
+  a, button { border: 0; border-radius: 999px; background: var(--ink); color: #fff; cursor: pointer; font: inherit; font-size: 13px; font-weight: 600; padding: 10px 14px; text-decoration: none; }
+  .ghost { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+  main { display: grid; grid-template-columns: minmax(260px, 360px) 1fr; gap: 18px; padding: 18px; }
+  aside, section { background: var(--white); border: 1px solid var(--line); border-radius: 10px; min-height: 0; }
+  .search { padding: 14px; border-bottom: 1px solid var(--line); }
+  input, textarea, select { width: 100%; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); font: inherit; padding: 11px 12px; outline: none; background: #fff; }
+  input:focus, textarea:focus, select:focus { border-color: var(--ink); }
+  .list { max-height: calc(100vh - 142px); overflow: auto; }
+  .item { display: grid; grid-template-columns: 52px 1fr; gap: 11px; width: 100%; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; color: var(--ink); padding: 11px 14px; text-align: left; }
+  .item.active { background: #f3eee6; }
+  .thumb { width: 52px; height: 62px; object-fit: cover; border-radius: 6px; background: #eee; }
+  .item strong { display: block; font-size: 13px; margin-bottom: 3px; }
+  .item span { color: var(--muted); font-size: 12px; }
+  .editor { padding: 18px; }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .field.full { grid-column: 1 / -1; }
+  label { display: block; color: var(--muted); font-size: 12px; margin: 0 0 7px; }
+  textarea { min-height: 120px; resize: vertical; line-height: 1.5; }
+  .preview { width: 100%; max-height: 360px; object-fit: contain; background: #eee; border-radius: 8px; border: 1px solid var(--line); }
+  .checks { display: flex; gap: 18px; align-items: center; margin-top: 4px; }
+  .checks label { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--ink); }
+  .checks input { width: auto; }
+  .status { min-height: 22px; color: var(--muted); font-size: 13px; margin-top: 12px; }
+  .danger { background: #b42318; }
+  @media (max-width: 820px) {
+    header { align-items: flex-start; flex-direction: column; }
+    main { grid-template-columns: 1fr; }
+    .list { max-height: 38vh; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Productos</h1>
+    <div class="status" id="userLine"></div>
+  </div>
+  <div class="top-actions">
+    <a class="ghost" href="index.html">Ver catalogo</a>
+    <button type="button" class="danger" id="logoutBtn">Salir</button>
+  </div>
+</header>
+
+<main>
+  <aside>
+    <div class="search">
+      <input id="search" type="search" placeholder="Buscar producto...">
+    </div>
+    <div class="list" id="productList"></div>
+  </aside>
+
+  <section>
+    <form class="editor" id="productForm">
+      <div class="grid">
+        <div class="field full">
+          <img class="preview" id="preview" alt="">
+        </div>
+        <div class="field">
+          <label for="name">Nombre</label>
+          <input id="name" required>
+        </div>
+        <div class="field">
+          <label for="brand">Marca</label>
+          <input id="brand" required>
+        </div>
+        <div class="field">
+          <label for="cat">Categoria</label>
+          <input id="cat">
+        </div>
+        <div class="field">
+          <label for="price">Precio</label>
+          <input id="price">
+        </div>
+        <div class="field">
+          <label for="tag">Etiqueta</label>
+          <select id="tag">
+            <option value="">Sin etiqueta</option>
+            <option value="nuevo">Nuevo</option>
+            <option value="destacado">Destacado</option>
+            <option value="exclusivo">Exclusivo</option>
+            <option value="oferta">Oferta</option>
+            <option value="promocion">Promocion</option>
+            <option value="reservado">Reservado</option>
+            <option value="vendido">Vendido</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="img">Imagen</label>
+          <input id="img">
+        </div>
+        <div class="field full">
+          <label for="desc">Descripcion</label>
+          <textarea id="desc"></textarea>
+        </div>
+        <div class="field full checks">
+          <label><input id="visible" type="checkbox"> Visible</label>
+          <label><input id="deleted" type="checkbox"> Eliminado</label>
+        </div>
+      </div>
+      <button type="submit">Guardar cambios</button>
+      <div class="status" id="status"></div>
+    </form>
+  </section>
+</main>
+
+<script>
+const token = localStorage.getItem('lf_admin_token') || '';
+const user = localStorage.getItem('lf_admin_user') || 'admin';
+const list = document.getElementById('productList');
+const search = document.getElementById('search');
+const statusEl = document.getElementById('status');
+const userLine = document.getElementById('userLine');
+const form = document.getElementById('productForm');
+let products = [];
+let current = null;
+
+if (!token) window.location.href = 'editar.html';
+userLine.textContent = `Sesion: ${user}`;
+
+function absoluteImg(src) {
+  if (!src) return '';
+  if (/^(https?:|data:)/.test(src)) return src;
+  return src.startsWith('/') ? src : `/${src}`;
+}
+
+async function api(path, options = {}) {
+  const response = await fetch(path, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      ...(options.headers || {})
+    },
+    ...options
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || 'Error en la solicitud.');
+  return data;
+}
+
+function renderList() {
+  const q = search.value.trim().toLowerCase();
+  list.innerHTML = '';
+
+  products
+    .filter(p => !q || [p.name, p.brand, p.cat].some(value => (value || '').toLowerCase().includes(q)))
+    .forEach(product => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = `item ${current?._id === product._id ? 'active' : ''}`;
+      button.innerHTML = `
+        <img class="thumb" src="${absoluteImg(product.img)}" alt="">
+        <span><strong>${product.name || 'Sin nombre'}</strong><span>${product.brand || ''} · ${product.price || ''}</span></span>
+      `;
+      button.addEventListener('click', () => selectProduct(product));
+      list.appendChild(button);
+    });
+}
+
+function selectProduct(product) {
+  current = product;
+  document.getElementById('preview').src = absoluteImg(product.img);
+  document.getElementById('name').value = product.name || '';
+  document.getElementById('brand').value = product.brand || '';
+  document.getElementById('cat').value = product.cat || '';
+  document.getElementById('price').value = product.price || '';
+  document.getElementById('tag').value = product.tag || '';
+  document.getElementById('img').value = product.img || '';
+  document.getElementById('desc').value = product.desc || '';
+  document.getElementById('visible').checked = !product.hidden && !product.deleted;
+  document.getElementById('deleted').checked = Boolean(product.deleted);
+  statusEl.textContent = '';
+  renderList();
+}
+
+async function loadProducts() {
+  products = await api('/api/catalogos');
+  selectProduct(products[0]);
+}
+
+form.addEventListener('submit', async event => {
+  event.preventDefault();
+  if (!current) return;
+
+  const visible = document.getElementById('visible').checked;
+  const payload = {
+    ...current,
+    name: document.getElementById('name').value.trim(),
+    brand: document.getElementById('brand').value.trim(),
+    cat: document.getElementById('cat').value.trim(),
+    price: document.getElementById('price').value.trim() || 'Consultar precio',
+    tag: document.getElementById('tag').value,
+    img: document.getElementById('img').value.trim(),
+    desc: document.getElementById('desc').value.trim(),
+    hidden: !visible,
+    deleted: document.getElementById('deleted').checked
+  };
+  delete payload._id;
+
+  statusEl.textContent = 'Guardando...';
+  const saved = await api(`/api/catalogos/${current._id}`, {
+    method: 'PUT',
+    body: JSON.stringify(payload)
+  });
+  products = products.map(product => product._id === saved._id ? saved : product);
+  selectProduct(saved);
+  statusEl.textContent = 'Cambios guardados.';
+});
+
+document.getElementById('img').addEventListener('input', event => {
+  document.getElementById('preview').src = absoluteImg(event.target.value);
+});
+
+search.addEventListener('input', renderList);
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  localStorage.removeItem('lf_admin_token');
+  localStorage.removeItem('lf_admin_user');
+  window.location.href = 'editar.html';
+});
+
+loadProducts().catch(error => {
+  statusEl.textContent = error.message;
+  if (error.message.toLowerCase().includes('sesion')) window.location.href = 'editar.html';
+});
+</script>
+</body>
+</html>

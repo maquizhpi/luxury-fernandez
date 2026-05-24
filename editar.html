@@ -101,10 +101,12 @@
 <body>
   <main>
     <h1>Modo edicion</h1>
-    <p>Inicia sesion para abrir el catalogo con herramientas de administrador.</p>
+    <p>Inicia sesion para administrar productos, precios, imagenes y visibilidad.</p>
     <form id="loginForm">
+      <label for="username">Usuario</label>
+      <input id="username" type="text" autocomplete="username" required autofocus value="admin">
       <label for="password">Contrasena</label>
-      <input id="password" type="password" autocomplete="current-password" required autofocus>
+      <input id="password" type="password" autocomplete="current-password" required>
       <button type="submit">Entrar a editar</button>
       <div class="message" id="message"></div>
     </form>
@@ -123,13 +125,17 @@ form.addEventListener('submit', async event => {
     const response = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: document.getElementById('password').value })
+      body: JSON.stringify({
+        username: document.getElementById('username').value,
+        password: document.getElementById('password').value
+      })
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || 'No se pudo iniciar sesion.');
 
     localStorage.setItem('lf_admin_token', data.token);
-    window.location.href = 'index.html?admin=1';
+    localStorage.setItem('lf_admin_user', data.username || 'admin');
+    window.location.href = 'admin.html';
   } catch (error) {
     message.textContent = error.message;
   }

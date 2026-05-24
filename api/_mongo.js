@@ -3,6 +3,7 @@ import { MongoClient, ObjectId } from 'mongodb';
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/luxury_fernandez';
 const dbName = process.env.MONGODB_DB || 'luxury_fernandez';
 const collectionName = process.env.MONGODB_COLLECTION || 'catalogos';
+const usersCollectionName = process.env.MONGODB_USERS_COLLECTION || 'users';
 
 let clientPromise;
 
@@ -24,6 +25,18 @@ export async function getCollection() {
   const collection = client.db(dbName).collection(collectionName);
   await collection.createIndex({ sourceId: 1 }, { unique: true, sparse: true });
   await collection.createIndex({ createdAt: 1 });
+  return collection;
+}
+
+export async function getUsersCollection() {
+  if (!clientPromise) {
+    const client = new MongoClient(mongoUri, { serverSelectionTimeoutMS: 5000 });
+    clientPromise = client.connect();
+  }
+
+  const client = await clientPromise;
+  const collection = client.db(dbName).collection(usersCollectionName);
+  await collection.createIndex({ username: 1 }, { unique: true });
   return collection;
 }
 

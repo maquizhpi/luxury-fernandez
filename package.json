@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "seed:catalogos": "node scripts/seed-catalogos.js"
+    "seed:catalogos": "node scripts/seed-catalogos.js",
+    "seed:admin": "node scripts/seed-admin.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

@@ -1,14 +1,31 @@
 import crypto from 'node:crypto';
+import { getUsersCollection } from './_mongo.js';
 
+const adminUser = process.env.ADMIN_USER || 'admin';
 const adminPassword = process.env.ADMIN_PASSWORD || 'luxury2025';
 const tokenSecret = process.env.ADMIN_TOKEN_SECRET || adminPassword;
+const iterations = 210000;
+const keyLength = 32;
+const digest = 'sha256';
 
 function sign(value) {
   return crypto.createHmac('sha256', tokenSecret).update(value).digest('hex');
 }
 
-export function createAdminToken() {
-  const payload = JSON.stringify({ role: 'admin', exp: Date.now() + 1000 * 60 * 60 * 12 });
+export function hashPassword(password, salt = crypto.randomBytes(16).toString('hex')) {
+  const hash = crypto.pbkdf2Sync(password, salt, iterations, keyLength, digest).toString('hex');
+  return `pbkdf2$${iterations}$${salt}$${hash}`;
+}
+
+export function verifyPassword(password, storedHash = '') {
+  const [scheme, rawIterations, salt, hash] = storedHash.split('$');
+  if (scheme !== 'pbkdf2' || !rawIterations || !salt || !hash) return false;
+  const computed = crypto.pbkdf2Sync(password, salt, Number(rawIterations), keyLength, digest).toString('hex');
+  return crypto.timingSafeEqual(Buffer.from(computed, 'hex'), Buffer.from(hash, 'hex'));
+}
+
+export function createAdminToken(username = adminUser) {
+  const payload = JSON.stringify({ role: 'admin', username, exp: Date.now() + 1000 * 60 * 60 * 12 });
   const encoded = Buffer.from(payload).toString('base64url');
   return `${encoded}.${sign(encoded)}`;
 }
@@ -27,6 +44,24 @@ export function verifyAdminToken(token = '') {
 
 export function isAdminPassword(password) {
   return password === adminPassword;
+}
+
+export async function validateAdminCredentials(username, password) {
+  const normalized = String(username || '').trim().toLowerCase();
+
+  try {
+    const users = await getUsersCollection();
+    const user = await users.findOne({ username: normalized, active: { $ne: false } });
+    if (user?.passwordHash && verifyPassword(password, user.passwordHash)) return user;
+  } catch (error) {
+    console.warn(error);
+  }
+
+  if (normalized === adminUser && password === adminPassword) {
+    return { username: adminUser, role: 'admin' };
+  }
+
+  return null;
 }
 
 export function requireAdmin(req, res) {

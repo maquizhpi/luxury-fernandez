@@ -14,8 +14,13 @@ const port = Number(process.env.PORT || 3000);
 const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/luxury_fernandez';
 const dbName = process.env.MONGODB_DB || 'luxury_fernandez';
 const collectionName = process.env.MONGODB_COLLECTION || 'catalogos';
+const usersCollectionName = process.env.MONGODB_USERS_COLLECTION || 'users';
+const adminUser = process.env.ADMIN_USER || 'admin';
 const adminPassword = process.env.ADMIN_PASSWORD || 'luxury2025';
 const tokenSecret = process.env.ADMIN_TOKEN_SECRET || adminPassword;
+const passwordIterations = 210000;
+const passwordKeyLength = 32;
+const passwordDigest = 'sha256';
 
 const client = new MongoClient(mongoUri, { serverSelectionTimeoutMS: 5000 });
 let collectionPromise;
@@ -36,14 +41,43 @@ async function getCollection() {
   return collectionPromise;
 }
 
+async function getUsersCollection() {
+  const connectedClient = await client.connect();
+  const collection = connectedClient.db(dbName).collection(usersCollectionName);
+  await collection.createIndex({ username: 1 }, { unique: true });
+  return collection;
+}
+
 function sign(value) {
   return crypto.createHmac('sha256', tokenSecret).update(value).digest('hex');
 }
 
-function createAdminToken() {
-  const payload = JSON.stringify({ role: 'admin', exp: Date.now() + 1000 * 60 * 60 * 12 });
+function verifyPassword(password, storedHash = '') {
+  const [scheme, rawIterations, salt, hash] = storedHash.split('$');
+  if (scheme !== 'pbkdf2' || !rawIterations || !salt || !hash) return false;
+  const computed = crypto.pbkdf2Sync(password, salt, Number(rawIterations), passwordKeyLength, passwordDigest).toString('hex');
+  return crypto.timingSafeEqual(Buffer.from(computed, 'hex'), Buffer.from(hash, 'hex'));
+}
+
+function createAdminToken(username = adminUser) {
+  const payload = JSON.stringify({ role: 'admin', username, exp: Date.now() + 1000 * 60 * 60 * 12 });
   const encoded = Buffer.from(payload).toString('base64url');
   return `${encoded}.${sign(encoded)}`;
+}
+
+async function validateAdminCredentials(username, password) {
+  const normalized = String(username || '').trim().toLowerCase();
+
+  try {
+    const users = await getUsersCollection();
+    const user = await users.findOne({ username: normalized, active: { $ne: false } });
+    if (user?.passwordHash && verifyPassword(password, user.passwordHash)) return user;
+  } catch (error) {
+    console.warn(error);
+  }
+
+  if (normalized === adminUser && password === adminPassword) return { username: adminUser, role: 'admin' };
+  return null;
 }
 
 function verifyAdminToken(token = '') {
@@ -102,12 +136,11 @@ app.get('/api/health', async (_req, res) => {
   }
 });
 
-app.post('/api/auth/login', (req, res) => {
-  if (req.body?.password !== adminPassword) {
-    return res.status(401).json({ error: 'Contrasena incorrecta.' });
-  }
+app.post('/api/auth/login', async (req, res) => {
+  const user = await validateAdminCredentials(req.body?.username || 'admin', req.body?.password);
+  if (!user) return res.status(401).json({ error: 'Usuario o contrasena incorrectos.' });
 
-  return res.json({ token: createAdminToken() });
+  return res.json({ token: createAdminToken(user.username), username: user.username });
 });
 
 app.get('/api/catalogos', async (_req, res) => {
