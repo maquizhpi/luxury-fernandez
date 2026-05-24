@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "seed:catalogos": "node scripts/seed-catalogos.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
