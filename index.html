@@ -776,6 +776,238 @@
     .modal { max-width: 720px; }
     .catalog-grid { grid-template-columns: repeat(3, 1fr); }
   }
+
+  /* Minimal theme */
+  :root {
+    --gold: #9b7a2d;
+    --gold-light: #d8c690;
+    --black: #111111;
+    --cream: #f7f3ec;
+    --warm-gray: #77716a;
+    --dark-bg: #f7f3ec;
+    --card-bg: #ece6dc;
+  }
+
+  body {
+    background: var(--cream);
+    color: var(--black);
+  }
+
+  header {
+    background: var(--cream);
+    border-bottom: 1px solid rgba(17,17,17,0.08);
+    padding: 46px 18px 26px;
+  }
+
+  header::before,
+  .gold-divider,
+  .section-label,
+  .card-hover-cta {
+    display: none;
+  }
+
+  .brand-line,
+  .brand-tagline,
+  .filter-btn,
+  .result-count,
+  .card-brand,
+  .card-price,
+  .card-tag,
+  footer p,
+  footer a.footer-wa,
+  .admin-bar,
+  .admin-bar-btn,
+  .modal-category,
+  .modal-brand,
+  .modal-admin-panel-title,
+  .modal-admin-panel label,
+  .modal-admin-save,
+  .modal-admin-danger,
+  .mobile-edit-btn,
+  .mobile-save-btn {
+    letter-spacing: 0;
+  }
+
+  .brand-line {
+    color: var(--warm-gray);
+    font-size: 12px;
+    margin-bottom: 8px;
+    text-transform: none;
+  }
+
+  .brand-name {
+    color: var(--black);
+    font-size: clamp(36px, 6vw, 66px);
+    letter-spacing: 0;
+  }
+
+  .brand-name span { color: var(--black); }
+
+  .brand-tagline {
+    color: var(--warm-gray);
+    font-size: 13px;
+    margin-top: 10px;
+    text-transform: none;
+  }
+
+  .search-wrap { margin-top: 24px; }
+
+  .search-input {
+    background: #fff;
+    border: 1px solid rgba(17,17,17,0.12);
+    border-radius: 999px;
+    color: var(--black);
+    font-size: 14px;
+    padding: 13px 44px 13px 18px;
+  }
+
+  .filters-wrap { padding: 22px 14px 18px; }
+  .filters { gap: 6px; }
+
+  .filter-btn {
+    background: #fff;
+    border: 1px solid rgba(17,17,17,0.10);
+    border-radius: 999px;
+    color: var(--black);
+    font-size: 13px;
+    padding: 9px 16px;
+    text-transform: none;
+  }
+
+  .filter-btn:hover,
+  .filter-btn.active {
+    background: var(--black);
+    border-color: var(--black);
+    color: #fff;
+  }
+
+  .catalog-grid {
+    gap: 12px;
+    padding: 0 14px 18px;
+  }
+
+  .product-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: none;
+    aspect-ratio: 4/5;
+  }
+
+  .product-card:hover { transform: translateY(-2px); }
+
+  .product-card:hover .card-img {
+    filter: none;
+    transform: scale(1.03);
+  }
+
+  .card-overlay {
+    background: linear-gradient(to top, rgba(17,17,17,0.72), rgba(17,17,17,0.08) 62%, transparent);
+    padding: 18px;
+  }
+
+  .card-brand {
+    color: rgba(255,255,255,0.78);
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+
+  .card-name {
+    color: #fff;
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+
+  .card-price {
+    color: rgba(255,255,255,0.88);
+    font-size: 13px;
+  }
+
+  .card-tag,
+  .card-tag.tag-nuevo,
+  .card-tag.tag-destacado,
+  .card-tag.tag-exclusivo,
+  .card-tag.tag-oferta,
+  .card-tag.tag-promocion,
+  .card-tag.tag-vendido,
+  .card-tag.tag-reservado,
+  .card-tag.tag-custom {
+    background: rgba(255,255,255,0.92);
+    border: 0;
+    border-radius: 999px;
+    color: var(--black);
+    font-size: 11px;
+    padding: 7px 11px;
+    text-transform: none;
+  }
+
+  footer {
+    background: #fff;
+    border-top: 1px solid rgba(17,17,17,0.08);
+    color: var(--black);
+    padding: 34px 18px;
+  }
+
+  .footer-brand {
+    color: var(--black);
+    letter-spacing: 0;
+  }
+
+  footer a.footer-wa { color: var(--black); }
+
+  .modal {
+    background: #fff;
+    border: 0;
+    border-radius: 10px;
+    color: var(--black);
+  }
+
+  .modal-body,
+  .add-modal {
+    background: #fff;
+    color: var(--black);
+  }
+
+  .modal-title,
+  .modal-price,
+  .add-modal h3 {
+    color: var(--black);
+  }
+
+  .modal-brand,
+  .modal-category,
+  .modal-desc,
+  .modal-admin-panel label {
+    color: var(--warm-gray);
+  }
+
+  .modal-divider { background: rgba(17,17,17,0.12); }
+
+  .modal-admin-panel {
+    background: #f6f2ea;
+    border-color: rgba(17,17,17,0.10);
+  }
+
+  .modal-admin-input,
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    background: #fff;
+    border-color: rgba(17,17,17,0.14);
+    color: var(--black);
+  }
+
+  .admin-bar {
+    background: var(--black);
+    border-bottom: 0;
+    color: #fff;
+  }
+
+  .admin-bar-btn,
+  .modal-admin-save,
+  .btn-save,
+  .whatsapp-btn {
+    border-radius: 999px;
+  }
 </style>
 </head>
 <body>
@@ -1514,6 +1746,7 @@
 const WA = '593998894744';
 const ADMIN_PWD = 'luxury2025'; // ← cambia tu contraseña aquí
 const SITE_URL = 'https://luxury-fernandez.shop';
+const API_BASE = window.location.origin;
 let _tempImgData = null;
 let _modalTempImg = null;
 let currentModalIdx = -1;
@@ -1573,9 +1806,10 @@ let currentFilter = 'all';
 let currentSearch = '';
 let adminActive = false;
 let showHiddenProducts = false;
-let customPrices = JSON.parse(localStorage.getItem('lf_prices') || '{}');
-let localProducts = JSON.parse(localStorage.getItem('lf_products') || '[]');
-let productEdits = JSON.parse(localStorage.getItem('lf_product_edits') || '{}');
+let adminToken = localStorage.getItem('lf_admin_token') || '';
+let customPrices = {};
+let localProducts = [];
+let productEdits = {};
 let allProducts = [];
 
 const TAG_LABELS = {
@@ -1628,6 +1862,54 @@ function rebuildAllProducts() {
     if (customPrices[idx]) edited.price = customPrices[idx];
     return edited;
   });
+}
+
+async function apiRequest(path, options = {}) {
+  const response = await fetch(`${API_BASE}${path}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(adminToken ? { Authorization: `Bearer ${adminToken}` } : {}),
+      ...(options.headers || {})
+    },
+    ...options
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || 'No se pudo guardar en MongoDB.');
+  return data;
+}
+
+async function loginAdmin(password) {
+  const data = await apiRequest('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ password })
+  });
+  adminToken = data.token;
+  localStorage.setItem('lf_admin_token', adminToken);
+}
+
+function applyMongoProducts(mongoProducts) {
+  productEdits = {};
+  localProducts = [];
+
+  mongoProducts.forEach(product => {
+    if (Number.isInteger(product.sourceId)) {
+      productEdits[product.sourceId] = product;
+    } else {
+      localProducts.push(product);
+    }
+  });
+
+  rebuildAllProducts();
+}
+
+async function loadMongoProducts() {
+  try {
+    const mongoProducts = await apiRequest('/api/catalogos');
+    applyMongoProducts(mongoProducts);
+  } catch (error) {
+    console.warn(error);
+    showToast('MongoDB no esta conectado. Mostrando catalogo local.');
+  }
 }
 
 function updateWhatsAppLink(product, price) {
@@ -1689,14 +1971,39 @@ function updateProductCard(idx) {
   }
 }
 
-function saveProductData(idx) {
+async function saveProductData(idx) {
+  const product = allProducts[idx];
+  if (!product) return null;
+  const payload = { ...product };
+  delete payload._id;
+
   const localIdx = idx - products.length;
-  if (localIdx >= 0 && localProducts[localIdx]) {
-    localProducts[localIdx] = { ...allProducts[idx] };
-    localStorage.setItem('lf_products', JSON.stringify(localProducts));
+  if (product._id) {
+    const saved = await apiRequest(`/api/catalogos/${product._id}`, {
+      method: 'PUT',
+      body: JSON.stringify(payload)
+    });
+    allProducts[idx] = saved;
+    if (localIdx >= 0 && localProducts[localIdx]) localProducts[localIdx] = saved;
+    return saved;
+  }
+
+  if (localIdx >= 0) {
+    const saved = await apiRequest('/api/catalogos', {
+      method: 'POST',
+      body: JSON.stringify({ ...payload, isCustom: true })
+    });
+    allProducts[idx] = saved;
+    localProducts[localIdx] = saved;
+    return saved;
   } else {
-    productEdits[idx] = { ...productEdits[idx], ...allProducts[idx] };
-    localStorage.setItem('lf_product_edits', JSON.stringify(productEdits));
+    const saved = await apiRequest(`/api/catalogos/source/${idx}`, {
+      method: 'PUT',
+      body: JSON.stringify({ ...payload, sourceId: idx, isCustom: false })
+    });
+    allProducts[idx] = saved;
+    productEdits[idx] = saved;
+    return saved;
   }
 }
 
@@ -1819,7 +2126,7 @@ function editPrice(e, pid) {
   span.replaceWith(input);
   input.focus();
   input.select();
-  const save = () => {
+  const save = async () => {
     const newPrice = input.value.trim() || current;
     const newSpan = document.createElement('span');
     newSpan.className = 'price-text';
@@ -1827,8 +2134,14 @@ function editPrice(e, pid) {
     newSpan.textContent = newPrice;
     input.replaceWith(newSpan);
     customPrices[pid] = newPrice;
-    localStorage.setItem('lf_prices', JSON.stringify(customPrices));
     if (allProducts[pid]) allProducts[pid].price = newPrice;
+    try {
+      await saveProductData(pid);
+      showToast('Precio guardado en MongoDB.');
+    } catch (error) {
+      console.error(error);
+      showToast('No se pudo guardar en MongoDB.');
+    }
   };
   input.addEventListener('blur', save);
   input.addEventListener('keydown', e => { if (e.key === 'Enter') input.blur(); if (e.key === 'Escape') { input.value = current; input.blur(); } });
@@ -1848,6 +2161,10 @@ document.querySelector('.footer-brand').addEventListener('click', () => {
   }
 });
 function enterAdmin() {
+  if (!adminToken) {
+    window.location.href = 'editar.html';
+    return;
+  }
   adminActive = true;
   document.body.classList.add('admin-on');
   document.getElementById('adminBar').classList.remove('hidden');
@@ -1856,6 +2173,8 @@ function enterAdmin() {
 function exitAdmin() {
   adminActive = false;
   showHiddenProducts = false;
+  adminToken = '';
+  localStorage.removeItem('lf_admin_token');
   document.body.classList.remove('admin-on');
   document.getElementById('adminBar').classList.add('hidden');
   document.body.style.paddingTop = '';
@@ -1880,7 +2199,7 @@ function closeAddModalDirect() {
   document.getElementById('addOverlay').classList.remove('open');
   document.body.style.overflow = adminActive ? '' : '';
 }
-function saveProduct() {
+async function saveProduct() {
   const name  = document.getElementById('f-name').value.trim();
   const brand = document.getElementById('f-brand').value.trim();
   const cat   = document.getElementById('f-cat').value;
@@ -1891,10 +2210,20 @@ function saveProduct() {
   else if (img) img = convertGDriveUrl(img);
   if (!name || !brand || !img) { alert('Completa nombre, marca e imagen.'); return; }
   const newProduct = { img, brand, name, cat, price, desc: desc || `${name} de ${brand}.`, tag: 'nuevo', hidden: false, deleted: false, isCustom: true };
-  localProducts.push(newProduct);
-  localStorage.setItem('lf_products', JSON.stringify(localProducts));
+  let savedProduct;
+  try {
+    savedProduct = await apiRequest('/api/catalogos', {
+      method: 'POST',
+      body: JSON.stringify(newProduct)
+    });
+  } catch (error) {
+    console.error(error);
+    showToast('No se pudo guardar en MongoDB.');
+    return;
+  }
+  localProducts.push(savedProduct);
   rebuildAllProducts();
-  renderCustomProduct(newProduct, allProducts.length - 1);
+  renderCustomProduct(savedProduct, allProducts.length - 1);
   applyFilters();
   ['f-name','f-brand','f-price','f-img','f-desc'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-img-file').value = '';
@@ -1945,7 +2274,6 @@ function saveModalEditLegacy() {
 
   if (priceVal) {
     customPrices[currentModalIdx] = priceVal;
-    localStorage.setItem('lf_prices', JSON.stringify(customPrices));
     document.getElementById('modalPrice').textContent = priceVal;
     if (allProducts[currentModalIdx]) allProducts[currentModalIdx].price = priceVal;
     const priceEl = document.querySelector(`.price-text[data-pid="${currentModalIdx}"]`);
@@ -1967,7 +2295,6 @@ function saveModalEditLegacy() {
     if (localIdx >= 0 && localProducts[localIdx]) {
       localProducts[localIdx].img = newImg;
       allProducts[currentModalIdx].img = newImg;
-      localStorage.setItem('lf_products', JSON.stringify(localProducts));
     }
     changed = true;
   }
@@ -1980,7 +2307,7 @@ function saveModalEditLegacy() {
 }
 
 // ── GOOGLE DRIVE URL CONVERSION ──
-function saveModalEdit() {
+async function saveModalEdit() {
   if (currentModalIdx < 0) return;
   const p = allProducts[currentModalIdx];
   if (!p) return;
@@ -2008,7 +2335,6 @@ function saveModalEdit() {
   if (p.price !== priceVal) {
     p.price = priceVal;
     customPrices[currentModalIdx] = priceVal;
-    localStorage.setItem('lf_prices', JSON.stringify(customPrices));
     changed = true;
   }
   if ((p.desc || '') !== descVal) { p.desc = descVal; changed = true; }
@@ -2026,7 +2352,15 @@ function saveModalEdit() {
   updateWhatsAppLink(p, p.price);
   updateProductCard(currentModalIdx);
 
-  if (changed) saveProductData(currentModalIdx);
+  if (changed) {
+    try {
+      await saveProductData(currentModalIdx);
+    } catch (error) {
+      console.error(error);
+      showToast('No se pudo guardar en MongoDB.');
+      return;
+    }
+  }
   applyFilters();
   document.getElementById('modalRestoreBtn').style.display = (p.hidden || p.deleted) ? 'block' : 'none';
   _modalTempImg = null;
@@ -2035,7 +2369,7 @@ function saveModalEdit() {
   showToast(changed ? '¡Cambios guardados!' : 'No hay cambios para guardar.');
 }
 
-function deleteCurrentProduct() {
+async function deleteCurrentProduct() {
   if (currentModalIdx < 0) return;
   const p = allProducts[currentModalIdx];
   if (!p) return;
@@ -2043,21 +2377,33 @@ function deleteCurrentProduct() {
 
   p.deleted = true;
   p.hidden = true;
-  saveProductData(currentModalIdx);
+  try {
+    await saveProductData(currentModalIdx);
+  } catch (error) {
+    console.error(error);
+    showToast('No se pudo guardar en MongoDB.');
+    return;
+  }
   updateProductCard(currentModalIdx);
   applyFilters();
   closeModalDirect();
   showToast('Producto eliminado del catálogo.');
 }
 
-function restoreCurrentProduct() {
+async function restoreCurrentProduct() {
   if (currentModalIdx < 0) return;
   const p = allProducts[currentModalIdx];
   if (!p) return;
 
   p.deleted = false;
   p.hidden = false;
-  saveProductData(currentModalIdx);
+  try {
+    await saveProductData(currentModalIdx);
+  } catch (error) {
+    console.error(error);
+    showToast('No se pudo guardar en MongoDB.');
+    return;
+  }
   document.getElementById('modalEditVisible').checked = true;
   document.getElementById('modalRestoreBtn').style.display = 'none';
   updateProductCard(currentModalIdx);
@@ -2140,10 +2486,19 @@ function showToast(msg) {
 }
 
 // ── INIT ──
-localProducts.forEach((p, i) => renderCustomProduct(p, products.length + i));
-applySavedPrices();
-allProducts.forEach((_, idx) => updateProductCard(idx));
-applyFilters();
+async function initCatalog() {
+  await loadMongoProducts();
+  localProducts.forEach((p, i) => renderCustomProduct(p, products.length + i));
+  applySavedPrices();
+  allProducts.forEach((_, idx) => updateProductCard(idx));
+  applyFilters();
+  if (new URLSearchParams(window.location.search).get('admin') === '1') {
+    if (adminToken) enterAdmin();
+    else window.location.href = 'editar.html';
+  }
+}
+
+initCatalog();
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { closeModalDirect(); closeAddModalDirect(); }
