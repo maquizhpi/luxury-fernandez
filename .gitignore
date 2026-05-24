@@ -3,6 +3,7 @@ Thumbs.db
 desktop.ini
 *.log
 .env
+.env.*
 node_modules/
 .mongodb-data/
 .mongodb.log
