@@ -216,6 +216,20 @@ app.put('/api/catalogos/:id', requireAdmin, async (req, res) => {
   }
 });
 
+app.delete('/api/catalogos/:id', requireAdmin, async (req, res) => {
+  try {
+    if (!ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ error: 'ID invalido.' });
+    }
+    const collection = await getCollection();
+    const result = await collection.deleteOne({ _id: new ObjectId(req.params.id) });
+    if (result.deletedCount === 0) return res.status(404).json({ error: 'Producto no encontrado.' });
+    res.json({ ok: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get('*', (_req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
