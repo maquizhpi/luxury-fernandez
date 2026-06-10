@@ -57,7 +57,16 @@ export async function validateAdminCredentials(username, password) {
     console.warn(error);
   }
 
-  if (normalized === adminUser && password === adminPassword) {
+  // Timing-safe comparison to prevent timing oracle attacks on the env fallback
+  const userMatch = crypto.timingSafeEqual(
+    Buffer.from(normalized.padEnd(64)),
+    Buffer.from(adminUser.padEnd(64))
+  );
+  const passMatch = crypto.timingSafeEqual(
+    Buffer.from(String(password || '').padEnd(128)),
+    Buffer.from(adminPassword.padEnd(128))
+  );
+  if (userMatch && passMatch) {
     return { username: adminUser, role: 'admin' };
   }
 

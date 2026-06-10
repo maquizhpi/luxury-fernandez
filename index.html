@@ -69,6 +69,26 @@
     margin-top: 16px;
     font-weight: 400;
   }
+  .intro-message {
+    max-width: 620px;
+    margin: 18px auto 0;
+    color: #d8d0c5;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(23px, 4vw, 36px);
+    line-height: 1.15;
+    font-weight: 400;
+  }
+  .promo-banner {
+    max-width: 620px;
+    margin: 18px auto 0;
+    border: 1px solid rgba(201,168,76,0.36);
+    background: rgba(201,168,76,0.10);
+    color: var(--gold-light);
+    padding: 12px 18px;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
   .gold-divider {
     display: flex; align-items: center; justify-content: center;
     gap: 16px; margin: 22px auto 28px; width: 220px;
@@ -167,10 +187,33 @@
   .catalog-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2px;
+    gap: 12px 2px;
     padding: 0 2px 4px;
     max-width: 1400px;
     margin: 0 auto;
+  }
+  .category-heading {
+    grid-column: 1 / -1;
+    padding: 34px 18px 12px;
+    border-top: 1px solid rgba(201,168,76,0.14);
+  }
+  .category-heading.hidden { display: none; }
+  .category-heading:first-child {
+    border-top: 0;
+    padding-top: 8px;
+  }
+  .category-kicker {
+    color: var(--gold);
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .category-title {
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 400;
   }
 
   /* ── CARD ── */
@@ -187,12 +230,13 @@
 
   .card-img {
     width: 100%; height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     transition: transform 0.7s ease, filter 0.4s ease;
     display: block;
+    background: #f7f3ec;
   }
   .product-card:hover .card-img {
-    transform: scale(1.07);
+    transform: none;
     filter: brightness(0.68);
   }
   .card-overlay {
@@ -300,10 +344,10 @@
     transition: transform 0.35s ease;
   }
   .modal-overlay.open .modal { transform: translateY(0) scale(1); }
-  .modal-img-wrap { position: relative; overflow: hidden; }
+  .modal-img-wrap { position: relative; overflow: hidden; background: #f7f3ec; }
   .modal-img {
     width: 100%; height: 100%;
-    object-fit: cover; min-height: 420px;
+    object-fit: contain; min-height: 420px;
     display: block;
   }
   .modal-body {
@@ -850,6 +894,20 @@
     text-transform: none;
   }
 
+  .intro-message {
+    color: var(--black);
+    font-size: clamp(24px, 4vw, 38px);
+  }
+
+  .promo-banner {
+    background: #fff;
+    border-color: rgba(17,17,17,0.10);
+    border-radius: 999px;
+    color: var(--black);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
   .search-wrap { margin-top: 24px; }
 
   .search-input {
@@ -886,6 +944,23 @@
     padding: 0 14px 18px;
   }
 
+  .category-heading {
+    border-top: 1px solid rgba(17,17,17,0.08);
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .category-kicker {
+    color: var(--warm-gray);
+    letter-spacing: 0;
+    text-transform: none;
+    font-size: 13px;
+  }
+
+  .category-title {
+    color: var(--black);
+  }
+
   .product-card {
     background: #fff;
     border-radius: 8px;
@@ -897,7 +972,7 @@
 
   .product-card:hover .card-img {
     filter: none;
-    transform: scale(1.03);
+    transform: none;
   }
 
   .card-overlay {
@@ -1017,6 +1092,8 @@
   <div class="brand-line">✦ Colección Exclusiva ✦</div>
   <h1 class="brand-name">Luxury <span>Fernández</span></h1>
   <p class="brand-tagline">Carteras · Joyas · Moda · Accesorios</p>
+  <p class="intro-message">Luxury es elegancia en tus manos en sus distintas categorías, revísanos.</p>
+  <div class="promo-banner">Día del Padre: 10% de descuento en billeteras</div>
   <div class="gold-divider"><div class="gold-divider-diamond"></div></div>
   <div class="search-wrap">
     <input type="text" id="searchInput" class="search-input" placeholder="Buscar productos, marcas…" oninput="doSearch(this.value)">
@@ -1822,6 +1899,24 @@ const TAG_LABELS = {
   vendido: 'Vendido'
 };
 
+const CATEGORY_META = [
+  { key: 'cartera', title: 'Carteras y billeteras', kicker: 'Categoría' },
+  { key: 'joya', title: 'Joyas', kicker: 'Categoría' },
+  { key: 'gorra', title: 'Gorras', kicker: 'Categoría' },
+  { key: 'accesorio', title: 'Accesorios', kicker: 'Categoría' },
+  { key: 'ropa', title: 'Ropa', kicker: 'Categoría' },
+  { key: 'infantil', title: 'Infantil', kicker: 'Categoría' },
+  { key: 'figura', title: 'Figuras coleccionables', kicker: 'Categoría' }
+];
+
+function getCategoryMeta(cat) {
+  return CATEGORY_META.find(item => item.key === cat) || {
+    key: cat,
+    title: cat ? cat.charAt(0).toUpperCase() + cat.slice(1) : 'Otros',
+    kicker: 'Categoría'
+  };
+}
+
 function getProductFilterCat(cat) {
   const normalized = (cat || '').toString().toLowerCase();
   if (normalized.includes('cartera')) return 'cartera';
@@ -1972,6 +2067,32 @@ function updateProductCard(idx) {
   }
 }
 
+function syncCategorySections() {
+  const grid = document.getElementById('catalog');
+  const noRes = document.getElementById('noResults');
+  if (!grid || !noRes) return;
+
+  grid.querySelectorAll('.category-heading').forEach(heading => heading.remove());
+  const cards = Array.from(grid.querySelectorAll('.product-card[data-idx]'))
+    .sort((a, b) => Number(a.dataset.idx) - Number(b.dataset.idx));
+  const orderedKeys = [...CATEGORY_META.map(item => item.key)];
+  const extraKeys = [...new Set(cards.map(card => card.dataset.cat).filter(cat => !orderedKeys.includes(cat)))];
+
+  [...orderedKeys, ...extraKeys].forEach(cat => {
+    const groupCards = cards.filter(card => card.dataset.cat === cat);
+    if (!groupCards.length) return;
+    const meta = getCategoryMeta(cat);
+    const heading = document.createElement('div');
+    heading.className = 'category-heading';
+    heading.dataset.cat = cat;
+    heading.innerHTML = `
+      <div class="category-kicker">${meta.kicker}</div>
+      <h2 class="category-title">${meta.title}</h2>`;
+    grid.insertBefore(heading, noRes);
+    groupCards.forEach(card => grid.insertBefore(card, noRes));
+  });
+}
+
 async function saveProductData(idx) {
   const product = allProducts[idx];
   if (!product) return null;
@@ -2091,6 +2212,7 @@ function doSearch(val) {
 }
 function applyFilters() {
   const cards = document.querySelectorAll('.product-card[data-cat]');
+  const visibleByCat = {};
   let visible = 0;
   cards.forEach(card => {
     const cat = card.dataset.cat;
@@ -2108,7 +2230,13 @@ function applyFilters() {
       p.brand.toLowerCase().includes(currentSearch) ||
       p.cat.toLowerCase().includes(currentSearch);
     card.classList.toggle('hidden', !(matchCat && matchSearch));
-    if (matchCat && matchSearch) visible++;
+    if (matchCat && matchSearch) {
+      visible++;
+      visibleByCat[cat] = (visibleByCat[cat] || 0) + 1;
+    }
+  });
+  document.querySelectorAll('.category-heading').forEach(heading => {
+    heading.classList.toggle('hidden', !visibleByCat[heading.dataset.cat]);
   });
   document.getElementById('noResults').classList.toggle('visible', visible === 0);
   const c = document.getElementById('resultCount');
@@ -2226,6 +2354,7 @@ async function saveProduct() {
   localProducts.push(savedProduct);
   rebuildAllProducts();
   renderCustomProduct(savedProduct, allProducts.length - 1);
+  syncCategorySections();
   applyFilters();
   ['f-name','f-brand','f-price','f-img','f-desc'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-img-file').value = '';
@@ -2353,6 +2482,7 @@ async function saveModalEdit() {
   document.getElementById('modalPrice').textContent = p.price;
   updateWhatsAppLink(p, p.price);
   updateProductCard(currentModalIdx);
+  syncCategorySections();
 
   if (changed) {
     try {
@@ -2493,6 +2623,7 @@ async function initCatalog() {
   localProducts.forEach((p, i) => renderCustomProduct(p, products.length + i));
   applySavedPrices();
   allProducts.forEach((_, idx) => updateProductCard(idx));
+  syncCategorySections();
   applyFilters();
   if (new URLSearchParams(window.location.search).get('admin') === '1') {
     if (adminToken) enterAdmin();

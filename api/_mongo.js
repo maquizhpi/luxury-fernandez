@@ -40,16 +40,30 @@ export async function getUsersCollection() {
   return collection;
 }
 
+function sanitizeText(value, maxLen = 500) {
+  return String(value || '').replace(/<[^>]*>/g, '').trim().slice(0, maxLen);
+}
+
+function sanitizeImageUrl(value) {
+  const str = String(value || '').trim().slice(0, 1000);
+  const lower = str.toLowerCase().replace(/\s/g, '');
+  if (lower.startsWith('javascript:') || lower.startsWith('data:') || lower.startsWith('vbscript:')) {
+    return '';
+  }
+  return str;
+}
+
 export function normalizeProduct(body = {}) {
   const now = new Date();
+  const rawPrice = sanitizeText(body.price, 50);
   const product = {
-    img: String(body.img || '').trim(),
-    brand: String(body.brand || '').trim(),
-    name: String(body.name || '').trim(),
-    cat: String(body.cat || '').trim(),
-    price: String(body.price || 'Consultar precio').trim() || 'Consultar precio',
-    desc: String(body.desc || '').trim(),
-    tag: String(body.tag || '').trim(),
+    img: sanitizeImageUrl(body.img),
+    brand: sanitizeText(body.brand, 100),
+    name: sanitizeText(body.name, 200),
+    cat: sanitizeText(body.cat, 100),
+    price: rawPrice || 'Consultar precio',
+    desc: sanitizeText(body.desc, 2000),
+    tag: sanitizeText(body.tag, 100),
     hidden: Boolean(body.hidden),
     deleted: Boolean(body.deleted),
     updatedAt: now
@@ -75,8 +89,8 @@ export function parseBody(req) {
 
 export function sendJson(res, status, body) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
   return res.status(status).json(body);
 }
 
