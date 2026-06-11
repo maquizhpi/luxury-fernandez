@@ -2151,6 +2151,11 @@ function applySavedPrices() {
 
 // ── MODAL ──
 function openModal(idx) {
+  // On mobile, navigate to dedicated product page
+  if (window.innerWidth <= 768) {
+    window.location.href = `producto.html?idx=${idx}`;
+    return;
+  }
   currentModalIdx = idx;
   const p = allProducts[idx];
   if (!p) return;

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detalle — Luxury Fernández</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #9b7a2d;
+    --gold-light: #d8c690;
+    --black: #111111;
+    --cream: #f7f3ec;
+    --warm-gray: #77716a;
+    --dark-bg: #f7f3ec;
+    --card-bg: #ece6dc;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    color: var(--black);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    min-height: 100svh;
+  }
+
+  /* ── TOP BAR ── */
+  .top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: var(--cream);
+    border-bottom: 1px solid rgba(17,17,17,0.08);
+  }
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--black);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 6px 0;
+  }
+  .back-btn svg { width: 18px; height: 18px; }
+  .top-bar-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-style: italic;
+    color: var(--black);
+    letter-spacing: 1px;
+  }
+  .top-bar-spacer { width: 60px; }
+
+  /* ── PRODUCT IMAGE ── */
+  .product-image-wrap {
+    width: 100%;
+    background: #ece8e1;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    position: relative;
+  }
+  .product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .product-tag {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+  }
+  .tag-exclusivo { background: var(--gold); color: #fff; }
+  .tag-destacado { background: #111; color: #fff; }
+  .tag-nuevo { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
+  .tag-oferta { background: #e74c3c; color: #fff; }
+  .tag-promocion { background: #25D366; color: #07140b; }
+  .tag-vendido { background: #5f6b7a; color: #fff; }
+  .tag-reservado { background: #8e44ad; color: #fff; }
+
+  /* ── CONTENT ── */
+  .product-content {
+    padding: 28px 20px 120px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .product-category {
+    font-size: 9px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .product-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--black);
+    line-height: 1.15;
+    margin-bottom: 6px;
+  }
+  .product-brand {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--warm-gray);
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .product-divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    margin-bottom: 22px;
+  }
+  .product-desc {
+    font-size: 14px;
+    line-height: 1.85;
+    color: #4a4540;
+    margin-bottom: 28px;
+  }
+  .product-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 34px;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 28px;
+    letter-spacing: -0.5px;
+  }
+
+  /* ── WHATSAPP BUTTON ── */
+  .whatsapp-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: #25D366;
+    color: #fff;
+    padding: 17px 22px;
+    text-decoration: none;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-bottom: 20px;
+    border-radius: 2px;
+  }
+  .whatsapp-btn:hover { background: #1aab52; }
+  .whatsapp-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+  /* ── SHARE ── */
+  .share-section {
+    padding-top: 20px;
+    border-top: 1px solid rgba(17,17,17,0.1);
+  }
+  .share-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 14px;
+    display: block;
+  }
+  .share-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .share-btn {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .share-btn:hover { transform: scale(1.1); }
+  .share-btn svg { width: 19px; height: 19px; }
+  .share-fb { background: #1877F2; color: #fff; }
+  .share-wa { background: #25D366; color: #fff; }
+  .share-ig { background: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); color: #fff; }
+  .share-copy { background: rgba(155,122,45,0.15); color: var(--gold); border: 1px solid rgba(155,122,45,0.3) !important; }
+
+  /* ── STICKY BOTTOM ── */
+  .sticky-bottom {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 200;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    background: var(--cream);
+    border-top: 1px solid rgba(17,17,17,0.1);
+    backdrop-filter: blur(12px);
+  }
+  .sticky-bottom .whatsapp-btn { margin-bottom: 0; }
+
+  /* ── LOADING ── */
+  .loading-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60svh;
+    gap: 16px;
+  }
+  .loading-dot {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+  .loading-text {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+  }
+
+  /* ── NOT FOUND ── */
+  .not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60svh;
+    gap: 14px;
+    padding: 40px 20px;
+    text-align: center;
+  }
+  .not-found h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    color: var(--warm-gray);
+    font-style: italic;
+  }
+  .not-found a {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 2px;
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #111;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 9999;
+  }
+  .toast.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── FADE IN ── */
+  .product-detail { animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ TOP BAR ══ -->
+<div class="top-bar">
+  <a href="index.html" class="back-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 12H5M12 5l-7 7 7 7"/>
+    </svg>
+    Catálogo
+  </a>
+  <span class="top-bar-brand">Luxury Fernández</span>
+  <div class="top-bar-spacer"></div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<main id="main">
+  <div class="loading-wrap" id="loading">
+    <div class="loading-dot"></div>
+    <div class="loading-text">Cargando</div>
+  </div>
+</main>
+
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast"></div>
+
+<script>
+const WA = '593998894744';
+const SITE_URL = 'https://luxury-fernandez.shop';
+const API_BASE = window.location.origin;
+
+const products = [
+  /* 0 */ { img:'imagenes/84bff691-0d81-43a1-984f-bddb26ffd087.JPG', brand:'Bimba y Lola', name:'Crossbody Blanca Cadena', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Elegante bolso crossbody en color blanco roto con cadena plateada y correa ajustable con logo. Cierre de botón giratorio. Ideal para el día a día con estilo y distinción.' },
+  /* 1 */ { img:'imagenes/5ad0fb87-9c0f-4f00-a822-e790bf98da00.JPG', brand:'Bimba y Lola', name:'Canvas Tote Bag', cat:'Cartera', price:'Consultar precio', tag:'destacado', desc:'Icónico tote bag en lona beige con lettering gráfico oversized "Bimbaya Lola · From Spain to the World". Asas de cuero negro y coordenadas de origen. Incluye tarjeta original.' },
+  /* 2 */ { img:'imagenes/abf039e6-b966-4966-a8b4-52f9f404c382.JPG', brand:'Coach', name:'Field Tote Negro + Billetera', cat:'Cartera', price:'Consultar precio', tag:'destacado', desc:'Set exclusivo: Tote bag en cuero granulado negro con logo Coach Leatherware bordado, incluye billetera a juego. Correa ajustable con detalle de rayas doradas. Herrajes envejecidos.' },
+  /* 3 */ { img:'imagenes/980e15c9-b3d5-407c-9e2a-555bfe4eabdc.JPG', brand:'Coach', name:'Barrel Bag Negra', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Bolso barrel en cuero liso negro con herrajes dorados y logo Coach. Bolsillo frontal con cremallera doble. Incluye etiqueta y tarjeta de autenticidad Coach New York. Est. 1941.' },
+  /* 4 */ { img:'imagenes/8dd31132-b973-4438-ba8c-8d358f820638.JPG', brand:'Tommy Hilfiger', name:'Crossbody Monograma', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Camera bag con monograma TH en negro y franja signature en rojo, blanco y azul. Herrajes dorados con logo. Correa de cuero ajustable y removible. Diseño urbano y sofisticado.' },
+  /* 5 */ { img:'imagenes/848647df-ae7f-44eb-89aa-bb4cd93822be.JPG', brand:'Tommy Jeans', name:'Tote Bag Negro', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Bolso tote en nylon negro con franjas multicolor y logo TH dorado. Capacidad amplia ideal para el día a día. Correa de cuero ajustable. Incluye etiqueta original Tommy Jeans.' },
+  /* 6 */ { img:'imagenes/f744875a-2345-40bb-b456-3ab1b583aa16.JPG', brand:'Tommy Hilfiger', name:'Mochila Negra', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Mochila en nylon negro con logo Tommy Hilfiger Est. 1985 bordado. Bolsillo frontal con cremallera. Múltiples compartimentos. Diseño clásico y deportivo para uso diario.' },
+  /* 7 */ { img:'imagenes/ec63442e-e64a-4dfd-b039-3f0cbde3008c.JPG', brand:'Tommy Hilfiger', name:'Bowling Bag Roja', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Bolso bowling en cuero rojo intenso con rayas signature de la marca y monograma TH dorado. Asas superiores y correa de hombro removible. Herrajes dorados. Diseño icónico.' },
+  /* 8 */ { img:'imagenes/3f2a961e-4196-495c-881f-4deb87450ed2.JPG', brand:'Chloé', name:'Hobo Bag Negra', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Bolso hobo en cuero negro con asa de lona con logo Chloé estampado. Cierre de cremallera. Fendi FF belt incluido en outfit. Elegante y funcional para cualquier ocasión sofisticada.' },
+  /* 9 */ { img:'imagenes/a353f3a0-2acc-4ba0-ac51-bebe4400e1c8.JPG', brand:'TOUS', name:'Bolso Acolchado Fucsia', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Bolso acolchado en fucsia vibrante con flap de cuero y logo TOUS en relieve. Múltiples compartimentos interiores. Asa de tela trenzada. Estilo · Comodidad · Actitud.' },
+  /* 10 */ { img:'imagenes/f4be6449-82ac-4540-8138-4ac88e50f05b.JPG', brand:'TOUS', name:'Canvas Tote Crema', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Icónico tote bag en canvas crema con logo TOUS circular en negro. Asas de cuero negro y forro interior con bolsillo. Capacidad amplia. Incluye tarjeta original TOUS.' },
+  /* 11 */ { img:'imagenes/4a7f4fc1-2846-483c-8876-c23a72377bbf.JPG', brand:'TOUS', name:'Carterita Celular Crema', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Mini bolso porta-celular TOUS en crema con logo en relieve. Espacio para celular, tarjetas y billetes. Cierre de cremallera suave. Correa ajustable unisex. Ideal para regalar.' },
+  /* 12 */ { img:'imagenes/a2576dc4-9a3a-401f-83b7-bfb465c6b5be.JPG', brand:'John Charis', name:'Bolso Monograma Marrón', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Elegante bolso en cuero marrón con monograma John Charis en relieve. Cierres dorados de alta calidad. Diseño atemporal con asa superior y correa de hombro ajustable.' },
+  /* 13 */ { img:'imagenes/108785d4-bd3f-48f1-a240-5aa383853c59.JPG', brand:'Monogram Style', name:'Hobo Bag Marrón', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Bolso hobo en cuero marrón con monograma floral repetido. Correa ajustable de cuero. Fular decorativo incluido. Amplio espacio interior. Estilo elegante y casual a la vez.' },
+  /* 14 */ { img:'imagenes/2e6a54a6-4c5b-4592-b36d-c28c506843fa.JPG', brand:'Alo Yoga', name:'Riñonera Crossbody Gris', cat:'Cartera', price:'$20', tag:'nuevo', desc:'Riñonera funcional en nylon gris oscuro con múltiples bolsillos y correa ajustable con broche de seguridad. Logo Alo parche. Ideal para el deporte o el día a día casual.' },
+  /* 15 */ { img:'imagenes/f8715cd6-2cd3-4ee3-9047-923fde35b5c9.JPG', brand:'Christian Dior', name:'Book Tote Oblique Camel', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Icónico tote bag en cuero camel con monograma Oblique en relieve tonal. "Christian Dior Paris" estampado. Capacidad amplia con asas de cuero. Incluye tarjeta original. Pieza de lujo.' },
+  /* 16 */ { img:'imagenes/56eaca01-c95a-4841-9f09-e0808b6e5f71.JPG', brand:'Gucci', name:'Ophidia Boston GG', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Mini bolso bowling en lona GG Supreme beige-ébano con franja web rojo/verde. Doble G en metal envejecido. Incluye tarjeta de autenticidad Gucci. Pieza icónica de la maison italiana.' },
+  /* 17 */ { img:'imagenes/922d9290-4857-4d42-9736-fcea599a5eaf.JPG', brand:'Michael Kors', name:'Jet Set Charm Negra', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Bolso de cuero genuino negro con logo MK dorado. Incluye etiquetas originales y caja. Jet Set Charm Collection. Diseño sofisticado y funcional para cualquier ocasión.' },
+  /* 18 */ { img:'imagenes/2e5853d9-0fca-4bc9-95ec-776d7888c318.JPG', brand:'Guess', name:'Quilted Flap Rosa', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Bolso de solapa acolchado en rosa blush con cadenas y herrajes dorados. Logo Guess Est. 1981 al frente. Correa de hombro ajustable. Diseño elegante y muy femenino.' },
+  /* 19 */ { img:'imagenes/c8516528-d154-45dd-bc8c-8ee3507727af.JPG', brand:'Carolina Herrera', name:'Billetera Monograma CH', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Billetera compacta con monograma CH en crema y negro. Cierre tipo broche en charol negro con logo dorado. Múltiples compartimentos. Incluye caja roja y tarjeta de autenticidad.' },
+  /* 20 */ { img:'imagenes/7ff5367f-355b-4730-8d78-49aa356a50f9.JPG', brand:'Carolina Herrera', name:'Billetera Monograma Marrón', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Billetera en cuero marrón con monograma CH clásico. Múltiples compartimentos para tarjetas y billete. Herrajes dorados con iniciales CH. Incluye caja CH original.' },
+  /* 21 */ { img:'imagenes/1274086b-d3c1-4edc-8e85-65af047350c0.JPG', brand:'TOUS', name:'Anillo Dorado TOUS', cat:'Joya', price:'Consultar precio', tag:'nuevo', desc:'Anillo en baño de oro 18k con el icónico osito TOUS. Diseño acanalado que aporta elegancia y modernidad. Hipoalergénico, sin níquel. Resistente y duradero. Ideal para regalar.' },
+  /* 22 */ { img:'imagenes/40c542df-7092-43a2-8599-93ecc0cf388d.JPG', brand:'Pandora', name:'Pulsera Rose Gold Brillantes', cat:'Joya', price:'Consultar precio', tag:'nuevo', desc:'Pulsera de cadena snake en plata con detalles en rose gold. Cierre circular con pavé de brillantes. Estilo romántico y sofisticado. Perfecta para lucir sola o apilar.' },
+  /* 23 */ { img:'imagenes/35d1f86c-430b-4448-9271-e62760b64e72.JPG', brand:'Pandora', name:'Pulsera Corazón Rose Gold', cat:'Joya', price:'Consultar precio', tag:'nuevo', desc:'Pulsera de cadena snake en plata con cierre corazón en rose gold con cristales pavé. Diseño delicado y romántico. Muy versátil para uso diario. Perfecta como regalo especial.' },
+  /* 24 */ { img:'imagenes/e881a8da-7111-46d5-889e-6e7ce83db6c1.JPG', brand:'Plata 925', name:'Pulsera Plata Brillo Redondo', cat:'Joya', price:'Consultar precio', tag:'nuevo', desc:'Pulsera snake de plata de ley 925 con cierre circular de zircones brillantes. Acabado premium de alta calidad. Material hipoalergénico y muy duradero. Ideal para regalar.' },
+  /* 25 */ { img:'imagenes/fe109d6f-d0ba-4ac1-a506-d901f8ee8237.JPG', brand:'Plata 925', name:'Pulsera Plata Corazón', cat:'Joya', price:'Consultar precio', tag:'nuevo', desc:'Pulsera snake de plata 925 con cierre en forma de corazón con pavé de cristales. Diseño romántico y atemporal. Certificado de plata de ley. Ideal como regalo del día del amor.' },
+  /* 26 */ { img:'imagenes/8806423e-4621-413d-8036-25464ac0e384.JPG', brand:'Plata 925', name:'Pulsera Plata Cierre Cuadrado', cat:'Joya', price:'Consultar precio', tag:'nuevo', desc:'Pulsera snake de plata de ley 925 con cierre cuadrado rose gold y flor de cristales. Diseño minimalista y elegante. Ideal para usar sola o combinar con otras pulseras.' },
+  /* 27 */ { img:'imagenes/04df4318-3abd-499c-af05-e5745c30e2cd.JPG', brand:'Prada', name:'Gorra Negra Prada', cat:'Gorra', price:'Consultar precio', tag:'nuevo', desc:'Gorra de béisbol negra con logo Prada bordado en blanco. Visera con borde blanco contrastante. Incluye etiqueta original. Calidad premium con acabados detallados. Colección Milano.' },
+  /* 28 */ { img:'imagenes/c575d4a2-d59c-4beb-8f55-4b5f99757d34.JPG', brand:'Christian Dior', name:'Gorra Dior Park', cat:'Gorra', price:'Consultar precio', tag:'nuevo', desc:'Gorra negra Dior Park con lettering gráfico en gris y visera con monograma Dior oblique. Calidad premium con acabados exclusivos. Incluye etiqueta original Christian Dior.' },
+  /* 29 */ { img:'imagenes/633ee04a-d5bf-4e44-994c-92ddf3f6cbde.JPG', brand:'Fendi', name:'Cinturón Monograma FF', cat:'Accesorio', price:'Consultar precio', tag:'nuevo', desc:'Cinturón reversible en cuero con icónico monograma FF. Hebilla dorada con detalle Fendi Roma. Presentación en caja amarilla exclusiva. Materiales de lujo de primera calidad.' },
+  /* 30 */ { img:'imagenes/ee33fb9c-4935-4807-b72f-8b734ad43e35.JPG', brand:'Céline Style', name:'Chalé Reversible Bicolor', cat:'Accesorio', price:'Consultar precio', tag:'nuevo', desc:'Elegante chalé reversible con monograma en negro y gris. Dos estilos en una sola pieza. Material suave y cálido, ligero y confortable. Detalle de flecos y acabados premium.' },
+  /* 31 */ { img:'imagenes/d633efb5-e5f5-4d18-95b9-ee218716af64.JPG', brand:'Premium', name:'Joyero Rosa Viajero', cat:'Accesorio', price:'Consultar precio', tag:'nuevo', desc:'Joyero compacto en cuero rosa con textura tipo escamas. Interior de terciopelo crema con espejo, compartimentos para anillos y aretes. Broche metálico seguro. Ideal de regalo.' },
+  /* 32 */ { img:'imagenes/ef95af13-6b8d-472d-bb5d-ff4d4fb8ecdb.JPG', brand:'Cleovive', name:'Buzo Geométrico Rosa', cat:'Ropa Mujer', price:'Consultar precio', tag:'nuevo', desc:'Buzo premium de mujer con estampado geométrico en tonos rosa y crema. Tela gruesa suave al tacto, cálida y confortable. Talla M. Diseño moderno para climas fríos.' },
+  /* 33 */ { img:'imagenes/900a3c93-b83c-4d59-993e-b70041a91a87.JPG', brand:'Moda Mujer', name:'Saco Abierto Gris', cat:'Ropa Mujer', price:'Consultar precio', tag:'nuevo', desc:'Saco abierto con cuello doblado en V. Tela delgada acanalada, ligera y transpirable. Talla M. Ligero y cómodo, ideal para cualquier ocasión. Combina con todo tu closet.' },
+  /* 34 */ { img:'imagenes/47967802-28e6-4eab-9b2f-228da053b7fa.JPG', brand:'Moda Mujer', name:'Capucha Cierre Crema', cat:'Ropa Mujer', price:'Consultar precio', tag:'nuevo', desc:'Capucha con cierre frontal en crema y broches desprendibles que crean efecto capa. Tela suave, ligera y transpirable. Tallas M-L. Perfecta para uso diario, oficina o viaje.' },
+  /* 35 */ { img:'imagenes/3889c68c-104a-4e89-bded-7a811920a2e1.JPG', brand:'Moda Unisex', name:'Buzo Cuello V Negro', cat:'Ropa Mujer', price:'Consultar precio', tag:'nuevo', desc:'Buzo de tejido acanalado con cuello tipo camisa en V. Negro, unisex. Talla S. Suave, elástico y transpirable. Diseño atemporal que eleva cualquier outfit.' },
+  /* 36 */ { img:'imagenes/93e4b1ea-a4e9-44b1-a2c0-3827ef793c97.JPG', brand:'Moda Mujer', name:'Saco Beige Clásico', cat:'Ropa Mujer', price:'Consultar precio', tag:'nuevo', desc:'Saco de mujer en tejido acanalado beige con botones decorativos dorados. Cuello redondo clásico. Talla M. Ligero y transpirable. Muy versátil para cualquier ocasión.' },
+  /* 37 */ { img:'imagenes/b7227123-f561-4803-87a3-cafb1d2ea5d0.JPG', brand:'Moda Mujer', name:'Buzo Geométrico Verde', cat:'Ropa Mujer', price:'Consultar precio', tag:'nuevo', desc:'Buzo de cuello redondo con estampado geométrico en verde oliva y crema. Tela gruesa premium, suave al tacto. Tallas M-L. Abrigado y elegante para días fríos.' },
+  /* 38 */ { img:'imagenes/ef9cdb35-1d1a-45ca-8043-adf8dd508535.JPG', brand:'Moda Mujer', name:'Conjunto Dormir Gris', cat:'Ropa Mujer', price:'Consultar precio', tag:'nuevo', desc:'Conjunto pijama de mujer en tela ligera y fresca color gris. Corte relajado con cintura elástica. Talla M. Fresco, transpirable y muy cómodo para el descanso.' },
+  /* 39 */ { img:'imagenes/8f9bfc19-949f-4b70-ab17-07f73c0201bd.JPG', brand:'Le Murph', name:'Terno Dormir Mujer Beige', cat:'Ropa Mujer', price:'Consultar precio', tag:'nuevo', desc:'Conjunto de dormir en tela suave y ligera color beige. Cuello redondo y cintura elástica. Talla M. Transpirable, cómodo y delicado. Perfecto para regalar o uso personal.' },
+  /* 40 */ { img:'imagenes/a0170c86-2680-48cd-bfb1-a1860d3ce1cc.JPG', brand:'Bebé', name:'Conjunto Bebé Gatito', cat:'Infantil', price:'Consultar precio', tag:'nuevo', desc:'Conjunto dos piezas para bebé con adorable estampado de gatito en gris y rosa. Tela suave y cálida con diadema a juego. Diseño tierno y práctico para las más pequeñas.' },
+  /* 41 */ { img:'imagenes/c076d5b5-90ac-442c-bf9e-d87c9d2625f2.JPG', brand:'Niña', name:'Conjunto Niña Lila', cat:'Infantil', price:'Consultar precio', tag:'nuevo', desc:'Conjunto tres piezas para niña: camiseta blanca con broche floral, chaleco y pantalón en lila tornasol con brillo. Elegante y cómodo para cualquier ocasión especial.' },
+  /* 42 */ { img:'imagenes/90e0f7c4-aa91-4140-812f-e2419ab6c9f0.JPG', brand:'Niño', name:'Buzo Niño Azul Marino', cat:'Infantil', price:'Consultar precio', tag:'nuevo', desc:'Buzo de manga larga para niño en azul marino. Cuello redondo y puños acanalados. Talla para 11-12 años. Cómodo, abrigado y resistente para uso escolar y tiempo de juego.' },
+  /* 43 */ { img:'imagenes/b199bd6b-0625-4e06-a754-6d3859522946.JPG', brand:'Bebé Premium', name:'Manta Brilla en Oscuridad', cat:'Infantil', price:'Consultar precio', tag:'destacado', desc:'Manta bebé en lila con diseños mágicos que brillan en la oscuridad. Tela afelpada extra suave y cálida. Lavable a máquina. Ideal para dulces sueños y regalo especial.' },
+  /* 44 */ { img:'imagenes/5963ac69-2c3e-4f13-a49e-3073154fc256.JPG', brand:'Al Nassr FC', name:'Figura Ronaldo Al Nassr', cat:'Figura Coleccionable', price:'Consultar precio', tag:'nuevo', desc:'Figura oficial de Cristiano Ronaldo con el uniforme del Al Nassr FC #7. Calidad premium con detalles realistas. Diseño oficial. Coleccionable de alta calidad. Ideal para regalar.' },
+  /* 45 */ { img:'imagenes/b9478990-d14b-4544-aa8f-522861144ec5.JPG', brand:'Inter Miami CF', name:'Figura Messi Inter Miami', cat:'Figura Coleccionable', price:'Consultar precio', tag:'nuevo', desc:'Figura oficial de Lionel Messi con el uniforme rosa del Inter Miami CF #10. Detalles realistas premium. Diseño oficial exclusivo. El regalo perfecto para los fanáticos del deporte.' },
+  /* 46 */ { img:'imagenes/e37b3223-0588-4d7b-a4a2-06b527803ca5.JPG', brand:'Seleção Portugal', name:'Figura Ronaldo Portugal', cat:'Figura Coleccionable', price:'Consultar precio', tag:'exclusivo', desc:'Figura oficial de Cristiano Ronaldo con la camiseta roja y verde de Portugal #7. Detalles del rostro de alta calidad. Coleccionable premium. Rostro realista y detalles de alta calidad.' },
+];
+
+const TAG_LABELS = {
+  nuevo: 'Nuevo', destacado: 'Destacado', exclusivo: 'Exclusivo',
+  oferta: 'Oferta', promocion: 'Promoción', reservado: 'Reservado', vendido: 'Vendido'
+};
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('visible');
+  setTimeout(() => t.classList.remove('visible'), 2800);
+}
+
+function buildWALink(p) {
+  const msg = encodeURIComponent(`Hola! Me interesa: *${p.name}* de ${p.brand}. Precio: ${p.price}. ¿Puedes darme más información? Gracias!`);
+  return `https://wa.me/${WA}?text=${msg}`;
+}
+
+function share(platform, p, idx) {
+  const url = `${SITE_URL}/producto.html?idx=${idx}`;
+  const text = `${p.name} — ${p.brand} | Luxury Fernández`;
+  if (platform === 'facebook') {
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+  } else if (platform === 'whatsapp') {
+    window.open(`https://wa.me/?text=${encodeURIComponent(text + '\n' + url)}`, '_blank');
+  } else if (platform === 'instagram') {
+    navigator.clipboard.writeText(url).then(() => showToast('Enlace copiado — pégalo en Instagram'));
+  } else if (platform === 'copy') {
+    navigator.clipboard.writeText(url).then(() => showToast('Enlace copiado'));
+  }
+}
+
+function renderProduct(p, idx) {
+  const tag = p.tag || '';
+  const tagLabel = TAG_LABELS[tag] || '';
+  const pageTitle = `${p.name} — ${p.brand} | Luxury Fernández`;
+  document.title = pageTitle;
+
+  const tagHTML = tag ? `<div class="product-tag tag-${tag}">${tagLabel}</div>` : '';
+  const waLink = buildWALink(p);
+
+  document.getElementById('main').innerHTML = `
+    <div class="product-detail">
+      <div class="product-image-wrap">
+        <img class="product-image" src="${p.img}" alt="${p.name}">
+        ${tagHTML}
+      </div>
+      <div class="product-content">
+        <div class="product-category">${p.cat}</div>
+        <h1 class="product-name">${p.name}</h1>
+        <div class="product-brand">${p.brand}</div>
+        <div class="product-divider"></div>
+        <p class="product-desc">${p.desc || ''}</p>
+        <div class="product-price">${p.price}</div>
+        <div class="share-section">
+          <span class="share-label">Compartir</span>
+          <div class="share-row">
+            <button class="share-btn share-fb" onclick="share('facebook', products[${idx}], ${idx})" title="Facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </button>
+            <button class="share-btn share-wa" onclick="share('whatsapp', products[${idx}], ${idx})" title="WhatsApp">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            </button>
+            <button class="share-btn share-ig" onclick="share('instagram', products[${idx}], ${idx})" title="Instagram">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            </button>
+            <button class="share-btn share-copy" onclick="share('copy', products[${idx}], ${idx})" title="Copiar enlace">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sticky-bottom">
+      <a class="whatsapp-btn" href="${waLink}" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        Consultar por WhatsApp
+      </a>
+    </div>
+  `;
+}
+
+function showNotFound() {
+  document.getElementById('main').innerHTML = `
+    <div class="not-found">
+      <h2>Producto no encontrado</h2>
+      <a href="index.html">Volver al catálogo</a>
+    </div>
+  `;
+}
+
+async function init() {
+  const params = new URLSearchParams(window.location.search);
+  const idx = parseInt(params.get('idx'));
+
+  if (isNaN(idx) || idx < 0) {
+    showNotFound();
+    return;
+  }
+
+  // Try to load from API to get any edits/overrides
+  try {
+    const res = await fetch(`${API_BASE}/api/catalogos`);
+    if (res.ok) {
+      const mongoProducts = await res.json();
+      mongoProducts.forEach(mp => {
+        if (Number.isInteger(mp.sourceId) && mp.sourceId >= 0 && mp.sourceId < products.length) {
+          Object.assign(products[mp.sourceId], mp);
+        }
+      });
+    }
+  } catch (_) {}
+
+  const p = products[idx];
+  if (!p) {
+    showNotFound();
+    return;
+  }
+
+  renderProduct(p, idx);
+}
+
+init();
+</script>
+</body>
+</html>

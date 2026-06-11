@@ -230,6 +230,10 @@ app.delete('/api/catalogos/:id', requireAdmin, async (req, res) => {
   }
 });
 
+app.get('/producto.html', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'producto.html'));
+});
+
 app.get('*', (_req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
