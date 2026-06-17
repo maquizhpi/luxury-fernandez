@@ -364,8 +364,8 @@ async function api(path, options = {}) {
 
 /* ── VISTAS ── */
 function showView(view) {
-  document.getElementById('catalogView').style.display = view === 'catalog' ? '' : 'none';
-  document.getElementById('editorView').style.display  = view === 'editor'  ? '' : 'none';
+  document.getElementById('catalogView').style.display = view === 'catalog' ? 'block' : 'none';
+  document.getElementById('editorView').style.display  = view === 'editor'  ? 'block' : 'none';
   if (view === 'catalog') showStickyBar(false);
 }
 
