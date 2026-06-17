@@ -57,15 +57,7 @@ export function normalizeProduct(body = {}) {
   const now = new Date();
   const rawPrice = sanitizeText(body.price, 50);
 
-  const rawImages = Array.isArray(body.images) ? body.images : [];
-  const images = rawImages.slice(0, 5).map(u => sanitizeImageUrl(u)).filter(Boolean);
-
-  // img is always the first image for backward compat with catalog cards
-  const primaryImg = sanitizeImageUrl(body.img) || images[0] || '';
-
   const product = {
-    img: primaryImg,
-    images,
     brand: sanitizeText(body.brand, 100),
     name: sanitizeText(body.name, 200),
     cat: sanitizeText(body.cat, 100),
@@ -76,6 +68,14 @@ export function normalizeProduct(body = {}) {
     deleted: Boolean(body.deleted),
     updatedAt: now
   };
+
+  // Only update images when explicitly provided in the request body.
+  // Omitting images from the payload preserves the existing images in MongoDB.
+  if (Array.isArray(body.images)) {
+    const images = body.images.slice(0, 5).map(u => sanitizeImageUrl(u)).filter(Boolean);
+    product.images = images;
+    product.img = sanitizeImageUrl(body.img) || images[0] || '';
+  }
 
   if (Number.isInteger(body.sourceId)) product.sourceId = body.sourceId;
   if (body.isCustom !== undefined) product.isCustom = Boolean(body.isCustom);

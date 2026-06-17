@@ -342,11 +342,12 @@ if (!token) { window.location.href = 'editar.html'; }
 document.getElementById('sessionLabel').textContent = 'Sesión: ' + (localStorage.getItem('lf_admin_user') || 'admin');
 
 /* ── ESTADO ── */
-let allProducts = [];
-let current     = null;
-let isNew       = false;
-let slotData    = ['','','','',''];
-let filterCat   = '';
+let allProducts     = [];
+let current         = null;
+let isNew           = false;
+let slotData        = ['','','','',''];
+let slotDataOriginal = ['','','','',''];
+let filterCat       = '';
 
 const CATS = [
   { key: '',          label: 'Todos' },
@@ -475,6 +476,7 @@ function populateForm(p) {
   const imgs = (p.images && p.images.length) ? p.images : (p.img ? [p.img] : []);
   slotData = ['','','','',''];
   imgs.slice(0,5).forEach((u,i) => { slotData[i] = u || ''; });
+  slotDataOriginal = [...slotData];
   renderSlots();
 
   document.getElementById('fName').value    = p.name    || '';
@@ -586,16 +588,20 @@ async function submitForm(e) {
   setStatus('Guardando...', '');
   document.getElementById('submitBtn').disabled = true;
 
+  // Only include images in the payload if the user uploaded/removed something.
+  // This avoids re-sending large base64 strings that haven't changed,
+  // which would exceed Vercel's 4.5 MB request body limit.
+  const imagesChanged = isNew || slotData.some((d, i) => d !== slotDataOriginal[i]);
+
   const payload = {
     name, brand,
-    cat:    document.getElementById('fCat').value,
-    price:  document.getElementById('fPrice').value.trim() || 'Consultar precio',
-    tag:    document.getElementById('fTag').value,
-    desc:   document.getElementById('fDesc').value.trim(),
-    hidden: !document.getElementById('fVisible').checked,
+    cat:     document.getElementById('fCat').value,
+    price:   document.getElementById('fPrice').value.trim() || 'Consultar precio',
+    tag:     document.getElementById('fTag').value,
+    desc:    document.getElementById('fDesc').value.trim(),
+    hidden:  !document.getElementById('fVisible').checked,
     deleted: document.getElementById('fDeleted').checked,
-    img:    images[0] || (current?.img || ''),
-    images
+    ...(imagesChanged ? { img: images[0] || (current?.img || ''), images } : {})
   };
 
   try {
