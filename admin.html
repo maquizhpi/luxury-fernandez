@@ -23,10 +23,9 @@
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
     padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--white);
     position: sticky; top: 0; z-index: 10;
-    flex-wrap: wrap;
   }
   h1 { margin: 0; font-family: "Cormorant Garamond", serif; font-size: 26px; line-height: 1; }
-  .top-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .top-actions { display: flex; gap: 8px; align-items: center; }
 
   button, a.btn {
     border: 0; border-radius: 999px; background: var(--ink); color: #fff;
@@ -40,54 +39,69 @@
   .success-btn { background: var(--success); }
   .new-btn { background: #2a5298; }
 
-  /* ── LAYOUT ── */
-  main {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    height: calc(100vh - 57px);
-  }
+  /* ── CATALOG VIEW ── */
+  #catalogView { min-height: calc(100dvh - var(--hh, 57px)); }
 
-  /* ── LEFT PANEL ── */
-  aside {
-    background: var(--white);
-    border-right: 1px solid var(--line);
-    display: flex; flex-direction: column;
-    overflow: hidden;
+  .catalog-toolbar {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 12px 20px; border-bottom: 1px solid var(--line);
+    background: var(--white); position: sticky; top: var(--hh, 57px); z-index: 5;
   }
-  .list-header {
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--line);
-  }
-  .list-header input {
-    width: 100%; border: 1px solid var(--line); border-radius: 8px;
+  .catalog-toolbar input {
+    flex: 1; min-width: 160px; max-width: 340px;
+    border: 1px solid var(--line); border-radius: 8px;
     color: var(--ink); font: inherit; font-size: 13px; padding: 9px 12px;
     outline: none; background: #fafaf8;
   }
-  .list-header input:focus { border-color: var(--ink); background: #fff; }
-  .product-list { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-  .product-item {
-    display: grid; grid-template-columns: 50px 1fr; gap: 10px; width: 100%;
-    border: 0; border-bottom: 1px solid var(--line); border-radius: 0;
-    background: transparent; color: var(--ink); padding: 11px 14px;
-    text-align: left; cursor: pointer; transition: background .1s;
+  .catalog-toolbar input:focus { border-color: var(--ink); background: #fff; }
+  #countLabel { color: var(--muted); font-size: 11px; }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+    padding: 20px;
   }
-  .product-item:hover  { background: #f9f6f2; }
-  .product-item.active { background: #f0e9df; }
-  .product-item.is-deleted { opacity: .4; }
-  .product-item.is-hidden  { opacity: .6; }
-  .thumb { width: 50px; height: 58px; object-fit: cover; border-radius: 6px; background: #e8e4de; }
-  .item-info strong { display: block; font-size: 12px; margin-bottom: 3px; line-height: 1.3; }
-  .item-info span   { color: var(--muted); font-size: 11px; }
-  .item-badge {
+
+  .product-card {
+    background: var(--white); border-radius: 10px; border: 1px solid var(--line);
+    overflow: hidden; cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+    display: flex; flex-direction: column;
+  }
+  .product-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+  .product-card.is-deleted { opacity: .4; }
+  .product-card.is-hidden  { opacity: .6; }
+
+  .card-img {
+    width: 100%; aspect-ratio: 3/4; object-fit: cover;
+    background: #e8e4de; display: block;
+  }
+  .card-img-placeholder { width: 100%; aspect-ratio: 3/4; background: #e8e4de; display: flex; align-items: center; justify-content: center; }
+  .card-img-placeholder svg { opacity: .3; }
+  .card-body { padding: 10px 12px 12px; flex: 1; display: flex; flex-direction: column; gap: 3px; }
+  .card-name { font-size: 12px; font-weight: 600; line-height: 1.35; margin: 0; }
+  .card-meta { font-size: 11px; color: var(--muted); margin: 0; }
+  .card-badge {
     display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: .5px;
-    padding: 2px 6px; border-radius: 999px; margin-left: 4px;
+    padding: 2px 6px; border-radius: 999px; margin-top: 4px; align-self: flex-start;
     background: #f5d0ce; color: var(--danger);
   }
-  .item-badge.hidden { background: #e0dcd6; color: var(--muted); }
+  .card-badge.hidden-badge { background: #e0dcd6; color: var(--muted); }
 
-  /* ── RIGHT PANEL ── */
-  section { overflow-y: auto; -webkit-overflow-scrolling: touch; }
-  .editor { max-width: 680px; padding: 24px 28px; }
+  /* ── EDITOR VIEW ── */
+  #editorView { display: none; min-height: calc(100dvh - var(--hh, 57px)); }
+
+  .back-btn {
+    display: flex; align-items: center; gap: 6px; width: 100%;
+    padding: 12px 20px; border: 0; border-radius: 0; border-bottom: 1px solid var(--line);
+    background: var(--white); color: var(--muted); font: inherit; font-size: 13px;
+    text-align: left; cursor: pointer; position: sticky; top: var(--hh, 57px); z-index: 5;
+    transition: color .15s;
+  }
+  .back-btn:hover { color: var(--ink); }
+
+  .editor { max-width: 680px; margin: 0 auto; padding: 28px 28px; }
 
   .editor-title {
     font-family: "Cormorant Garamond", serif;
@@ -104,12 +118,8 @@
 
   /* ── MULTI-IMAGE SLOTS ── */
   .multi-img-section { margin-bottom: 20px; }
-  .multi-img-section > .section-label {
-    color: var(--muted); font-size: 11px; display: block; margin-bottom: 10px;
-  }
-  .img-slots {
-    display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;
-  }
+  .multi-img-section > .section-label { color: var(--muted); font-size: 11px; display: block; margin-bottom: 10px; }
+  .img-slots { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
   .img-slot-wrap { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
   .img-slot {
     position: relative; width: 88px; height: 104px;
@@ -128,12 +138,10 @@
   }
   .img-slot.has-img .slot-placeholder { display: none; }
   .slot-remove {
-    position: absolute; top: 3px; right: 3px;
-    width: 18px; height: 18px;
+    position: absolute; top: 3px; right: 3px; width: 18px; height: 18px;
     background: rgba(180,35,24,0.88); color: #fff;
     border: none; border-radius: 50%; font-size: 13px; cursor: pointer;
-    display: none; align-items: center; justify-content: center;
-    line-height: 1; padding: 0;
+    display: none; align-items: center; justify-content: center; line-height: 1; padding: 0;
   }
   .img-slot.has-img .slot-remove { display: flex; }
   .slot-label { font-size: 9px; color: var(--muted); text-align: center; letter-spacing: 0.3px; }
@@ -159,138 +167,55 @@
   .status-msg.ok  { color: var(--success); font-weight: 600; }
   .status-msg.err { color: var(--danger);  font-weight: 600; }
 
-  .empty-state { padding: 60px 28px; text-align: center; color: var(--muted); }
-  .empty-state p { margin: 0 0 20px; font-size: 14px; }
-
-  .count-bar {
-    padding: 7px 14px; border-bottom: 1px solid var(--line);
-    color: var(--muted); font-size: 11px;
-  }
-
-  /* ── BACK BUTTON (mobile only) ── */
-  .back-btn {
-    display: none; width: 100%; padding: 12px 16px;
-    border: 0; border-radius: 0; border-bottom: 1px solid var(--line);
-    background: #f7f3ec; color: var(--muted); font: inherit; font-size: 13px;
-    text-align: left; cursor: pointer;
-  }
-
   /* ── STICKY SAVE BAR (mobile only) ── */
-  .sticky-save-bar {
-    display: none;
-  }
-
-  /* ── TABLET ── */
-  @media (max-width: 900px) {
-    main { grid-template-columns: 260px 1fr; }
-    .editor { padding: 18px 20px; }
-  }
+  .sticky-save-bar { display: none; }
 
   /* ── MOBILE ── */
   @media (max-width: 650px) {
-    /* Header: stack title on top, buttons below */
     header {
       padding: 10px 14px;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 8px;
+      flex-direction: column; align-items: stretch; gap: 8px;
     }
-    header > div:first-child {
-      display: flex; align-items: center; justify-content: space-between;
-    }
+    header > div:first-child { display: flex; align-items: center; justify-content: space-between; }
     h1 { font-size: 21px; }
     .user-line { display: none; }
 
-    /* Button row: Nuevo stretches, Ver catálogo + Salir stay compact */
-    .top-actions {
-      display: grid;
-      grid-template-columns: 1fr auto auto;
-      gap: 8px;
-    }
-    .top-actions .new-btn {
-      grid-column: 1 / 2;
-      text-align: center;
-      padding: 11px 12px;
-      font-size: 12px;
-    }
-    .top-actions .ghost,
-    .top-actions .danger-btn {
-      padding: 11px 14px;
-      font-size: 12px;
-    }
+    .top-actions { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; }
+    .top-actions .new-btn { grid-column: 1 / 2; text-align: center; padding: 11px 12px; font-size: 12px; }
+    .top-actions .ghost, .top-actions .danger-btn { padding: 11px 14px; font-size: 12px; }
 
-    /* Main layout: single column, use dynamic viewport height */
-    main {
-      grid-template-columns: 1fr;
-      grid-template-rows: auto 1fr;
-      height: calc(100dvh - var(--hh, 93px));
-    }
+    .catalog-toolbar { padding: 10px 12px; top: var(--hh, 93px); }
+    .catalog-toolbar input { font-size: 16px; min-height: 44px; max-width: none; }
 
-    aside {
-      border-right: none;
-      border-bottom: 1px solid var(--line);
-      height: calc(100dvh - var(--hh, 93px));
-    }
-    aside.hidden-mobile { display: none; }
+    .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
+    .card-name { font-size: 11px; }
+    .card-meta { font-size: 10px; }
 
-    section { height: calc(100dvh - var(--hh, 93px)); }
-    section.hidden-mobile { display: none; }
+    .back-btn { top: var(--hh, 93px); padding: 12px 14px; font-size: 13px; }
 
-    .back-btn { display: block; }
-
-    /* Editor form */
-    .editor {
-      padding: 14px 14px calc(80px + env(safe-area-inset-bottom, 0px));
-      max-width: 100%;
-    }
+    .editor { padding: 14px 14px calc(80px + env(safe-area-inset-bottom, 0px)); max-width: 100%; }
     .editor-title { font-size: 18px; margin-bottom: 14px; }
 
-    /* iOS: inputs ≥16px prevent auto-zoom */
-    .field input, .field textarea, .field select,
-    .list-header input {
-      font-size: 16px;
-      min-height: 46px;
-      padding: 12px 14px;
-    }
+    .field input, .field textarea, .field select { font-size: 16px; min-height: 46px; padding: 12px 14px; }
     .field textarea { min-height: 110px; }
-
-    /* Bigger image slots for touch */
     .img-slot { width: 80px; height: 96px; }
-
-    /* Image slot remove button — bigger tap target */
     .slot-remove { width: 22px; height: 22px; font-size: 15px; }
-
     .grid { grid-template-columns: 1fr; gap: 14px; }
-
     .checks { gap: 16px; }
     .checks label { font-size: 14px; }
     .checks input[type="checkbox"] { width: 20px; height: 20px; }
 
-    /* Hide original form-actions; sticky bar replaces them */
     .form-actions { display: none; }
     .status-msg { text-align: center; font-size: 13px; }
 
-    /* Sticky save bar at bottom */
     .sticky-save-bar {
       display: flex; flex-direction: column; gap: 0;
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
-      background: var(--white);
-      border-top: 1px solid var(--line);
+      background: var(--white); border-top: 1px solid var(--line);
       padding: 10px 14px env(safe-area-inset-bottom, 10px);
     }
-    .sticky-save-bar button {
-      width: 100%; padding: 14px; font-size: 14px;
-      border-radius: 10px;
-    }
-    .sticky-save-bar .status-msg {
-      min-height: 0; padding-top: 6px;
-    }
-
-    /* Product list items */
-    .product-item { padding: 12px 14px; }
-    .thumb { width: 48px; height: 56px; }
-    .item-info strong { font-size: 13px; }
-    .item-info span { font-size: 12px; }
+    .sticky-save-bar button { width: 100%; padding: 14px; font-size: 14px; border-radius: 10px; }
+    .sticky-save-bar .status-msg { min-height: 0; padding-top: 6px; }
   }
 </style>
 </head>
@@ -308,96 +233,90 @@
   </div>
 </header>
 
-<main>
-  <aside>
-    <div class="list-header">
-      <input id="search" type="search" placeholder="Buscar...">
-    </div>
-    <div class="count-bar">
-      <span id="countLabel">Cargando...</span>
-    </div>
-    <div class="product-list" id="productList"></div>
-  </aside>
+<!-- ── VISTA 1: Grilla de productos ── -->
+<div id="catalogView">
+  <div class="catalog-toolbar">
+    <input id="search" type="search" placeholder="Buscar producto...">
+    <span id="countLabel">Cargando...</span>
+  </div>
+  <div class="product-grid" id="productList"></div>
+</div>
 
-  <section id="editorSection">
-    <button class="back-btn" id="backBtn">← Volver a la lista</button>
-    <div class="editor" id="editor">
-      <div class="empty-state" id="emptyState">
-        <p>Selecciona un producto para editarlo</p>
-        <button type="button" class="new-btn" onclick="openNew()">+ Nuevo producto</button>
+<!-- ── VISTA 2: Editor ── -->
+<div id="editorView">
+  <button class="back-btn" id="backBtn">← Todos los productos</button>
+  <div class="editor">
+    <form id="productForm" onsubmit="submitForm(event)">
+      <div class="editor-title">
+        <span id="formTitle">Editar producto</span>
+        <span class="mode-badge" id="modeBadge">Editando</span>
       </div>
-      <form id="productForm" style="display:none" onsubmit="submitForm(event)">
-        <div class="editor-title">
-          <span id="formTitle">Editar producto</span>
-          <span class="mode-badge" id="modeBadge">Editando</span>
-        </div>
 
-        <div class="multi-img-section">
-          <span class="section-label">Imágenes del producto (hasta 5) — toca para subir, × para quitar</span>
-          <div class="img-slots" id="imgSlots"></div>
-        </div>
+      <div class="multi-img-section">
+        <span class="section-label">Imágenes del producto (hasta 5) — toca para subir, × para quitar</span>
+        <div class="img-slots" id="imgSlots"></div>
+      </div>
 
-        <div class="grid">
-          <div class="field">
-            <label>Nombre *</label>
-            <input type="text" id="fName" required placeholder="Ej: Bolso Cuero Negro">
-          </div>
-          <div class="field">
-            <label>Marca *</label>
-            <input type="text" id="fBrand" required placeholder="Ej: Gucci">
-          </div>
-          <div class="field">
-            <label>Categoría</label>
-            <select id="fCat">
-              <option value="billetera">Billetera</option>
-              <option value="cartera">Cartera</option>
-              <option value="joya">Joya</option>
-              <option value="gorra">Gorra</option>
-              <option value="accesorio">Accesorio</option>
-              <option value="ropa">Ropa Mujer</option>
-              <option value="infantil">Infantil</option>
-              <option value="figura">Figura Coleccionable</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Precio</label>
-            <input type="text" id="fPrice" placeholder="Ej: $45 o Consultar precio">
-          </div>
-          <div class="field">
-            <label>Etiqueta</label>
-            <select id="fTag">
-              <option value="">Sin etiqueta</option>
-              <option value="nuevo">Nuevo</option>
-              <option value="destacado">Destacado</option>
-              <option value="exclusivo">Exclusivo</option>
-              <option value="oferta">Oferta</option>
-              <option value="promocion">Promoción</option>
-              <option value="reservado">Reservado</option>
-              <option value="vendido">Vendido</option>
-            </select>
-          </div>
-          <div class="field full">
-            <label>Descripción</label>
-            <textarea id="fDesc" placeholder="Descripción del producto..."></textarea>
-          </div>
+      <div class="grid">
+        <div class="field">
+          <label>Nombre *</label>
+          <input type="text" id="fName" required placeholder="Ej: Bolso Cuero Negro">
         </div>
-
-        <div class="checks">
-          <label><input type="checkbox" id="fVisible" checked> Visible en catálogo</label>
-          <label><input type="checkbox" id="fDeleted"> Marcado como eliminado</label>
+        <div class="field">
+          <label>Marca *</label>
+          <input type="text" id="fBrand" required placeholder="Ej: Gucci">
         </div>
-
-        <div class="form-actions">
-          <button type="submit" class="success-btn" id="submitBtn">Guardar cambios</button>
-          <button type="button" class="danger-btn" id="deleteBtn" onclick="deleteProduct()" style="display:none">Eliminar producto</button>
+        <div class="field">
+          <label>Categoría</label>
+          <select id="fCat">
+            <option value="billetera">Billetera</option>
+            <option value="cartera">Cartera</option>
+            <option value="joya">Joya</option>
+            <option value="gorra">Gorra</option>
+            <option value="accesorio">Accesorio</option>
+            <option value="ropa">Ropa Mujer</option>
+            <option value="infantil">Infantil</option>
+            <option value="figura">Figura Coleccionable</option>
+          </select>
         </div>
-        <div class="status-msg" id="statusMsg"></div>
-      </form>
-    </div>
-  </section>
-</main>
+        <div class="field">
+          <label>Precio</label>
+          <input type="text" id="fPrice" placeholder="Ej: $45 o Consultar precio">
+        </div>
+        <div class="field">
+          <label>Etiqueta</label>
+          <select id="fTag">
+            <option value="">Sin etiqueta</option>
+            <option value="nuevo">Nuevo</option>
+            <option value="destacado">Destacado</option>
+            <option value="exclusivo">Exclusivo</option>
+            <option value="oferta">Oferta</option>
+            <option value="promocion">Promoción</option>
+            <option value="reservado">Reservado</option>
+            <option value="vendido">Vendido</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label>Descripción</label>
+          <textarea id="fDesc" placeholder="Descripción del producto..."></textarea>
+        </div>
+      </div>
 
-<!-- Sticky save bar – visible only on mobile when form is open -->
+      <div class="checks">
+        <label><input type="checkbox" id="fVisible" checked> Visible en catálogo</label>
+        <label><input type="checkbox" id="fDeleted"> Marcado como eliminado</label>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="success-btn" id="submitBtn">Guardar cambios</button>
+        <button type="button" class="danger-btn" id="deleteBtn" onclick="deleteProduct()" style="display:none">Eliminar producto</button>
+      </div>
+      <div class="status-msg" id="statusMsg"></div>
+    </form>
+  </div>
+</div>
+
+<!-- Sticky save bar — solo en móvil cuando el formulario está abierto -->
 <div class="sticky-save-bar" id="stickySaveBar" style="display:none">
   <button type="button" class="success-btn" id="stickySaveBtn">Guardar cambios</button>
   <div class="status-msg" id="stickyStatusMsg"></div>
@@ -411,7 +330,6 @@ if (!token) window.location.href = 'editar.html';
 
 document.getElementById('userLine').textContent = `Sesión: ${user}`;
 
-// Measure real header height so CSS custom property --hh is accurate
 function updateHeaderHeight() {
   const h = document.querySelector('header').getBoundingClientRect().height;
   document.documentElement.style.setProperty('--hh', Math.round(h) + 'px');
@@ -419,10 +337,10 @@ function updateHeaderHeight() {
 updateHeaderHeight();
 window.addEventListener('resize', updateHeaderHeight);
 
-let products  = [];
-let current   = null;
-let isNew     = false;
-let slotData  = ['', '', '', '', '']; // up to 5 images per product
+let products = [];
+let current  = null;
+let isNew    = false;
+let slotData = ['', '', '', '', ''];
 
 function imgSrc(src) {
   if (!src) return '';
@@ -444,8 +362,16 @@ async function api(path, options = {}) {
   return data;
 }
 
+/* ── VISTAS ── */
+function showView(view) {
+  document.getElementById('catalogView').style.display = view === 'catalog' ? '' : 'none';
+  document.getElementById('editorView').style.display  = view === 'editor'  ? '' : 'none';
+  if (view === 'catalog') showStickyBar(false);
+}
+
+/* ── GRILLA DE PRODUCTOS ── */
 function renderList(q = '') {
-  const list = document.getElementById('productList');
+  const list  = document.getElementById('productList');
   list.innerHTML = '';
   const lower = q.trim().toLowerCase();
   const filtered = products.filter(p =>
@@ -455,27 +381,31 @@ function renderList(q = '') {
     `${filtered.length} de ${products.length} productos`;
 
   filtered.forEach(p => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = [
-      'product-item',
-      current?._id === p._id ? 'active' : '',
+    const card = document.createElement('div');
+    card.className = [
+      'product-card',
       p.deleted ? 'is-deleted' : '',
       p.hidden && !p.deleted ? 'is-hidden' : ''
     ].filter(Boolean).join(' ');
 
     const badge = p.deleted
-      ? '<span class="item-badge">eliminado</span>'
-      : p.hidden ? '<span class="item-badge hidden">oculto</span>' : '';
+      ? '<span class="card-badge">eliminado</span>'
+      : p.hidden ? '<span class="card-badge hidden-badge">oculto</span>' : '';
 
-    btn.innerHTML = `
-      <img class="thumb" src="${imgSrc(p.img)}" alt="" onerror="this.style.background='#ddd'">
-      <div class="item-info">
-        <strong>${p.name || 'Sin nombre'}${badge}</strong>
-        <span>${p.brand || ''}${p.price ? ' · ' + p.price : ''}</span>
+    const src = imgSrc(p.img);
+    const imgHtml = src
+      ? `<img class="card-img" src="${src}" alt="" loading="lazy" onerror="this.outerHTML='<div class=card-img style=background:#e0dbd3></div>'">`
+      : `<div class="card-img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#b0a99f" stroke-width="1.5" width="32" height="32"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
+
+    card.innerHTML = `${imgHtml}
+      <div class="card-body">
+        <p class="card-name">${p.name || 'Sin nombre'}</p>
+        <p class="card-meta">${p.brand || ''}${p.price ? ' · ' + p.price : ''}</p>
+        ${badge}
       </div>`;
-    btn.addEventListener('click', () => selectProduct(p));
-    list.appendChild(btn);
+
+    card.addEventListener('click', () => selectProduct(p));
+    list.appendChild(card);
   });
 }
 
@@ -483,7 +413,7 @@ function selectProduct(p) {
   current = p;
   isNew   = false;
   fillForm(p);
-  renderList(document.getElementById('search').value);
+  showView('editor');
 }
 
 function showStickyBar(show) {
@@ -494,15 +424,7 @@ function showStickyBar(show) {
 }
 
 function fillForm(p) {
-  document.getElementById('emptyState').style.display = 'none';
-  const form = document.getElementById('productForm');
-  form.style.display = '';
   showStickyBar(true);
-  if (window.innerWidth <= 650) {
-    document.getElementById('editorSection').classList.remove('hidden-mobile');
-    document.querySelector('aside').classList.add('hidden-mobile');
-  }
-
   document.getElementById('formTitle').textContent = isNew ? 'Nuevo producto' : p.name || 'Editar producto';
   const badge = document.getElementById('modeBadge');
   badge.textContent = isNew ? 'Nuevo' : 'Editando';
@@ -519,8 +441,8 @@ function fillForm(p) {
   document.getElementById('fPrice').value   = (p.price && p.price !== 'Consultar precio') ? p.price : '';
   document.getElementById('fTag').value     = p.tag     || '';
   document.getElementById('fDesc').value    = p.desc    || '';
-  document.getElementById('fVisible').checked  = !p.hidden && !p.deleted;
-  document.getElementById('fDeleted').checked  = Boolean(p.deleted);
+  document.getElementById('fVisible').checked = !p.hidden && !p.deleted;
+  document.getElementById('fDeleted').checked = Boolean(p.deleted);
 
   document.getElementById('submitBtn').textContent = isNew ? 'Agregar producto' : 'Guardar cambios';
   document.getElementById('deleteBtn').style.display = isNew ? 'none' : '';
@@ -533,23 +455,23 @@ function openNew() {
   isNew    = true;
   slotData = ['', '', '', '', ''];
   fillForm({ name: '', brand: '', cat: 'cartera', price: '', tag: '', desc: '', img: '', images: [], hidden: false, deleted: false });
+  showView('editor');
 }
 
 function normCat(cat) {
   const c = (cat || '').toLowerCase();
   if (c.includes('billetera')) return 'billetera';
-  if (c.includes('cartera')) return 'cartera';
-  if (c.includes('joya'))    return 'joya';
-  if (c.includes('gorra'))   return 'gorra';
+  if (c.includes('cartera'))   return 'cartera';
+  if (c.includes('joya'))      return 'joya';
+  if (c.includes('gorra'))     return 'gorra';
   if (c.includes('accesorio')) return 'accesorio';
-  if (c.includes('ropa'))    return 'ropa';
-  if (c.includes('infantil')) return 'infantil';
-  if (c.includes('figura'))  return 'figura';
+  if (c.includes('ropa'))      return 'ropa';
+  if (c.includes('infantil'))  return 'infantil';
+  if (c.includes('figura'))    return 'figura';
   return c || 'cartera';
 }
 
-/* ── IMAGE SLOTS ── */
-
+/* ── SLOTS DE IMAGEN ── */
 function renderSlots() {
   const container = document.getElementById('imgSlots');
   container.innerHTML = '';
@@ -640,6 +562,7 @@ function status(msg, type = '') {
   el.className   = 'status-msg ' + type;
 }
 
+/* ── GUARDAR ── */
 async function submitForm(event) {
   event.preventDefault();
   const images = slotData.filter(Boolean);
@@ -649,19 +572,17 @@ async function submitForm(event) {
   if (!name || !brand)     { status('Nombre y marca son obligatorios.', 'err'); return; }
   if (isNew && !images[0]) { status('La imagen principal es obligatoria para productos nuevos.', 'err'); return; }
 
-  const visible  = document.getElementById('fVisible').checked;
-  const deleted  = document.getElementById('fDeleted').checked;
+  const visible = document.getElementById('fVisible').checked;
+  const deleted = document.getElementById('fDeleted').checked;
 
   const payload = {
-    name,
-    brand,
-    cat:     document.getElementById('fCat').value,
-    price:   document.getElementById('fPrice').value.trim() || 'Consultar precio',
-    tag:     document.getElementById('fTag').value,
-    desc:    document.getElementById('fDesc').value.trim(),
-    hidden:  !visible,
-    deleted,
-    img:     images[0] || (current?.img || ''),
+    name, brand,
+    cat:    document.getElementById('fCat').value,
+    price:  document.getElementById('fPrice').value.trim() || 'Consultar precio',
+    tag:    document.getElementById('fTag').value,
+    desc:   document.getElementById('fDesc').value.trim(),
+    hidden: !visible, deleted,
+    img:    images[0] || (current?.img || ''),
     images
   };
 
@@ -678,8 +599,7 @@ async function submitForm(event) {
       const endpoint = current.sourceId !== undefined
         ? `/api/catalogos/source/${current.sourceId}`
         : `/api/catalogos/${current._id}`;
-      const method = current.sourceId !== undefined ? 'PUT' : 'PUT';
-      saved = await api(endpoint, { method, body: JSON.stringify(payload) });
+      saved = await api(endpoint, { method: 'PUT', body: JSON.stringify(payload) });
       products = products.map(p => p._id === saved._id ? saved : p);
       current = saved;
     }
@@ -691,6 +611,7 @@ async function submitForm(event) {
   }
 }
 
+/* ── ELIMINAR ── */
 async function deleteProduct() {
   if (!current || isNew) return;
   const name = current.name || 'este producto';
@@ -702,35 +623,30 @@ async function deleteProduct() {
     products = products.filter(p => p._id !== current._id);
     current  = null;
     isNew    = false;
-    document.getElementById('productForm').style.display = 'none';
-    document.getElementById('emptyState').style.display  = '';
-    showStickyBar(false);
     renderList(document.getElementById('search').value);
-    status('', '');
+    showView('catalog');
   } catch (err) {
     status(err.message, 'err');
   }
 }
 
+/* ── CARGA INICIAL ── */
 async function loadProducts() {
-  status('Cargando productos...', '');
+  document.getElementById('countLabel').textContent = 'Cargando...';
   try {
     products = await api('/api/catalogos');
     renderList();
-    status('', '');
   } catch (err) {
-    status(err.message, 'err');
+    document.getElementById('countLabel').textContent = 'Error al cargar productos';
   }
 }
 
+/* ── EVENTOS ── */
 document.getElementById('search').addEventListener('input', e => renderList(e.target.value));
-
 document.getElementById('newBtn').addEventListener('click', openNew);
 
 document.getElementById('backBtn').addEventListener('click', () => {
-  document.getElementById('editorSection').classList.add('hidden-mobile');
-  document.querySelector('aside').classList.remove('hidden-mobile');
-  showStickyBar(false);
+  showView('catalog');
 });
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
@@ -739,12 +655,10 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
   window.location.href = 'editar.html';
 });
 
-// Sticky save bar – submit the form and mirror status message
 document.getElementById('stickySaveBtn').addEventListener('click', () => {
   document.getElementById('productForm').requestSubmit();
 });
 
-// Mirror statusMsg to stickyStatusMsg so user sees feedback above keyboard
 const statusObserver = new MutationObserver(() => {
   const src = document.getElementById('statusMsg');
   const dst = document.getElementById('stickyStatusMsg');
@@ -753,7 +667,7 @@ const statusObserver = new MutationObserver(() => {
 });
 statusObserver.observe(document.getElementById('statusMsg'), { childList: true, characterData: true, subtree: true });
 
-
+showView('catalog');
 loadProducts();
 </script>
 </body>
