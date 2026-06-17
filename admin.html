@@ -6,278 +6,276 @@
 <title>Admin — Luxury Fernández</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --ink: #111;
-    --muted: #746f68;
-    --line: rgba(17,17,17,0.12);
-    --paper: #f7f3ec;
-    --white: #fff;
-    --danger: #b42318;
-    --success: #1a7a3f;
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--paper); color: var(--ink); font-family: Montserrat, sans-serif; font-size: 13px; }
+:root {
+  --ink: #111;
+  --muted: #746f68;
+  --line: rgba(17,17,17,0.12);
+  --paper: #f7f3ec;
+  --white: #fff;
+  --danger: #b42318;
+  --success: #1a7a3f;
+  --blue: #2a5298;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--paper); color: var(--ink); font-family: Montserrat, sans-serif; font-size: 14px; }
 
-  /* ── HEADER ── */
-  header {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--white);
-    position: sticky; top: 0; z-index: 10;
-  }
-  h1 { margin: 0; font-family: "Cormorant Garamond", serif; font-size: 26px; line-height: 1; }
-  .top-actions { display: flex; gap: 8px; align-items: center; }
+/* ── HEADER ── */
+header {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 14px 24px; background: var(--white); border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; z-index: 100;
+}
+.header-title { font-family: "Cormorant Garamond", serif; font-size: 26px; font-weight: 500; }
+.header-actions { display: flex; gap: 8px; align-items: center; }
 
-  button, a.btn {
-    border: 0; border-radius: 999px; background: var(--ink); color: #fff;
-    cursor: pointer; font: inherit; font-size: 12px; font-weight: 600;
-    padding: 9px 16px; text-decoration: none; white-space: nowrap;
-    transition: opacity .15s;
-  }
-  button:active, a.btn:active { opacity: .75; }
-  .ghost { background: #fff; color: var(--ink); border: 1px solid var(--line); }
-  .danger-btn { background: var(--danger); }
-  .success-btn { background: var(--success); }
-  .new-btn { background: #2a5298; }
+/* ── BOTONES ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 0; border-radius: 8px; cursor: pointer;
+  font: 600 13px Montserrat, sans-serif; padding: 10px 18px;
+  text-decoration: none; white-space: nowrap; transition: opacity .15s;
+}
+.btn:active { opacity: .75; }
+.btn-primary  { background: var(--blue);    color: #fff; }
+.btn-success  { background: var(--success); color: #fff; }
+.btn-danger   { background: var(--danger);  color: #fff; }
+.btn-ghost    { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.btn-back     { background: transparent; color: var(--muted); border: 0; padding: 10px 0; font-size: 13px; }
+.btn-back:hover { color: var(--ink); }
 
-  /* ── CATALOG VIEW ── */
-  #catalogView { min-height: calc(100dvh - var(--hh, 57px)); }
+/* ── TOAST ── */
+#toast {
+  position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-20px);
+  background: var(--success); color: #fff; font-size: 13px; font-weight: 600;
+  padding: 10px 20px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  opacity: 0; pointer-events: none; z-index: 200;
+  transition: opacity .25s, transform .25s;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast.err  { background: var(--danger); }
 
-  .catalog-toolbar {
-    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-    padding: 12px 20px 0; border-bottom: none;
-    background: var(--white); position: sticky; top: var(--hh, 57px); z-index: 5;
-  }
-  .catalog-toolbar input {
-    flex: 1; min-width: 160px; max-width: 340px;
-    border: 1px solid var(--line); border-radius: 8px;
-    color: var(--ink); font: inherit; font-size: 13px; padding: 9px 12px;
-    outline: none; background: #fafaf8;
-  }
-  .catalog-toolbar input:focus { border-color: var(--ink); background: #fff; }
-  #countLabel { color: var(--muted); font-size: 11px; }
+/* ══════════════════════════════════
+   VISTA 1 — CATÁLOGO
+══════════════════════════════════ */
+#viewCatalog { display: block; }
 
-  .cat-filters {
-    display: flex; gap: 6px; overflow-x: auto; padding: 10px 20px;
-    background: var(--white); border-bottom: 1px solid var(--line);
-    position: sticky; top: calc(var(--hh, 57px) + 53px); z-index: 5;
-    scrollbar-width: none; -ms-overflow-style: none;
-  }
-  .cat-filters::-webkit-scrollbar { display: none; }
-  .cat-pill {
-    flex-shrink: 0; border: 1px solid var(--line); border-radius: 999px;
-    background: #fff; color: var(--muted); font: inherit; font-size: 11px;
-    font-weight: 600; padding: 6px 14px; cursor: pointer;
-    transition: background .15s, color .15s, border-color .15s;
-    white-space: nowrap;
-  }
-  .cat-pill:hover { border-color: var(--ink); color: var(--ink); }
-  .cat-pill.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+.toolbar {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding: 12px 24px; background: var(--white); border-bottom: 1px solid var(--line);
+  position: sticky; top: 57px; z-index: 90;
+}
+.toolbar-search {
+  flex: 1; min-width: 180px; max-width: 360px;
+  border: 1px solid var(--line); border-radius: 8px;
+  font: inherit; font-size: 14px; padding: 9px 13px;
+  outline: none; background: #fafaf8; color: var(--ink);
+}
+.toolbar-search:focus { border-color: var(--ink); background: #fff; }
+#countLabel { font-size: 12px; color: var(--muted); }
 
-  .product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 14px;
-    padding: 20px;
-  }
+.cat-bar {
+  display: flex; gap: 6px; overflow-x: auto; padding: 10px 24px;
+  background: var(--white); border-bottom: 1px solid var(--line);
+  position: sticky; top: 109px; z-index: 89;
+  scrollbar-width: none;
+}
+.cat-bar::-webkit-scrollbar { display: none; }
+.cat-pill {
+  flex-shrink: 0; border: 1px solid var(--line); border-radius: 999px;
+  background: #fff; color: var(--muted); font: 600 12px Montserrat, sans-serif;
+  padding: 6px 16px; cursor: pointer; white-space: nowrap;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.cat-pill:hover   { border-color: var(--ink); color: var(--ink); }
+.cat-pill.active  { background: var(--ink); color: #fff; border-color: var(--ink); }
 
-  .product-card {
-    background: var(--white); border-radius: 10px; border: 1px solid var(--line);
-    overflow: hidden; cursor: pointer;
-    transition: transform .15s, box-shadow .15s;
-    display: flex; flex-direction: column;
-  }
-  .product-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
-  .product-card.is-deleted { opacity: .4; }
-  .product-card.is-hidden  { opacity: .6; }
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 16px; padding: 20px 24px;
+}
 
-  .card-img {
-    width: 100%; aspect-ratio: 3/4; object-fit: cover;
-    background: #e8e4de; display: block;
-  }
-  .card-img-placeholder { width: 100%; aspect-ratio: 3/4; background: #e8e4de; display: flex; align-items: center; justify-content: center; }
-  .card-img-placeholder svg { opacity: .3; }
-  .card-body { padding: 10px 12px 12px; flex: 1; display: flex; flex-direction: column; gap: 3px; }
-  .card-name { font-size: 12px; font-weight: 600; line-height: 1.35; margin: 0; }
-  .card-meta { font-size: 11px; color: var(--muted); margin: 0; }
-  .card-badge {
-    display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: .5px;
-    padding: 2px 6px; border-radius: 999px; margin-top: 4px; align-self: flex-start;
-    background: #f5d0ce; color: var(--danger);
-  }
-  .card-badge.hidden-badge { background: #e0dcd6; color: var(--muted); }
+.product-card {
+  background: var(--white); border: 1px solid var(--line);
+  border-radius: 12px; overflow: hidden; cursor: pointer;
+  transition: transform .18s, box-shadow .18s;
+  display: flex; flex-direction: column;
+}
+.product-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+.product-card.is-hidden  { opacity: .55; }
+.product-card.is-deleted { opacity: .35; }
 
-  /* ── EDITOR VIEW ── */
-  #editorView { display: none; min-height: calc(100dvh - var(--hh, 57px)); }
+.card-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; background: #e8e4de; display: block; }
+.card-img-ph {
+  width: 100%; aspect-ratio: 3/4; background: #e8e4de;
+  display: flex; align-items: center; justify-content: center;
+}
+.card-body { padding: 10px 12px 14px; display: flex; flex-direction: column; gap: 3px; }
+.card-name { font-size: 12px; font-weight: 600; line-height: 1.35; }
+.card-meta { font-size: 11px; color: var(--muted); }
+.card-badge {
+  align-self: flex-start; font-size: 10px; font-weight: 600; letter-spacing: .4px;
+  padding: 2px 8px; border-radius: 999px; margin-top: 5px;
+  background: #f5d0ce; color: var(--danger);
+}
+.card-badge.is-hidden-badge { background: #e0dcd6; color: var(--muted); }
 
-  .back-btn {
-    display: flex; align-items: center; gap: 6px; width: 100%;
-    padding: 12px 20px; border: 0; border-radius: 0; border-bottom: 1px solid var(--line);
-    background: var(--white); color: var(--muted); font: inherit; font-size: 13px;
-    text-align: left; cursor: pointer; position: sticky; top: var(--hh, 57px); z-index: 5;
-    transition: color .15s;
-  }
-  .back-btn:hover { color: var(--ink); }
+/* ══════════════════════════════════
+   VISTA 2 — EDITOR
+══════════════════════════════════ */
+#viewEditor { display: none; }
 
-  .editor { max-width: 680px; margin: 0 auto; padding: 28px 28px; }
+.editor-header {
+  padding: 12px 24px; background: var(--white); border-bottom: 1px solid var(--line);
+  position: sticky; top: 57px; z-index: 90;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.editor-header-left { display: flex; align-items: center; gap: 16px; }
+.editor-product-name { font-family: "Cormorant Garamond", serif; font-size: 20px; }
+.editor-mode {
+  font-size: 11px; font-weight: 600; letter-spacing: 1px;
+  padding: 3px 10px; border-radius: 999px;
+  background: #dff0e8; color: var(--success);
+}
+.editor-mode.new  { background: #dce8f5; color: var(--blue); }
+.editor-header-actions { display: flex; gap: 8px; }
 
-  .editor-title {
-    font-family: "Cormorant Garamond", serif;
-    font-size: 22px; margin: 0 0 20px;
-    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-  }
-  .mode-badge {
-    font-family: Montserrat, sans-serif;
-    font-size: 10px; font-weight: 600; letter-spacing: 1px;
-    padding: 3px 10px; border-radius: 999px;
-    background: #dff0e8; color: var(--success);
-  }
-  .mode-badge.new-mode { background: #dce8f5; color: #2a5298; }
+.editor-body { max-width: 720px; margin: 0 auto; padding: 28px 24px 60px; }
 
-  /* ── MULTI-IMAGE SLOTS ── */
-  .multi-img-section { margin-bottom: 20px; }
-  .multi-img-section > .section-label { color: var(--muted); font-size: 11px; display: block; margin-bottom: 10px; }
-  .img-slots { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
-  .img-slot-wrap { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
-  .img-slot {
-    position: relative; width: 88px; height: 104px;
-    border: 1.5px dashed var(--muted); border-radius: 8px;
-    overflow: hidden; background: #faf8f5;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: border-color .15s;
-  }
-  .img-slot:hover { border-color: var(--ink); }
-  .img-slot.has-img { border: 1.5px solid var(--line); }
-  .img-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .slot-placeholder {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 4px; color: var(--muted); font-size: 10px; text-align: center; padding: 6px;
-    pointer-events: none;
-  }
-  .img-slot.has-img .slot-placeholder { display: none; }
-  .slot-remove {
-    position: absolute; top: 3px; right: 3px; width: 18px; height: 18px;
-    background: rgba(180,35,24,0.88); color: #fff;
-    border: none; border-radius: 50%; font-size: 13px; cursor: pointer;
-    display: none; align-items: center; justify-content: center; line-height: 1; padding: 0;
-  }
-  .img-slot.has-img .slot-remove { display: flex; }
-  .slot-label { font-size: 9px; color: var(--muted); text-align: center; letter-spacing: 0.3px; }
+/* Imágenes */
+.section-title { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: .5px; text-transform: uppercase; margin-bottom: 12px; }
+.img-slots { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; }
+.img-slot-wrap { display: flex; flex-direction: column; align-items: center; gap: 5px; flex-shrink: 0; }
+.img-slot {
+  position: relative; width: 96px; height: 112px;
+  border: 2px dashed #c9c5bf; border-radius: 10px;
+  overflow: hidden; background: #faf8f5;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: border-color .15s;
+}
+.img-slot:hover { border-color: var(--ink); }
+.img-slot.filled { border: 2px solid var(--line); }
+.img-slot img { width: 100%; height: 100%; object-fit: cover; }
+.img-slot-ph {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  color: #b0a99f; font-size: 10px; pointer-events: none; text-align: center; padding: 8px;
+}
+.img-slot.filled .img-slot-ph { display: none; }
+.img-slot-rm {
+  position: absolute; top: 4px; right: 4px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: rgba(180,35,24,.9); color: #fff;
+  border: none; font-size: 14px; line-height: 1;
+  cursor: pointer; display: none; align-items: center; justify-content: center; padding: 0;
+}
+.img-slot.filled .img-slot-rm { display: flex; }
+.img-slot-label { font-size: 10px; color: var(--muted); }
 
-  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-  .field.full { grid-column: 1 / -1; }
-  .field label { display: block; color: var(--muted); font-size: 11px; margin-bottom: 6px; }
-  .field input, .field textarea, .field select {
-    width: 100%; border: 1px solid var(--line); border-radius: 8px;
-    color: var(--ink); font: inherit; font-size: 13px; padding: 10px 12px;
-    outline: none; background: #fff; -webkit-appearance: none;
-  }
-  .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--ink); }
-  .field textarea { min-height: 100px; resize: vertical; line-height: 1.5; }
+/* Campos */
+.fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field.span2 { grid-column: 1 / -1; }
+.field label { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: .3px; }
+.field input, .field select, .field textarea {
+  border: 1px solid var(--line); border-radius: 8px;
+  font: inherit; font-size: 14px; padding: 11px 13px;
+  color: var(--ink); background: #fff; outline: none; -webkit-appearance: none;
+  width: 100%;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--ink); }
+.field textarea { min-height: 110px; resize: vertical; line-height: 1.5; }
 
-  .checks { display: flex; gap: 20px; align-items: center; padding: 10px 0; flex-wrap: wrap; }
-  .checks label { display: flex; align-items: center; gap: 8px; color: var(--ink); font-size: 13px; cursor: pointer; }
-  .checks input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+.checks { display: flex; gap: 24px; margin-top: 18px; flex-wrap: wrap; }
+.checks label { display: flex; align-items: center; gap: 9px; cursor: pointer; font-size: 14px; }
+.checks input[type=checkbox] { width: 17px; height: 17px; cursor: pointer; }
 
-  .form-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
-  .form-actions button { flex: 1; min-width: 140px; padding: 12px 16px; font-size: 13px; }
-  .status-msg { margin-top: 10px; font-size: 12px; color: var(--muted); min-height: 18px; }
-  .status-msg.ok  { color: var(--success); font-weight: 600; }
-  .status-msg.err { color: var(--danger);  font-weight: 600; }
+.form-actions {
+  display: flex; gap: 10px; margin-top: 28px; padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.form-actions .btn { flex: 1; justify-content: center; padding: 13px; font-size: 14px; }
 
-  /* ── STICKY SAVE BAR (mobile only) ── */
-  .sticky-save-bar { display: none; }
+#statusMsg { margin-top: 12px; font-size: 13px; min-height: 20px; }
+#statusMsg.ok  { color: var(--success); font-weight: 600; }
+#statusMsg.err { color: var(--danger);  font-weight: 600; }
 
-  /* ── MOBILE ── */
-  @media (max-width: 650px) {
-    header {
-      padding: 10px 14px;
-      flex-direction: column; align-items: stretch; gap: 8px;
-    }
-    header > div:first-child { display: flex; align-items: center; justify-content: space-between; }
-    h1 { font-size: 21px; }
-    .user-line { display: none; }
+/* ── MOBILE ── */
+@media (max-width: 640px) {
+  header { padding: 10px 14px; flex-direction: column; align-items: stretch; gap: 8px; }
+  .header-title { font-size: 22px; }
+  .header-session { display: none; }
+  .header-actions { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; }
+  .btn-primary-new { grid-column: 1 / 2; justify-content: center; }
+  .btn-ghost-sm, .btn-danger-sm { padding: 10px 14px; }
 
-    .top-actions { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; }
-    .top-actions .new-btn { grid-column: 1 / 2; text-align: center; padding: 11px 12px; font-size: 12px; }
-    .top-actions .ghost, .top-actions .danger-btn { padding: 11px 14px; font-size: 12px; }
+  .toolbar { padding: 10px 12px; top: 86px; }
+  .toolbar-search { font-size: 16px; min-height: 46px; }
+  .cat-bar { top: 144px; padding: 8px 12px; }
 
-    .catalog-toolbar { padding: 10px 12px 0; top: var(--hh, 93px); }
-    .catalog-toolbar input { font-size: 16px; min-height: 44px; max-width: none; }
-    .cat-filters { top: calc(var(--hh, 93px) + 64px); padding: 8px 12px; gap: 6px; }
-    .cat-pill { font-size: 12px; padding: 7px 14px; }
+  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 12px; }
 
-    .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
-    .card-name { font-size: 11px; }
-    .card-meta { font-size: 10px; }
+  .editor-header { top: 86px; padding: 10px 14px; flex-direction: column; align-items: flex-start; gap: 10px; }
+  .editor-header-actions { width: 100%; }
+  .editor-header-actions .btn { flex: 1; justify-content: center; }
 
-    .back-btn { top: var(--hh, 93px); padding: 12px 14px; font-size: 13px; }
+  .editor-body { padding: 16px 14px 100px; }
 
-    .editor { padding: 14px 14px calc(80px + env(safe-area-inset-bottom, 0px)); max-width: 100%; }
-    .editor-title { font-size: 18px; margin-bottom: 14px; }
+  .field input, .field select, .field textarea { font-size: 16px; min-height: 46px; padding: 12px 14px; }
+  .field textarea { min-height: 120px; }
+  .fields { grid-template-columns: 1fr; gap: 14px; }
 
-    .field input, .field textarea, .field select { font-size: 16px; min-height: 46px; padding: 12px 14px; }
-    .field textarea { min-height: 110px; }
-    .img-slot { width: 80px; height: 96px; }
-    .slot-remove { width: 22px; height: 22px; font-size: 15px; }
-    .grid { grid-template-columns: 1fr; gap: 14px; }
-    .checks { gap: 16px; }
-    .checks label { font-size: 14px; }
-    .checks input[type="checkbox"] { width: 20px; height: 20px; }
+  .form-actions { flex-direction: column; }
+  .form-actions .btn { padding: 15px; }
 
-    .form-actions { display: none; }
-    .status-msg { text-align: center; font-size: 13px; }
-
-    .sticky-save-bar {
-      display: flex; flex-direction: column; gap: 0;
-      position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
-      background: var(--white); border-top: 1px solid var(--line);
-      padding: 10px 14px env(safe-area-inset-bottom, 10px);
-    }
-    .sticky-save-bar button { width: 100%; padding: 14px; font-size: 14px; border-radius: 10px; }
-    .sticky-save-bar .status-msg { min-height: 0; padding-top: 6px; }
-  }
+  .img-slot { width: 84px; height: 100px; }
+}
 </style>
 </head>
 <body>
 
 <header>
-  <div>
-    <h1>Productos</h1>
-  </div>
-  <div class="top-actions">
-    <span id="userLine" class="user-line" style="color:var(--muted);font-size:11px;"></span>
-    <button type="button" class="new-btn" id="newBtn">+ Nuevo producto</button>
-    <a class="btn ghost" href="/">Ver catálogo</a>
-    <button type="button" class="danger-btn" id="logoutBtn">Salir</button>
+  <span class="header-title">Productos</span>
+  <div class="header-actions">
+    <span id="sessionLabel" class="header-session" style="font-size:11px;color:var(--muted)"></span>
+    <button class="btn btn-primary btn-primary-new" id="newBtn">+ Nuevo</button>
+    <a class="btn btn-ghost btn-ghost-sm" href="/">Ver catálogo</a>
+    <button class="btn btn-danger btn-danger-sm" id="logoutBtn">Salir</button>
   </div>
 </header>
 
-<!-- ── VISTA 1: Grilla de productos ── -->
-<div id="catalogView">
-  <div class="catalog-toolbar">
-    <input id="search" type="search" placeholder="Buscar producto...">
+<div id="toast"></div>
+
+<!-- ══ VISTA 1: CATÁLOGO ══ -->
+<div id="viewCatalog">
+  <div class="toolbar">
+    <input class="toolbar-search" id="search" type="search" placeholder="Buscar producto...">
     <span id="countLabel">Cargando...</span>
   </div>
-  <div class="cat-filters" id="catFilters"></div>
-  <div class="product-grid" id="productList"></div>
+  <div class="cat-bar" id="catBar"></div>
+  <div class="product-grid" id="productGrid"></div>
 </div>
 
-<!-- ── VISTA 2: Editor ── -->
-<div id="editorView">
-  <button class="back-btn" id="backBtn">← Todos los productos</button>
-  <div class="editor">
+<!-- ══ VISTA 2: EDITOR ══ -->
+<div id="viewEditor">
+  <div class="editor-header">
+    <div class="editor-header-left">
+      <button class="btn btn-back" id="backBtn">← Volver</button>
+      <span class="editor-product-name" id="editorTitle"></span>
+      <span class="editor-mode" id="editorMode">Editando</span>
+    </div>
+    <div class="editor-header-actions">
+      <button class="btn btn-success" id="saveHeaderBtn">Guardar</button>
+      <button class="btn btn-danger" id="deleteHeaderBtn" style="display:none">Eliminar</button>
+    </div>
+  </div>
+
+  <div class="editor-body">
     <form id="productForm" onsubmit="submitForm(event)">
-      <div class="editor-title">
-        <span id="formTitle">Editar producto</span>
-        <span class="mode-badge" id="modeBadge">Editando</span>
-      </div>
 
-      <div class="multi-img-section">
-        <span class="section-label">Imágenes del producto (hasta 5) — toca para subir, × para quitar</span>
-        <div class="img-slots" id="imgSlots"></div>
-      </div>
+      <div class="section-title">Imágenes (hasta 5) — toca para subir</div>
+      <div class="img-slots" id="imgSlots"></div>
 
-      <div class="grid">
+      <div class="fields">
         <div class="field">
           <label>Nombre *</label>
           <input type="text" id="fName" required placeholder="Ej: Bolso Cuero Negro">
@@ -301,7 +299,7 @@
         </div>
         <div class="field">
           <label>Precio</label>
-          <input type="text" id="fPrice" placeholder="Ej: $45 o Consultar precio">
+          <input type="text" id="fPrice" placeholder="Ej: $45">
         </div>
         <div class="field">
           <label>Etiqueta</label>
@@ -316,7 +314,7 @@
             <option value="vendido">Vendido</option>
           </select>
         </div>
-        <div class="field full">
+        <div class="field span2">
           <label>Descripción</label>
           <textarea id="fDesc" placeholder="Descripción del producto..."></textarea>
         </div>
@@ -328,186 +326,77 @@
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="success-btn" id="submitBtn">Guardar cambios</button>
-        <button type="button" class="danger-btn" id="deleteBtn" onclick="deleteProduct()" style="display:none">Eliminar producto</button>
+        <button type="submit" class="btn btn-success" id="submitBtn">Guardar cambios</button>
+        <button type="button" class="btn btn-danger" id="deleteBtn" onclick="deleteProduct()" style="display:none">Eliminar producto</button>
       </div>
-      <div class="status-msg" id="statusMsg"></div>
+      <div id="statusMsg"></div>
+
     </form>
   </div>
 </div>
 
-<!-- Sticky save bar — solo en móvil cuando el formulario está abierto -->
-<div class="sticky-save-bar" id="stickySaveBar" style="display:none">
-  <button type="button" class="success-btn" id="stickySaveBtn">Guardar cambios</button>
-  <div class="status-msg" id="stickyStatusMsg"></div>
-</div>
-
 <script>
+/* ── AUTH ── */
 const token = localStorage.getItem('lf_admin_token') || '';
-const user  = localStorage.getItem('lf_admin_user') || 'admin';
+if (!token) { window.location.href = 'editar.html'; }
+document.getElementById('sessionLabel').textContent = 'Sesión: ' + (localStorage.getItem('lf_admin_user') || 'admin');
 
-if (!token) window.location.href = 'editar.html';
-
-document.getElementById('userLine').textContent = `Sesión: ${user}`;
-
-function updateHeaderHeight() {
-  const h = document.querySelector('header').getBoundingClientRect().height;
-  document.documentElement.style.setProperty('--hh', Math.round(h) + 'px');
-}
-updateHeaderHeight();
-window.addEventListener('resize', updateHeaderHeight);
-
-let products   = [];
-let current    = null;
-let isNew      = false;
-let slotData   = ['', '', '', '', ''];
-let filterCat  = '';
+/* ── ESTADO ── */
+let allProducts = [];
+let current     = null;
+let isNew       = false;
+let slotData    = ['','','','',''];
+let filterCat   = '';
 
 const CATS = [
-  { key: '',           label: 'Todos' },
-  { key: 'billetera',  label: 'Billeteras' },
-  { key: 'cartera',    label: 'Carteras' },
-  { key: 'joya',       label: 'Joyas' },
-  { key: 'gorra',      label: 'Gorras' },
-  { key: 'accesorio',  label: 'Accesorios' },
-  { key: 'ropa',       label: 'Ropa Mujer' },
-  { key: 'infantil',   label: 'Infantil' },
-  { key: 'figura',     label: 'Figuras' },
+  { key: '',          label: 'Todos' },
+  { key: 'billetera', label: 'Billeteras' },
+  { key: 'cartera',   label: 'Carteras' },
+  { key: 'joya',      label: 'Joyas' },
+  { key: 'gorra',     label: 'Gorras' },
+  { key: 'accesorio', label: 'Accesorios' },
+  { key: 'ropa',      label: 'Ropa Mujer' },
+  { key: 'infantil',  label: 'Infantil' },
+  { key: 'figura',    label: 'Figuras' },
 ];
 
-function imgSrc(src) {
-  if (!src) return '';
-  if (/^(https?:|data:)/.test(src)) return src;
-  return src.startsWith('/') ? src : `/${src}`;
-}
-
-async function api(path, options = {}) {
+/* ── API ── */
+async function api(path, opts = {}) {
   const res = await fetch(path, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-      ...(options.headers || {})
-    },
-    ...options
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...(opts.headers || {}) },
+    ...opts
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || 'Error en la solicitud.');
   return data;
 }
 
+/* ── TOAST ── */
+let toastTimer;
+function toast(msg, type = 'ok') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show' + (type === 'err' ? ' err' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = ''; }, 2500);
+}
+
 /* ── VISTAS ── */
-function showView(view) {
-  document.getElementById('catalogView').style.display = view === 'catalog' ? 'block' : 'none';
-  document.getElementById('editorView').style.display  = view === 'editor'  ? 'block' : 'none';
-  if (view === 'catalog') showStickyBar(false);
+function showCatalog() {
+  document.getElementById('viewCatalog').style.display = 'block';
+  document.getElementById('viewEditor').style.display  = 'none';
+}
+function showEditor() {
+  document.getElementById('viewCatalog').style.display = 'none';
+  document.getElementById('viewEditor').style.display  = 'block';
+  window.scrollTo(0, 0);
 }
 
-/* ── FILTROS DE CATEGORÍA ── */
-function renderCatFilters() {
-  const bar = document.getElementById('catFilters');
-  bar.innerHTML = '';
-  CATS.forEach(c => {
-    const pill = document.createElement('button');
-    pill.type = 'button';
-    pill.className = 'cat-pill' + (filterCat === c.key ? ' active' : '');
-    pill.textContent = c.label;
-    pill.addEventListener('click', () => {
-      filterCat = c.key;
-      renderCatFilters();
-      renderList(document.getElementById('search').value);
-    });
-    bar.appendChild(pill);
-  });
-}
-
-/* ── GRILLA DE PRODUCTOS ── */
-function renderList(q = '') {
-  const list  = document.getElementById('productList');
-  list.innerHTML = '';
-  const lower = q.trim().toLowerCase();
-  const filtered = products.filter(p => {
-    if (filterCat && normCat(p.cat) !== filterCat) return false;
-    return !lower || [p.name, p.brand, p.cat].some(v => (v || '').toLowerCase().includes(lower));
-  });
-  document.getElementById('countLabel').textContent =
-    `${filtered.length} de ${products.length} productos`;
-
-  filtered.forEach(p => {
-    const card = document.createElement('div');
-    card.className = [
-      'product-card',
-      p.deleted ? 'is-deleted' : '',
-      p.hidden && !p.deleted ? 'is-hidden' : ''
-    ].filter(Boolean).join(' ');
-
-    const badge = p.deleted
-      ? '<span class="card-badge">eliminado</span>'
-      : p.hidden ? '<span class="card-badge hidden-badge">oculto</span>' : '';
-
-    const src = imgSrc(p.img);
-    const imgHtml = src
-      ? `<img class="card-img" src="${src}" alt="" loading="lazy" onerror="this.outerHTML='<div class=card-img style=background:#e0dbd3></div>'">`
-      : `<div class="card-img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="#b0a99f" stroke-width="1.5" width="32" height="32"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
-
-    card.innerHTML = `${imgHtml}
-      <div class="card-body">
-        <p class="card-name">${p.name || 'Sin nombre'}</p>
-        <p class="card-meta">${p.brand || ''}${p.price ? ' · ' + p.price : ''}</p>
-        ${badge}
-      </div>`;
-
-    card.addEventListener('click', () => selectProduct(p));
-    list.appendChild(card);
-  });
-}
-
-function selectProduct(p) {
-  current = p;
-  isNew   = false;
-  fillForm(p);
-  showView('editor');
-}
-
-function showStickyBar(show) {
-  const bar = document.getElementById('stickySaveBar');
-  if (window.innerWidth <= 650) {
-    bar.style.display = show ? 'flex' : 'none';
-  }
-}
-
-function fillForm(p) {
-  showStickyBar(true);
-  document.getElementById('formTitle').textContent = isNew ? 'Nuevo producto' : p.name || 'Editar producto';
-  const badge = document.getElementById('modeBadge');
-  badge.textContent = isNew ? 'Nuevo' : 'Editando';
-  badge.className   = 'mode-badge' + (isNew ? ' new-mode' : '');
-
-  const imgArr = (p.images && p.images.length > 0) ? p.images : (p.img ? [p.img] : []);
-  slotData = ['', '', '', '', ''];
-  imgArr.slice(0, 5).forEach((u, i) => { slotData[i] = u || ''; });
-  renderSlots();
-
-  document.getElementById('fName').value    = p.name    || '';
-  document.getElementById('fBrand').value   = p.brand   || '';
-  document.getElementById('fCat').value     = normCat(p.cat);
-  document.getElementById('fPrice').value   = (p.price && p.price !== 'Consultar precio') ? p.price : '';
-  document.getElementById('fTag').value     = p.tag     || '';
-  document.getElementById('fDesc').value    = p.desc    || '';
-  document.getElementById('fVisible').checked = !p.hidden && !p.deleted;
-  document.getElementById('fDeleted').checked = Boolean(p.deleted);
-
-  document.getElementById('submitBtn').textContent = isNew ? 'Agregar producto' : 'Guardar cambios';
-  document.getElementById('deleteBtn').style.display = isNew ? 'none' : '';
-  document.getElementById('statusMsg').textContent = '';
-  document.getElementById('statusMsg').className   = 'status-msg';
-}
-
-function openNew() {
-  current  = null;
-  isNew    = true;
-  slotData = ['', '', '', '', ''];
-  fillForm({ name: '', brand: '', cat: 'cartera', price: '', tag: '', desc: '', img: '', images: [], hidden: false, deleted: false });
-  showView('editor');
+/* ── UTILIDADES ── */
+function imgSrc(src) {
+  if (!src) return '';
+  if (/^(https?:|data:)/.test(src)) return src;
+  return src.startsWith('/') ? src : '/' + src;
 }
 
 function normCat(cat) {
@@ -523,42 +412,119 @@ function normCat(cat) {
   return c || 'cartera';
 }
 
+/* ── GRILLA ── */
+function renderCatBar() {
+  const bar = document.getElementById('catBar');
+  bar.innerHTML = '';
+  CATS.forEach(c => {
+    const pill = document.createElement('button');
+    pill.className = 'cat-pill' + (filterCat === c.key ? ' active' : '');
+    pill.textContent = c.label;
+    pill.addEventListener('click', () => { filterCat = c.key; renderCatBar(); renderGrid(); });
+    bar.appendChild(pill);
+  });
+}
+
+function renderGrid(q = '') {
+  const grid  = document.getElementById('productGrid');
+  const lower = (q || document.getElementById('search').value).trim().toLowerCase();
+  const list  = allProducts.filter(p => {
+    if (filterCat && normCat(p.cat) !== filterCat) return false;
+    return !lower || [p.name, p.brand, p.cat].some(v => (v || '').toLowerCase().includes(lower));
+  });
+  document.getElementById('countLabel').textContent = list.length + ' de ' + allProducts.length + ' productos';
+  grid.innerHTML = '';
+  list.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'product-card' + (p.deleted ? ' is-deleted' : p.hidden ? ' is-hidden' : '');
+    const src = imgSrc(p.img);
+    const imgEl = src
+      ? `<img class="card-img" src="${src}" alt="" loading="lazy" onerror="this.style.background='#d8d4ce'">`
+      : `<div class="card-img-ph"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#b0a99f" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
+    const badge = p.deleted
+      ? '<span class="card-badge">eliminado</span>'
+      : p.hidden ? '<span class="card-badge is-hidden-badge">oculto</span>' : '';
+    card.innerHTML = imgEl + `<div class="card-body"><div class="card-name">${p.name || 'Sin nombre'}</div><div class="card-meta">${p.brand || ''}${p.price ? ' · ' + p.price : ''}</div>${badge}</div>`;
+    card.addEventListener('click', () => openEditor(p));
+    grid.appendChild(card);
+  });
+}
+
+/* ── EDITOR ── */
+function openEditor(p) {
+  current = p;
+  isNew   = false;
+  populateForm(p);
+  showEditor();
+}
+
+function openNew() {
+  current  = null;
+  isNew    = true;
+  slotData = ['','','','',''];
+  populateForm({ name:'', brand:'', cat:'cartera', price:'', tag:'', desc:'', img:'', images:[], hidden:false, deleted:false });
+  showEditor();
+}
+
+function populateForm(p) {
+  document.getElementById('editorTitle').textContent = isNew ? 'Nuevo producto' : (p.name || 'Sin nombre');
+  const mode = document.getElementById('editorMode');
+  mode.textContent = isNew ? 'Nuevo' : 'Editando';
+  mode.className   = 'editor-mode' + (isNew ? ' new' : '');
+
+  const imgs = (p.images && p.images.length) ? p.images : (p.img ? [p.img] : []);
+  slotData = ['','','','',''];
+  imgs.slice(0,5).forEach((u,i) => { slotData[i] = u || ''; });
+  renderSlots();
+
+  document.getElementById('fName').value    = p.name    || '';
+  document.getElementById('fBrand').value   = p.brand   || '';
+  document.getElementById('fCat').value     = normCat(p.cat);
+  document.getElementById('fPrice').value   = (p.price && p.price !== 'Consultar precio') ? p.price : '';
+  document.getElementById('fTag').value     = p.tag     || '';
+  document.getElementById('fDesc').value    = p.desc    || '';
+  document.getElementById('fVisible').checked = !p.hidden && !p.deleted;
+  document.getElementById('fDeleted').checked = Boolean(p.deleted);
+
+  document.getElementById('submitBtn').textContent      = isNew ? 'Agregar producto' : 'Guardar cambios';
+  document.getElementById('deleteBtn').style.display    = isNew ? 'none' : '';
+  document.getElementById('deleteHeaderBtn').style.display = isNew ? 'none' : '';
+  document.getElementById('statusMsg').textContent = '';
+  document.getElementById('statusMsg').className   = '';
+}
+
 /* ── SLOTS DE IMAGEN ── */
 function renderSlots() {
   const container = document.getElementById('imgSlots');
   container.innerHTML = '';
   slotData.forEach((data, i) => {
-    const hasImg = Boolean(data);
     const wrap = document.createElement('div');
     wrap.className = 'img-slot-wrap';
 
     const slot = document.createElement('div');
-    slot.className = 'img-slot' + (hasImg ? ' has-img' : '');
+    slot.className = 'img-slot' + (data ? ' filled' : '');
 
-    if (hasImg) {
+    if (data) {
       const img = document.createElement('img');
       img.src = imgSrc(data);
-      img.alt = '';
       slot.appendChild(img);
     }
 
     const ph = document.createElement('div');
-    ph.className = 'slot-placeholder';
-    ph.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>${i === 0 ? 'Principal' : '+'}</span>`;
+    ph.className = 'img-slot-ph';
+    ph.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>${i === 0 ? 'Principal' : 'Foto '+(i+1)}</span>`;
     slot.appendChild(ph);
 
     const rm = document.createElement('button');
-    rm.type = 'button';
-    rm.className = 'slot-remove';
-    rm.textContent = '×';
-    rm.addEventListener('click', e => { e.stopPropagation(); removeSlotImg(i); });
+    rm.type = 'button'; rm.className = 'img-slot-rm'; rm.textContent = '×';
+    rm.addEventListener('click', e => { e.stopPropagation(); slotData[i]=''; renderSlots(); });
     slot.appendChild(rm);
 
-    slot.addEventListener('click', () => openSlotInput(i));
+    slot.addEventListener('click', () => pickImage(i));
 
     const lbl = document.createElement('div');
-    lbl.className = 'slot-label';
-    lbl.textContent = i === 0 ? '★ Principal' : `Foto ${i + 1}`;
+    lbl.className = 'img-slot-label';
+    lbl.textContent = i === 0 ? '★ Principal' : 'Foto '+(i+1);
 
     wrap.appendChild(slot);
     wrap.appendChild(lbl);
@@ -566,41 +532,34 @@ function renderSlots() {
   });
 }
 
-function removeSlotImg(i) {
-  slotData[i] = '';
-  renderSlots();
-}
-
-function openSlotInput(i) {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.style.display = 'none';
-  document.body.appendChild(input);
-  input.addEventListener('change', async e => {
+function pickImage(i) {
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'image/*'; inp.style.display = 'none';
+  document.body.appendChild(inp);
+  inp.addEventListener('change', async e => {
     const file = e.target.files[0];
-    document.body.removeChild(input);
+    document.body.removeChild(inp);
     if (!file) return;
-    status('Procesando imagen...', '');
+    setStatus('Procesando imagen...', '');
     slotData[i] = await resizeImage(file);
     renderSlots();
-    status('', '');
+    setStatus('', '');
   });
-  input.click();
+  inp.click();
 }
 
-async function resizeImage(file, maxWidth = 900, quality = 0.75) {
+async function resizeImage(file, maxW = 900, quality = 0.75) {
   return new Promise(resolve => {
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
       img.onload = () => {
         let w = img.width, h = img.height;
-        if (w > maxWidth) { h = Math.round(h * maxWidth / w); w = maxWidth; }
-        const canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        resolve(canvas.toDataURL('image/jpeg', quality));
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(c.toDataURL('image/jpeg', quality));
       };
       img.src = e.target.result;
     };
@@ -608,24 +567,24 @@ async function resizeImage(file, maxWidth = 900, quality = 0.75) {
   });
 }
 
-function status(msg, type = '') {
+function setStatus(msg, type) {
   const el = document.getElementById('statusMsg');
   el.textContent = msg;
-  el.className   = 'status-msg ' + type;
+  el.className   = type || '';
 }
 
 /* ── GUARDAR ── */
-async function submitForm(event) {
-  event.preventDefault();
+async function submitForm(e) {
+  e.preventDefault();
   const images = slotData.filter(Boolean);
   const name   = document.getElementById('fName').value.trim();
   const brand  = document.getElementById('fBrand').value.trim();
 
-  if (!name || !brand)     { status('Nombre y marca son obligatorios.', 'err'); return; }
-  if (isNew && !images[0]) { status('La imagen principal es obligatoria para productos nuevos.', 'err'); return; }
+  if (!name || !brand)     { setStatus('Nombre y marca son obligatorios.', 'err'); return; }
+  if (isNew && !images[0]) { setStatus('Sube al menos la imagen principal.', 'err'); return; }
 
-  const visible = document.getElementById('fVisible').checked;
-  const deleted = document.getElementById('fDeleted').checked;
+  setStatus('Guardando...', '');
+  document.getElementById('submitBtn').disabled = true;
 
   const payload = {
     name, brand,
@@ -633,93 +592,74 @@ async function submitForm(event) {
     price:  document.getElementById('fPrice').value.trim() || 'Consultar precio',
     tag:    document.getElementById('fTag').value,
     desc:   document.getElementById('fDesc').value.trim(),
-    hidden: !visible, deleted,
+    hidden: !document.getElementById('fVisible').checked,
+    deleted: document.getElementById('fDeleted').checked,
     img:    images[0] || (current?.img || ''),
     images
   };
-
-  status('Guardando...', '');
 
   try {
     let saved;
     if (isNew) {
       saved = await api('/api/catalogos', { method: 'POST', body: JSON.stringify({ ...payload, isCustom: true }) });
-      products.unshift(saved);
-      current = saved;
-      isNew   = false;
+      allProducts.unshift(saved);
     } else {
       const endpoint = current.sourceId !== undefined
         ? `/api/catalogos/source/${current.sourceId}`
         : `/api/catalogos/${current._id}`;
       saved = await api(endpoint, { method: 'PUT', body: JSON.stringify(payload) });
-      products = products.map(p => p._id === saved._id ? saved : p);
-      current = saved;
+      allProducts = allProducts.map(p => p._id === saved._id ? saved : p);
     }
-    renderList(document.getElementById('search').value);
-    showView('catalog');
+    renderGrid();
+    toast('✓ Guardado correctamente');
+    showCatalog();
   } catch (err) {
-    status(err.message, 'err');
+    setStatus(err.message, 'err');
+  } finally {
+    document.getElementById('submitBtn').disabled = false;
   }
 }
 
 /* ── ELIMINAR ── */
 async function deleteProduct() {
   if (!current || isNew) return;
-  const name = current.name || 'este producto';
-  if (!confirm(`¿Eliminar permanentemente "${name}"?\n\nEsta acción no se puede deshacer.`)) return;
-
-  status('Eliminando...', '');
+  if (!confirm(`¿Eliminar "${current.name || 'este producto'}" permanentemente?\nEsta acción no se puede deshacer.`)) return;
+  setStatus('Eliminando...', '');
   try {
     await api(`/api/catalogos/${current._id}`, { method: 'DELETE' });
-    products = products.filter(p => p._id !== current._id);
-    current  = null;
-    isNew    = false;
-    renderList(document.getElementById('search').value);
-    showView('catalog');
+    allProducts = allProducts.filter(p => p._id !== current._id);
+    renderGrid();
+    toast('Producto eliminado');
+    showCatalog();
   } catch (err) {
-    status(err.message, 'err');
+    setStatus(err.message, 'err');
   }
 }
 
-/* ── CARGA INICIAL ── */
+/* ── CARGA ── */
 async function loadProducts() {
   document.getElementById('countLabel').textContent = 'Cargando...';
   try {
-    products = await api('/api/catalogos');
-    renderCatFilters();
-    renderList();
+    allProducts = await api('/api/catalogos');
+    renderCatBar();
+    renderGrid();
   } catch (err) {
-    document.getElementById('countLabel').textContent = 'Error al cargar productos';
+    document.getElementById('countLabel').textContent = 'Error al cargar';
   }
 }
 
 /* ── EVENTOS ── */
-document.getElementById('search').addEventListener('input', e => renderList(e.target.value));
+document.getElementById('search').addEventListener('input', e => renderGrid(e.target.value));
 document.getElementById('newBtn').addEventListener('click', openNew);
-
-document.getElementById('backBtn').addEventListener('click', () => {
-  showView('catalog');
-});
-
+document.getElementById('backBtn').addEventListener('click', showCatalog);
+document.getElementById('saveHeaderBtn').addEventListener('click', () => document.getElementById('productForm').requestSubmit());
+document.getElementById('deleteHeaderBtn').addEventListener('click', deleteProduct);
 document.getElementById('logoutBtn').addEventListener('click', () => {
   localStorage.removeItem('lf_admin_token');
   localStorage.removeItem('lf_admin_user');
   window.location.href = 'editar.html';
 });
 
-document.getElementById('stickySaveBtn').addEventListener('click', () => {
-  document.getElementById('productForm').requestSubmit();
-});
-
-const statusObserver = new MutationObserver(() => {
-  const src = document.getElementById('statusMsg');
-  const dst = document.getElementById('stickyStatusMsg');
-  dst.textContent = src.textContent;
-  dst.className   = src.className;
-});
-statusObserver.observe(document.getElementById('statusMsg'), { childList: true, characterData: true, subtree: true });
-
-showView('catalog');
 loadProducts();
 </script>
 </body>
