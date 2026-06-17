@@ -294,6 +294,19 @@
     transform: translateX(-50%) translateY(0);
   }
 
+  /* ── IMAGE GALLERY ── */
+  .img-gallery {
+    display: flex; gap: 6px; padding: 10px 16px;
+    background: #e4ddd3; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  }
+  .img-thumb {
+    width: 58px; height: 58px; flex-shrink: 0;
+    object-fit: cover; cursor: pointer; border-radius: 3px;
+    border: 2px solid transparent; opacity: 0.65;
+    transition: opacity .15s, border-color .15s;
+  }
+  .img-thumb.active, .img-thumb:hover { border-color: var(--gold); opacity: 1; }
+
   /* ── FADE IN ── */
   .product-detail { animation: fadeIn 0.4s ease; }
   @keyframes fadeIn {
@@ -331,6 +344,18 @@
 const WA = '593998894744';
 const SITE_URL = 'https://luxury-fernandez.shop';
 const API_BASE = window.location.origin;
+
+function imgSrc(src) {
+  if (!src) return '';
+  if (/^(https?:|data:)/.test(src)) return src;
+  return src.startsWith('/') ? src : `/${src}`;
+}
+
+function changeMainImg(thumb, src) {
+  document.querySelector('.product-image').src = imgSrc(src);
+  document.querySelectorAll('.img-thumb').forEach(t => t.classList.remove('active'));
+  thumb.classList.add('active');
+}
 
 const products = [
   /* 0 */ { img:'imagenes/84bff691-0d81-43a1-984f-bddb26ffd087.JPG', brand:'Bimba y Lola', name:'Crossbody Blanca Cadena', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Elegante bolso crossbody en color blanco roto con cadena plateada y correa ajustable con logo. Cierre de botón giratorio. Ideal para el día a día con estilo y distinción.' },
@@ -422,12 +447,20 @@ function renderProduct(p, idx) {
   const tagHTML = tag ? `<div class="product-tag tag-${tag}">${tagLabel}</div>` : '';
   const waLink = buildWALink(p);
 
+  const allImgs = (p.images && p.images.length > 1) ? p.images : null;
+  const galleryHTML = allImgs
+    ? `<div class="img-gallery">${allImgs.map((src, i) =>
+        `<img class="img-thumb${i === 0 ? ' active' : ''}" src="${imgSrc(src)}" alt="Imagen ${i + 1}" onclick="changeMainImg(this,'${src.replace(/'/g,"\\'")}'">`
+      ).join('')}</div>`
+    : '';
+
   document.getElementById('main').innerHTML = `
     <div class="product-detail">
       <div class="product-image-wrap">
-        <img class="product-image" src="${p.img}" alt="${p.name}">
+        <img class="product-image" src="${imgSrc(p.img)}" alt="${p.name}">
         ${tagHTML}
       </div>
+      ${galleryHTML}
       <div class="product-content">
         <div class="product-category">${p.cat}</div>
         <h1 class="product-name">${p.name}</h1>

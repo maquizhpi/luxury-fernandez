@@ -45,19 +45,27 @@ function sanitizeText(value, maxLen = 500) {
 }
 
 function sanitizeImageUrl(value) {
-  const str = String(value || '').trim().slice(0, 1000);
+  const str = String(value || '').trim();
   const lower = str.toLowerCase().replace(/\s/g, '');
-  if (lower.startsWith('javascript:') || lower.startsWith('data:') || lower.startsWith('vbscript:')) {
-    return '';
-  }
-  return str;
+  if (lower.startsWith('javascript:') || lower.startsWith('vbscript:')) return '';
+  // Allow data:image/ (base64 photos) but block other data: protocols
+  if (lower.startsWith('data:') && !lower.startsWith('data:image/')) return '';
+  return str.slice(0, 2000000); // 2 MB max for base64 images
 }
 
 export function normalizeProduct(body = {}) {
   const now = new Date();
   const rawPrice = sanitizeText(body.price, 50);
+
+  const rawImages = Array.isArray(body.images) ? body.images : [];
+  const images = rawImages.slice(0, 5).map(u => sanitizeImageUrl(u)).filter(Boolean);
+
+  // img is always the first image for backward compat with catalog cards
+  const primaryImg = sanitizeImageUrl(body.img) || images[0] || '';
+
   const product = {
-    img: sanitizeImageUrl(body.img),
+    img: primaryImg,
+    images,
     brand: sanitizeText(body.brand, 100),
     name: sanitizeText(body.name, 200),
     cat: sanitizeText(body.cat, 100),

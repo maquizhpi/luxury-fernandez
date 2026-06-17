@@ -102,27 +102,41 @@
   }
   .mode-badge.new-mode { background: #dce8f5; color: #2a5298; }
 
-  .img-section {
-    display: flex; gap: 16px; align-items: flex-start; margin-bottom: 20px;
+  /* ── MULTI-IMAGE SLOTS ── */
+  .multi-img-section { margin-bottom: 20px; }
+  .multi-img-section > .section-label {
+    color: var(--muted); font-size: 11px; display: block; margin-bottom: 10px;
   }
-  .preview {
-    width: 120px; height: 140px; object-fit: cover;
-    border-radius: 8px; border: 1px solid var(--line); background: #e8e4de;
-    flex-shrink: 0;
+  .img-slots {
+    display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;
   }
-  .img-controls { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-  .img-controls label { color: var(--muted); font-size: 11px; margin-bottom: 2px; display: block; }
-  .img-controls input[type="text"] {
-    width: 100%; border: 1px solid var(--line); border-radius: 8px;
-    color: var(--ink); font: inherit; font-size: 12px; padding: 9px 11px; outline: none;
+  .img-slot-wrap { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+  .img-slot {
+    position: relative; width: 88px; height: 104px;
+    border: 1.5px dashed var(--muted); border-radius: 8px;
+    overflow: hidden; background: #faf8f5;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: border-color .15s;
   }
-  .img-controls input[type="text"]:focus { border-color: var(--ink); }
-  .file-btn {
-    display: block; border: 1px dashed var(--muted); border-radius: 8px;
-    padding: 9px 12px; font-size: 11px; color: var(--muted); cursor: pointer;
-    text-align: center; background: #faf8f5; line-height: 1.4;
+  .img-slot:hover { border-color: var(--ink); }
+  .img-slot.has-img { border: 1.5px solid var(--line); }
+  .img-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .slot-placeholder {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 4px; color: var(--muted); font-size: 10px; text-align: center; padding: 6px;
+    pointer-events: none;
   }
-  .file-btn:hover { border-color: var(--ink); color: var(--ink); }
+  .img-slot.has-img .slot-placeholder { display: none; }
+  .slot-remove {
+    position: absolute; top: 3px; right: 3px;
+    width: 18px; height: 18px;
+    background: rgba(180,35,24,0.88); color: #fff;
+    border: none; border-radius: 50%; font-size: 13px; cursor: pointer;
+    display: none; align-items: center; justify-content: center;
+    line-height: 1; padding: 0;
+  }
+  .img-slot.has-img .slot-remove { display: flex; }
+  .slot-label { font-size: 9px; color: var(--muted); text-align: center; letter-spacing: 0.3px; }
 
   .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
   .field.full { grid-column: 1 / -1; }
@@ -201,10 +215,6 @@
     .editor { padding: 14px; max-width: 100%; }
     .editor-title { font-size: 18px; margin-bottom: 14px; }
 
-    .img-section { flex-direction: column; }
-    .preview { width: 100%; height: 220px; }
-    .img-controls { width: 100%; }
-
     .grid { grid-template-columns: 1fr; gap: 12px; }
 
     .form-actions { flex-direction: column; }
@@ -255,18 +265,9 @@
           <span class="mode-badge" id="modeBadge">Editando</span>
         </div>
 
-        <div class="img-section">
-          <img class="preview" id="preview" src="" alt="">
-          <div class="img-controls">
-            <div>
-              <label>URL de imagen</label>
-              <input type="text" id="imgUrl" placeholder="https://... o imagenes/archivo.JPG" oninput="onImgUrlChange()">
-            </div>
-            <label class="file-btn">
-              📷 Subir imagen desde dispositivo
-              <input type="file" id="imgFile" accept="image/*" style="display:none" onchange="onImgFileChange(event)">
-            </label>
-          </div>
+        <div class="multi-img-section">
+          <span class="section-label">Imágenes del producto (hasta 5) — toca para subir, × para quitar</span>
+          <div class="img-slots" id="imgSlots"></div>
         </div>
 
         <div class="grid">
@@ -336,10 +337,10 @@ if (!token) window.location.href = 'editar.html';
 
 document.getElementById('userLine').textContent = `Sesión: ${user}`;
 
-let products = [];
-let current  = null;
-let isNew    = false;
-let tempImg  = null;
+let products  = [];
+let current   = null;
+let isNew     = false;
+let slotData  = ['', '', '', '', '']; // up to 5 images per product
 
 function imgSrc(src) {
   if (!src) return '';
@@ -417,10 +418,10 @@ function fillForm(p) {
   badge.textContent = isNew ? 'Nuevo' : 'Editando';
   badge.className   = 'mode-badge' + (isNew ? ' new-mode' : '');
 
-  document.getElementById('preview').src  = isNew ? '' : imgSrc(p.img);
-  document.getElementById('imgUrl').value  = isNew ? '' : (p.img || '');
-  document.getElementById('imgFile').value = '';
-  tempImg = null;
+  const imgArr = (p.images && p.images.length > 0) ? p.images : (p.img ? [p.img] : []);
+  slotData = ['', '', '', '', ''];
+  imgArr.slice(0, 5).forEach((u, i) => { slotData[i] = u || ''; });
+  renderSlots();
 
   document.getElementById('fName').value    = p.name    || '';
   document.getElementById('fBrand').value   = p.brand   || '';
@@ -438,9 +439,10 @@ function fillForm(p) {
 }
 
 function openNew() {
-  current = null;
-  isNew   = true;
-  fillForm({ name: '', brand: '', cat: 'cartera', price: '', tag: '', desc: '', img: '', hidden: false, deleted: false });
+  current  = null;
+  isNew    = true;
+  slotData = ['', '', '', '', ''];
+  fillForm({ name: '', brand: '', cat: 'cartera', price: '', tag: '', desc: '', img: '', images: [], hidden: false, deleted: false });
 }
 
 function normCat(cat) {
@@ -455,23 +457,90 @@ function normCat(cat) {
   return c || 'cartera';
 }
 
-function onImgUrlChange() {
-  tempImg = null;
-  document.getElementById('imgFile').value = '';
-  const url = document.getElementById('imgUrl').value.trim();
-  document.getElementById('preview').src = imgSrc(url);
+/* ── IMAGE SLOTS ── */
+
+function renderSlots() {
+  const container = document.getElementById('imgSlots');
+  container.innerHTML = '';
+  slotData.forEach((data, i) => {
+    const hasImg = Boolean(data);
+    const wrap = document.createElement('div');
+    wrap.className = 'img-slot-wrap';
+
+    const slot = document.createElement('div');
+    slot.className = 'img-slot' + (hasImg ? ' has-img' : '');
+
+    if (hasImg) {
+      const img = document.createElement('img');
+      img.src = imgSrc(data);
+      img.alt = '';
+      slot.appendChild(img);
+    }
+
+    const ph = document.createElement('div');
+    ph.className = 'slot-placeholder';
+    ph.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>${i === 0 ? 'Principal' : '+'}</span>`;
+    slot.appendChild(ph);
+
+    const rm = document.createElement('button');
+    rm.type = 'button';
+    rm.className = 'slot-remove';
+    rm.textContent = '×';
+    rm.addEventListener('click', e => { e.stopPropagation(); removeSlotImg(i); });
+    slot.appendChild(rm);
+
+    slot.addEventListener('click', () => openSlotInput(i));
+
+    const lbl = document.createElement('div');
+    lbl.className = 'slot-label';
+    lbl.textContent = i === 0 ? '★ Principal' : `Foto ${i + 1}`;
+
+    wrap.appendChild(slot);
+    wrap.appendChild(lbl);
+    container.appendChild(wrap);
+  });
 }
 
-function onImgFileChange(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  document.getElementById('imgUrl').value = '';
-  const reader = new FileReader();
-  reader.onload = e => {
-    tempImg = e.target.result;
-    document.getElementById('preview').src = tempImg;
-  };
-  reader.readAsDataURL(file);
+function removeSlotImg(i) {
+  slotData[i] = '';
+  renderSlots();
+}
+
+function openSlotInput(i) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.style.display = 'none';
+  document.body.appendChild(input);
+  input.addEventListener('change', async e => {
+    const file = e.target.files[0];
+    document.body.removeChild(input);
+    if (!file) return;
+    status('Procesando imagen...', '');
+    slotData[i] = await resizeImage(file);
+    renderSlots();
+    status('', '');
+  });
+  input.click();
+}
+
+async function resizeImage(file, maxWidth = 900, quality = 0.75) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if (w > maxWidth) { h = Math.round(h * maxWidth / w); w = maxWidth; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 function status(msg, type = '') {
@@ -482,12 +551,12 @@ function status(msg, type = '') {
 
 async function submitForm(event) {
   event.preventDefault();
-  const imgVal = tempImg || document.getElementById('imgUrl').value.trim();
+  const images = slotData.filter(Boolean);
   const name   = document.getElementById('fName').value.trim();
   const brand  = document.getElementById('fBrand').value.trim();
 
-  if (!name || !brand)  { status('Nombre y marca son obligatorios.', 'err'); return; }
-  if (isNew && !imgVal) { status('La imagen es obligatoria para productos nuevos.', 'err'); return; }
+  if (!name || !brand)     { status('Nombre y marca son obligatorios.', 'err'); return; }
+  if (isNew && !images[0]) { status('La imagen principal es obligatoria para productos nuevos.', 'err'); return; }
 
   const visible  = document.getElementById('fVisible').checked;
   const deleted  = document.getElementById('fDeleted').checked;
@@ -501,7 +570,8 @@ async function submitForm(event) {
     desc:    document.getElementById('fDesc').value.trim(),
     hidden:  !visible,
     deleted,
-    img:     imgVal || (current?.img || '')
+    img:     images[0] || (current?.img || ''),
+    images
   };
 
   status('Guardando...', '');
