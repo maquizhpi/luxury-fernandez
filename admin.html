@@ -44,7 +44,7 @@
 
   .catalog-toolbar {
     display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-    padding: 12px 20px; border-bottom: 1px solid var(--line);
+    padding: 12px 20px 0; border-bottom: none;
     background: var(--white); position: sticky; top: var(--hh, 57px); z-index: 5;
   }
   .catalog-toolbar input {
@@ -55,6 +55,23 @@
   }
   .catalog-toolbar input:focus { border-color: var(--ink); background: #fff; }
   #countLabel { color: var(--muted); font-size: 11px; }
+
+  .cat-filters {
+    display: flex; gap: 6px; overflow-x: auto; padding: 10px 20px;
+    background: var(--white); border-bottom: 1px solid var(--line);
+    position: sticky; top: calc(var(--hh, 57px) + 53px); z-index: 5;
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .cat-filters::-webkit-scrollbar { display: none; }
+  .cat-pill {
+    flex-shrink: 0; border: 1px solid var(--line); border-radius: 999px;
+    background: #fff; color: var(--muted); font: inherit; font-size: 11px;
+    font-weight: 600; padding: 6px 14px; cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s;
+    white-space: nowrap;
+  }
+  .cat-pill:hover { border-color: var(--ink); color: var(--ink); }
+  .cat-pill.active { background: var(--ink); color: #fff; border-color: var(--ink); }
 
   .product-grid {
     display: grid;
@@ -184,8 +201,10 @@
     .top-actions .new-btn { grid-column: 1 / 2; text-align: center; padding: 11px 12px; font-size: 12px; }
     .top-actions .ghost, .top-actions .danger-btn { padding: 11px 14px; font-size: 12px; }
 
-    .catalog-toolbar { padding: 10px 12px; top: var(--hh, 93px); }
+    .catalog-toolbar { padding: 10px 12px 0; top: var(--hh, 93px); }
     .catalog-toolbar input { font-size: 16px; min-height: 44px; max-width: none; }
+    .cat-filters { top: calc(var(--hh, 93px) + 64px); padding: 8px 12px; gap: 6px; }
+    .cat-pill { font-size: 12px; padding: 7px 14px; }
 
     .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
     .card-name { font-size: 11px; }
@@ -239,6 +258,7 @@
     <input id="search" type="search" placeholder="Buscar producto...">
     <span id="countLabel">Cargando...</span>
   </div>
+  <div class="cat-filters" id="catFilters"></div>
   <div class="product-grid" id="productList"></div>
 </div>
 
@@ -337,10 +357,23 @@ function updateHeaderHeight() {
 updateHeaderHeight();
 window.addEventListener('resize', updateHeaderHeight);
 
-let products = [];
-let current  = null;
-let isNew    = false;
-let slotData = ['', '', '', '', ''];
+let products   = [];
+let current    = null;
+let isNew      = false;
+let slotData   = ['', '', '', '', ''];
+let filterCat  = '';
+
+const CATS = [
+  { key: '',           label: 'Todos' },
+  { key: 'billetera',  label: 'Billeteras' },
+  { key: 'cartera',    label: 'Carteras' },
+  { key: 'joya',       label: 'Joyas' },
+  { key: 'gorra',      label: 'Gorras' },
+  { key: 'accesorio',  label: 'Accesorios' },
+  { key: 'ropa',       label: 'Ropa Mujer' },
+  { key: 'infantil',   label: 'Infantil' },
+  { key: 'figura',     label: 'Figuras' },
+];
 
 function imgSrc(src) {
   if (!src) return '';
@@ -369,14 +402,33 @@ function showView(view) {
   if (view === 'catalog') showStickyBar(false);
 }
 
+/* ── FILTROS DE CATEGORÍA ── */
+function renderCatFilters() {
+  const bar = document.getElementById('catFilters');
+  bar.innerHTML = '';
+  CATS.forEach(c => {
+    const pill = document.createElement('button');
+    pill.type = 'button';
+    pill.className = 'cat-pill' + (filterCat === c.key ? ' active' : '');
+    pill.textContent = c.label;
+    pill.addEventListener('click', () => {
+      filterCat = c.key;
+      renderCatFilters();
+      renderList(document.getElementById('search').value);
+    });
+    bar.appendChild(pill);
+  });
+}
+
 /* ── GRILLA DE PRODUCTOS ── */
 function renderList(q = '') {
   const list  = document.getElementById('productList');
   list.innerHTML = '';
   const lower = q.trim().toLowerCase();
-  const filtered = products.filter(p =>
-    !lower || [p.name, p.brand, p.cat].some(v => (v || '').toLowerCase().includes(lower))
-  );
+  const filtered = products.filter(p => {
+    if (filterCat && normCat(p.cat) !== filterCat) return false;
+    return !lower || [p.name, p.brand, p.cat].some(v => (v || '').toLowerCase().includes(lower));
+  });
   document.getElementById('countLabel').textContent =
     `${filtered.length} de ${products.length} productos`;
 
@@ -635,6 +687,7 @@ async function loadProducts() {
   document.getElementById('countLabel').textContent = 'Cargando...';
   try {
     products = await api('/api/catalogos');
+    renderCatFilters();
     renderList();
   } catch (err) {
     document.getElementById('countLabel').textContent = 'Error al cargar productos';
