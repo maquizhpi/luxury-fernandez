@@ -169,10 +169,15 @@
 
   /* ── BACK BUTTON (mobile only) ── */
   .back-btn {
-    display: none; width: 100%; padding: 10px 16px;
+    display: none; width: 100%; padding: 12px 16px;
     border: 0; border-radius: 0; border-bottom: 1px solid var(--line);
-    background: #f7f3ec; color: var(--muted); font: inherit; font-size: 12px;
+    background: #f7f3ec; color: var(--muted); font: inherit; font-size: 13px;
     text-align: left; cursor: pointer;
+  }
+
+  /* ── STICKY SAVE BAR (mobile only) ── */
+  .sticky-save-bar {
+    display: none;
   }
 
   /* ── TABLET ── */
@@ -183,47 +188,109 @@
 
   /* ── MOBILE ── */
   @media (max-width: 650px) {
-    header { padding: 10px 14px; }
-    h1 { font-size: 22px; }
+    /* Header: stack title on top, buttons below */
+    header {
+      padding: 10px 14px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+    header > div:first-child {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    h1 { font-size: 21px; }
     .user-line { display: none; }
-    button, a.btn { padding: 8px 13px; font-size: 11px; }
 
+    /* Button row: Nuevo stretches, Ver catálogo + Salir stay compact */
+    .top-actions {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 8px;
+    }
+    .top-actions .new-btn {
+      grid-column: 1 / 2;
+      text-align: center;
+      padding: 11px 12px;
+      font-size: 12px;
+    }
+    .top-actions .ghost,
+    .top-actions .danger-btn {
+      padding: 11px 14px;
+      font-size: 12px;
+    }
+
+    /* Main layout: single column, use dynamic viewport height */
     main {
       grid-template-columns: 1fr;
       grid-template-rows: auto 1fr;
-      height: calc(100vh - 49px);
+      height: calc(100dvh - var(--hh, 93px));
     }
 
     aside {
       border-right: none;
       border-bottom: 1px solid var(--line);
-      height: calc(100vh - 49px);
-      transition: transform .25s ease;
+      height: calc(100dvh - var(--hh, 93px));
     }
-    aside.hidden-mobile {
-      display: none;
-    }
-    section {
-      height: calc(100vh - 49px);
-    }
-    section.hidden-mobile {
-      display: none;
-    }
+    aside.hidden-mobile { display: none; }
+
+    section { height: calc(100dvh - var(--hh, 93px)); }
+    section.hidden-mobile { display: none; }
 
     .back-btn { display: block; }
 
-    .editor { padding: 14px; max-width: 100%; }
+    /* Editor form */
+    .editor {
+      padding: 14px 14px calc(80px + env(safe-area-inset-bottom, 0px));
+      max-width: 100%;
+    }
     .editor-title { font-size: 18px; margin-bottom: 14px; }
 
-    .grid { grid-template-columns: 1fr; gap: 12px; }
+    /* iOS: inputs ≥16px prevent auto-zoom */
+    .field input, .field textarea, .field select,
+    .list-header input {
+      font-size: 16px;
+      min-height: 46px;
+      padding: 12px 14px;
+    }
+    .field textarea { min-height: 110px; }
 
-    .form-actions { flex-direction: column; }
-    .form-actions button { min-width: unset; width: 100%; }
+    /* Bigger image slots for touch */
+    .img-slot { width: 80px; height: 96px; }
 
-    .checks { gap: 14px; }
+    /* Image slot remove button — bigger tap target */
+    .slot-remove { width: 22px; height: 22px; font-size: 15px; }
 
-    .product-item { padding: 10px 12px; }
-    .thumb { width: 46px; height: 54px; }
+    .grid { grid-template-columns: 1fr; gap: 14px; }
+
+    .checks { gap: 16px; }
+    .checks label { font-size: 14px; }
+    .checks input[type="checkbox"] { width: 20px; height: 20px; }
+
+    /* Hide original form-actions; sticky bar replaces them */
+    .form-actions { display: none; }
+    .status-msg { text-align: center; font-size: 13px; }
+
+    /* Sticky save bar at bottom */
+    .sticky-save-bar {
+      display: flex; flex-direction: column; gap: 0;
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
+      background: var(--white);
+      border-top: 1px solid var(--line);
+      padding: 10px 14px env(safe-area-inset-bottom, 10px);
+    }
+    .sticky-save-bar button {
+      width: 100%; padding: 14px; font-size: 14px;
+      border-radius: 10px;
+    }
+    .sticky-save-bar .status-msg {
+      min-height: 0; padding-top: 6px;
+    }
+
+    /* Product list items */
+    .product-item { padding: 12px 14px; }
+    .thumb { width: 48px; height: 56px; }
+    .item-info strong { font-size: 13px; }
+    .item-info span { font-size: 12px; }
   }
 </style>
 </head>
@@ -330,6 +397,12 @@
   </section>
 </main>
 
+<!-- Sticky save bar – visible only on mobile when form is open -->
+<div class="sticky-save-bar" id="stickySaveBar" style="display:none">
+  <button type="button" class="success-btn" id="stickySaveBtn">Guardar cambios</button>
+  <div class="status-msg" id="stickyStatusMsg"></div>
+</div>
+
 <script>
 const token = localStorage.getItem('lf_admin_token') || '';
 const user  = localStorage.getItem('lf_admin_user') || 'admin';
@@ -337,6 +410,14 @@ const user  = localStorage.getItem('lf_admin_user') || 'admin';
 if (!token) window.location.href = 'editar.html';
 
 document.getElementById('userLine').textContent = `Sesión: ${user}`;
+
+// Measure real header height so CSS custom property --hh is accurate
+function updateHeaderHeight() {
+  const h = document.querySelector('header').getBoundingClientRect().height;
+  document.documentElement.style.setProperty('--hh', Math.round(h) + 'px');
+}
+updateHeaderHeight();
+window.addEventListener('resize', updateHeaderHeight);
 
 let products  = [];
 let current   = null;
@@ -405,10 +486,18 @@ function selectProduct(p) {
   renderList(document.getElementById('search').value);
 }
 
+function showStickyBar(show) {
+  const bar = document.getElementById('stickySaveBar');
+  if (window.innerWidth <= 650) {
+    bar.style.display = show ? 'flex' : 'none';
+  }
+}
+
 function fillForm(p) {
   document.getElementById('emptyState').style.display = 'none';
   const form = document.getElementById('productForm');
   form.style.display = '';
+  showStickyBar(true);
   if (window.innerWidth <= 650) {
     document.getElementById('editorSection').classList.remove('hidden-mobile');
     document.querySelector('aside').classList.add('hidden-mobile');
@@ -615,6 +704,7 @@ async function deleteProduct() {
     isNew    = false;
     document.getElementById('productForm').style.display = 'none';
     document.getElementById('emptyState').style.display  = '';
+    showStickyBar(false);
     renderList(document.getElementById('search').value);
     status('', '');
   } catch (err) {
@@ -640,6 +730,7 @@ document.getElementById('newBtn').addEventListener('click', openNew);
 document.getElementById('backBtn').addEventListener('click', () => {
   document.getElementById('editorSection').classList.add('hidden-mobile');
   document.querySelector('aside').classList.remove('hidden-mobile');
+  showStickyBar(false);
 });
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
@@ -647,6 +738,21 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
   localStorage.removeItem('lf_admin_user');
   window.location.href = 'editar.html';
 });
+
+// Sticky save bar – submit the form and mirror status message
+document.getElementById('stickySaveBtn').addEventListener('click', () => {
+  document.getElementById('productForm').requestSubmit();
+});
+
+// Mirror statusMsg to stickyStatusMsg so user sees feedback above keyboard
+const statusObserver = new MutationObserver(() => {
+  const src = document.getElementById('statusMsg');
+  const dst = document.getElementById('stickyStatusMsg');
+  dst.textContent = src.textContent;
+  dst.className   = src.className;
+});
+statusObserver.observe(document.getElementById('statusMsg'), { childList: true, characterData: true, subtree: true });
+
 
 loadProducts();
 </script>
