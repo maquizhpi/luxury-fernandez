@@ -655,9 +655,8 @@ async function submitForm(event) {
       products = products.map(p => p._id === saved._id ? saved : p);
       current = saved;
     }
-    fillForm(saved);
     renderList(document.getElementById('search').value);
-    status('Cambios guardados correctamente.', 'ok');
+    showView('catalog');
   } catch (err) {
     status(err.message, 'err');
   }
