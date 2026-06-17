@@ -282,6 +282,7 @@
           <div class="field">
             <label>Categoría</label>
             <select id="fCat">
+              <option value="billetera">Billetera</option>
               <option value="cartera">Cartera</option>
               <option value="joya">Joya</option>
               <option value="gorra">Gorra</option>
@@ -447,6 +448,7 @@ function openNew() {
 
 function normCat(cat) {
   const c = (cat || '').toLowerCase();
+  if (c.includes('billetera')) return 'billetera';
   if (c.includes('cartera')) return 'cartera';
   if (c.includes('joya'))    return 'joya';
   if (c.includes('gorra'))   return 'gorra';

@@ -633,6 +633,20 @@
   }
   .modal-admin-danger:hover { opacity: 0.85; }
 
+  /* ── MODAL IMAGE GALLERY ── */
+  .modal-img-gallery {
+    display: none; gap: 6px; padding: 8px 12px;
+    background: #1a1712; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  }
+  .modal-img-gallery.has-thumbs { display: flex; }
+  .modal-img-thumb {
+    width: 54px; height: 54px; flex-shrink: 0;
+    object-fit: cover; cursor: pointer; border-radius: 2px;
+    border: 2px solid transparent; opacity: 0.65;
+    transition: opacity .15s, border-color .15s;
+  }
+  .modal-img-thumb.active, .modal-img-thumb:hover { border-color: var(--gold); opacity: 1; }
+
   /* ── SHARE BUTTONS ── */
   .share-row {
     display: flex; align-items: center; gap: 8px;
@@ -1105,6 +1119,7 @@
 <div class="filters-wrap">
   <div class="filters" id="filterBar">
     <button class="filter-btn active" onclick="filterCards('all', this)">Todo</button>
+    <button class="filter-btn" onclick="filterCards('billetera', this)">Billeteras</button>
     <button class="filter-btn" onclick="filterCards('cartera', this)">Carteras</button>
     <button class="filter-btn" onclick="filterCards('joya', this)">Joyas</button>
     <button class="filter-btn" onclick="filterCards('gorra', this)">Gorras</button>
@@ -1330,7 +1345,7 @@
     <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
   </div>
 
-  <div class="product-card" data-cat="cartera" data-idx="19" onclick="openModal(19)">
+  <div class="product-card" data-cat="billetera" data-idx="19" onclick="openModal(19)">
     <img class="card-img" src="imagenes/c8516528-d154-45dd-bc8c-8ee3507727af.JPG" alt="Carolina Herrera Billetera" loading="lazy">
     <div class="card-overlay">
       <div class="card-brand">Carolina Herrera</div>
@@ -1341,7 +1356,7 @@
     <div class="card-hover-cta"><button class="cta-btn-hover">Ver Detalle</button></div>
   </div>
 
-  <div class="product-card" data-cat="cartera" data-idx="20" onclick="openModal(20)">
+  <div class="product-card" data-cat="billetera" data-idx="20" onclick="openModal(20)">
     <img class="card-img" src="imagenes/7ff5367f-355b-4730-8d78-49aa356a50f9.JPG" alt="Carolina Herrera Billetera Marron" loading="lazy">
     <div class="card-overlay">
       <div class="card-brand">Carolina Herrera</div>
@@ -1693,6 +1708,7 @@
       <div class="form-group">
         <label>Categoría *</label>
         <select id="f-cat">
+          <option value="billetera">Billetera</option>
           <option value="cartera">Cartera</option>
           <option value="joya">Joya</option>
           <option value="gorra">Gorra</option>
@@ -1735,6 +1751,7 @@
     <div class="modal-img-wrap">
       <img class="modal-img" id="modalImg" src="" alt="">
     </div>
+    <div class="modal-img-gallery" id="modalImgGallery"></div>
     <div class="modal-body">
       <div class="modal-category" id="modalCategory"></div>
       <h2 class="modal-title" id="modalTitle"></h2>
@@ -1771,6 +1788,7 @@
         <input type="text" class="modal-admin-input" id="modalEditBrand" placeholder="Marca">
         <label>Categoría</label>
         <select class="modal-admin-input" id="modalEditCat">
+          <option value="billetera">Billetera</option>
           <option value="cartera">Cartera</option>
           <option value="joya">Joya</option>
           <option value="gorra">Gorra</option>
@@ -1848,8 +1866,8 @@ const products = [
   /* 16 */ { img:'imagenes/56eaca01-c95a-4841-9f09-e0808b6e5f71.JPG', brand:'Gucci', name:'Ophidia Boston GG', cat:'Cartera', price:'Consultar precio', desc:'Mini bolso bowling en lona GG Supreme beige-ébano con franja web rojo/verde. Doble G en metal envejecido. Incluye tarjeta de autenticidad Gucci. Pieza icónica de la maison italiana.' },
   /* 17 */ { img:'imagenes/922d9290-4857-4d42-9736-fcea599a5eaf.JPG', brand:'Michael Kors', name:'Jet Set Charm Negra', cat:'Cartera', price:'Consultar precio', desc:'Bolso de cuero genuino negro con logo MK dorado. Incluye etiquetas originales y caja. Jet Set Charm Collection. Diseño sofisticado y funcional para cualquier ocasión.' },
   /* 18 */ { img:'imagenes/2e5853d9-0fca-4bc9-95ec-776d7888c318.JPG', brand:'Guess', name:'Quilted Flap Rosa', cat:'Cartera', price:'Consultar precio', desc:'Bolso de solapa acolchado en rosa blush con cadenas y herrajes dorados. Logo Guess Est. 1981 al frente. Correa de hombro ajustable. Diseño elegante y muy femenino.' },
-  /* 19 */ { img:'imagenes/c8516528-d154-45dd-bc8c-8ee3507727af.JPG', brand:'Carolina Herrera', name:'Billetera Monograma CH', cat:'Cartera', price:'Consultar precio', desc:'Billetera compacta con monograma CH en crema y negro. Cierre tipo broche en charol negro con logo dorado. Múltiples compartimentos. Incluye caja roja y tarjeta de autenticidad.' },
-  /* 20 */ { img:'imagenes/7ff5367f-355b-4730-8d78-49aa356a50f9.JPG', brand:'Carolina Herrera', name:'Billetera Monograma Marrón', cat:'Cartera', price:'Consultar precio', desc:'Billetera en cuero marrón con monograma CH clásico. Múltiples compartimentos para tarjetas y billete. Herrajes dorados con iniciales CH. Incluye caja CH original.' },
+  /* 19 */ { img:'imagenes/c8516528-d154-45dd-bc8c-8ee3507727af.JPG', brand:'Carolina Herrera', name:'Billetera Monograma CH', cat:'Billetera', price:'Consultar precio', desc:'Billetera compacta con monograma CH en crema y negro. Cierre tipo broche en charol negro con logo dorado. Múltiples compartimentos. Incluye caja roja y tarjeta de autenticidad.' },
+  /* 20 */ { img:'imagenes/7ff5367f-355b-4730-8d78-49aa356a50f9.JPG', brand:'Carolina Herrera', name:'Billetera Monograma Marrón', cat:'Billetera', price:'Consultar precio', desc:'Billetera en cuero marrón con monograma CH clásico. Múltiples compartimentos para tarjetas y billete. Herrajes dorados con iniciales CH. Incluye caja CH original.' },
   /* 21 */ { img:'imagenes/1274086b-d3c1-4edc-8e85-65af047350c0.JPG', brand:'TOUS', name:'Anillo Dorado TOUS', cat:'Joya', price:'Consultar precio', desc:'Anillo en baño de oro 18k con el icónico osito TOUS. Diseño acanalado que aporta elegancia y modernidad. Hipoalergénico, sin níquel. Resistente y duradero. Ideal para regalar.' },
   /* 22 */ { img:'imagenes/40c542df-7092-43a2-8599-93ecc0cf388d.JPG', brand:'Pandora', name:'Pulsera Rose Gold Brillantes', cat:'Joya', price:'Consultar precio', desc:'Pulsera de cadena snake en plata con detalles en rose gold. Cierre circular con pavé de brillantes. Estilo romántico y sofisticado. Perfecta para lucir sola o apilar.' },
   /* 23 */ { img:'imagenes/35d1f86c-430b-4448-9271-e62760b64e72.JPG', brand:'Pandora', name:'Pulsera Corazón Rose Gold', cat:'Joya', price:'Consultar precio', desc:'Pulsera de cadena snake en plata con cierre corazón en rose gold con cristales pavé. Diseño delicado y romántico. Muy versátil para uso diario. Perfecta como regalo especial.' },
@@ -1900,7 +1918,8 @@ const TAG_LABELS = {
 };
 
 const CATEGORY_META = [
-  { key: 'cartera', title: 'Carteras y billeteras', kicker: 'Categoría' },
+  { key: 'billetera', title: 'Billeteras para Papá', kicker: '🎁 Día del Padre' },
+  { key: 'cartera', title: 'Carteras y bolsos', kicker: 'Categoría' },
   { key: 'joya', title: 'Joyas', kicker: 'Categoría' },
   { key: 'gorra', title: 'Gorras', kicker: 'Categoría' },
   { key: 'accesorio', title: 'Accesorios', kicker: 'Categoría' },
@@ -1919,6 +1938,7 @@ function getCategoryMeta(cat) {
 
 function getProductFilterCat(cat) {
   const normalized = (cat || '').toString().toLowerCase();
+  if (normalized.includes('billetera')) return 'billetera';
   if (normalized.includes('cartera')) return 'cartera';
   if (normalized.includes('joya')) return 'joya';
   if (normalized.includes('gorra')) return 'gorra';
@@ -2150,6 +2170,17 @@ function applySavedPrices() {
 }
 
 // ── MODAL ──
+function modalImgSrc(src) {
+  if (!src) return '';
+  if (/^(https?:|data:)/.test(src)) return src;
+  return src.startsWith('/') ? src : `/${src}`;
+}
+function changeModalImg(thumb, src) {
+  document.getElementById('modalImg').src = modalImgSrc(src);
+  document.querySelectorAll('.modal-img-thumb').forEach(t => t.classList.remove('active'));
+  thumb.classList.add('active');
+}
+
 function openModal(idx) {
   // On mobile, navigate to dedicated product page
   if (window.innerWidth <= 768) {
@@ -2160,8 +2191,21 @@ function openModal(idx) {
   const p = allProducts[idx];
   if (!p) return;
   const savedPrice = customPrices[idx] || p.price;
-  document.getElementById('modalImg').src = p.img;
+  document.getElementById('modalImg').src = modalImgSrc(p.img);
   document.getElementById('modalImg').alt = p.name;
+
+  // Populate image gallery
+  const gallery = document.getElementById('modalImgGallery');
+  const imgs = p.images && p.images.length > 1 ? p.images : null;
+  if (imgs) {
+    gallery.className = 'modal-img-gallery has-thumbs';
+    gallery.innerHTML = imgs.map((src, i) =>
+      `<img class="modal-img-thumb${i === 0 ? ' active' : ''}" src="${modalImgSrc(src)}" alt="Imagen ${i + 1}" onclick="changeModalImg(this,'${src.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}">`
+    ).join('');
+  } else {
+    gallery.className = 'modal-img-gallery';
+    gallery.innerHTML = '';
+  }
   document.getElementById('modalCategory').textContent = p.cat;
   document.getElementById('modalTitle').textContent = p.name;
   document.getElementById('modalBrand').textContent = p.brand;

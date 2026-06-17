@@ -377,8 +377,8 @@ const products = [
   /* 16 */ { img:'imagenes/56eaca01-c95a-4841-9f09-e0808b6e5f71.JPG', brand:'Gucci', name:'Ophidia Boston GG', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Mini bolso bowling en lona GG Supreme beige-ébano con franja web rojo/verde. Doble G en metal envejecido. Incluye tarjeta de autenticidad Gucci. Pieza icónica de la maison italiana.' },
   /* 17 */ { img:'imagenes/922d9290-4857-4d42-9736-fcea599a5eaf.JPG', brand:'Michael Kors', name:'Jet Set Charm Negra', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Bolso de cuero genuino negro con logo MK dorado. Incluye etiquetas originales y caja. Jet Set Charm Collection. Diseño sofisticado y funcional para cualquier ocasión.' },
   /* 18 */ { img:'imagenes/2e5853d9-0fca-4bc9-95ec-776d7888c318.JPG', brand:'Guess', name:'Quilted Flap Rosa', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Bolso de solapa acolchado en rosa blush con cadenas y herrajes dorados. Logo Guess Est. 1981 al frente. Correa de hombro ajustable. Diseño elegante y muy femenino.' },
-  /* 19 */ { img:'imagenes/c8516528-d154-45dd-bc8c-8ee3507727af.JPG', brand:'Carolina Herrera', name:'Billetera Monograma CH', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Billetera compacta con monograma CH en crema y negro. Cierre tipo broche en charol negro con logo dorado. Múltiples compartimentos. Incluye caja roja y tarjeta de autenticidad.' },
-  /* 20 */ { img:'imagenes/7ff5367f-355b-4730-8d78-49aa356a50f9.JPG', brand:'Carolina Herrera', name:'Billetera Monograma Marrón', cat:'Cartera', price:'Consultar precio', tag:'nuevo', desc:'Billetera en cuero marrón con monograma CH clásico. Múltiples compartimentos para tarjetas y billete. Herrajes dorados con iniciales CH. Incluye caja CH original.' },
+  /* 19 */ { img:'imagenes/c8516528-d154-45dd-bc8c-8ee3507727af.JPG', brand:'Carolina Herrera', name:'Billetera Monograma CH', cat:'Billetera', price:'Consultar precio', tag:'nuevo', desc:'Billetera compacta con monograma CH en crema y negro. Cierre tipo broche en charol negro con logo dorado. Múltiples compartimentos. Incluye caja roja y tarjeta de autenticidad.' },
+  /* 20 */ { img:'imagenes/7ff5367f-355b-4730-8d78-49aa356a50f9.JPG', brand:'Carolina Herrera', name:'Billetera Monograma Marrón', cat:'Billetera', price:'Consultar precio', tag:'nuevo', desc:'Billetera en cuero marrón con monograma CH clásico. Múltiples compartimentos para tarjetas y billete. Herrajes dorados con iniciales CH. Incluye caja CH original.' },
   /* 21 */ { img:'imagenes/1274086b-d3c1-4edc-8e85-65af047350c0.JPG', brand:'TOUS', name:'Anillo Dorado TOUS', cat:'Joya', price:'Consultar precio', tag:'nuevo', desc:'Anillo en baño de oro 18k con el icónico osito TOUS. Diseño acanalado que aporta elegancia y modernidad. Hipoalergénico, sin níquel. Resistente y duradero. Ideal para regalar.' },
   /* 22 */ { img:'imagenes/40c542df-7092-43a2-8599-93ecc0cf388d.JPG', brand:'Pandora', name:'Pulsera Rose Gold Brillantes', cat:'Joya', price:'Consultar precio', tag:'nuevo', desc:'Pulsera de cadena snake en plata con detalles en rose gold. Cierre circular con pavé de brillantes. Estilo romántico y sofisticado. Perfecta para lucir sola o apilar.' },
   /* 23 */ { img:'imagenes/35d1f86c-430b-4448-9271-e62760b64e72.JPG', brand:'Pandora', name:'Pulsera Corazón Rose Gold', cat:'Joya', price:'Consultar precio', tag:'nuevo', desc:'Pulsera de cadena snake en plata con cierre corazón en rose gold con cristales pavé. Diseño delicado y romántico. Muy versátil para uso diario. Perfecta como regalo especial.' },
@@ -516,20 +516,28 @@ async function init() {
     return;
   }
 
-  // Try to load from API to get any edits/overrides
+  let apiProducts = [];
   try {
     const res = await fetch(`${API_BASE}/api/catalogos`);
-    if (res.ok) {
-      const mongoProducts = await res.json();
-      mongoProducts.forEach(mp => {
-        if (Number.isInteger(mp.sourceId) && mp.sourceId >= 0 && mp.sourceId < products.length) {
-          Object.assign(products[mp.sourceId], mp);
-        }
-      });
-    }
+    if (res.ok) apiProducts = await res.json();
   } catch (_) {}
 
-  const p = products[idx];
+  // Apply API overrides to static products
+  apiProducts.forEach(mp => {
+    if (Number.isInteger(mp.sourceId) && mp.sourceId >= 0 && mp.sourceId < products.length) {
+      Object.assign(products[mp.sourceId], mp);
+    }
+  });
+
+  let p;
+  if (idx < products.length) {
+    p = products[idx];
+  } else {
+    // Custom product (added from admin panel): find by position among custom products
+    const customProducts = apiProducts.filter(mp => !Number.isInteger(mp.sourceId) && !mp.hidden && !mp.deleted);
+    p = customProducts[idx - products.length];
+  }
+
   if (!p) {
     showNotFound();
     return;
