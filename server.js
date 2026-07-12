@@ -100,10 +100,18 @@ function requireAdmin(req, res, next) {
   return res.status(401).json({ error: 'Sesion de administrador requerida.' });
 }
 
+function sanitizeImageUrl(value) {
+  const str = String(value || '').trim();
+  const lower = str.toLowerCase().replace(/\s/g, '');
+  if (lower.startsWith('javascript:') || lower.startsWith('vbscript:')) return '';
+  // Allow data:image/ (base64 photos) but block other data: protocols
+  if (lower.startsWith('data:') && !lower.startsWith('data:image/')) return '';
+  return str.slice(0, 2000000); // 2 MB max for base64 images
+}
+
 function normalizeProduct(body) {
   const now = new Date();
   const product = {
-    img: String(body.img || '').trim(),
     brand: String(body.brand || '').trim(),
     name: String(body.name || '').trim(),
     cat: String(body.cat || '').trim(),
@@ -114,6 +122,14 @@ function normalizeProduct(body) {
     deleted: Boolean(body.deleted),
     updatedAt: now
   };
+
+  // Only update images when explicitly provided in the request body.
+  // Omitting images from the payload preserves the existing images in MongoDB.
+  if (Array.isArray(body.images)) {
+    const images = body.images.slice(0, 5).map(u => sanitizeImageUrl(u)).filter(Boolean);
+    product.images = images;
+    product.img = sanitizeImageUrl(body.img) || images[0] || '';
+  }
 
   if (Number.isInteger(body.sourceId)) product.sourceId = body.sourceId;
   if (body.isCustom !== undefined) product.isCustom = Boolean(body.isCustom);

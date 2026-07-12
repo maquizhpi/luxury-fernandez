@@ -688,6 +688,38 @@
     margin-top: 8px; border: 1px solid rgba(201,168,76,0.2);
     background: rgba(0,0,0,0.3); display: none;
   }
+  .img-multi-grid {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;
+  }
+  .img-multi-item {
+    position: relative; width: 72px; height: 72px;
+    border: 1px solid rgba(201,168,76,0.3); background: rgba(0,0,0,0.3);
+  }
+  .img-multi-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .img-multi-cover { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold); }
+  .img-multi-badge {
+    position: absolute; top: 2px; left: 2px;
+    background: var(--gold); color: var(--black);
+    font-size: 8px; letter-spacing: 0.5px; padding: 1px 4px;
+    font-weight: 600; text-transform: uppercase;
+  }
+  .img-multi-remove {
+    position: absolute; top: -6px; right: -6px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #c0392b; color: #fff; border: 1px solid rgba(255,255,255,0.4);
+    font-size: 12px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .img-multi-cover-btn {
+    position: absolute; bottom: -6px; right: -6px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: rgba(0,0,0,0.75); color: var(--gold-light); border: 1px solid rgba(201,168,76,0.5);
+    font-size: 10px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .img-multi-hint {
+    font-size: 10px; color: #666; letter-spacing: 0.5px; margin-top: 6px;
+  }
 
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
@@ -826,8 +858,10 @@
     body:not(.admin-on) .mobile-save-btn {
       display: none;
     }
-    .catalog-grid { grid-template-columns: repeat(2, 1fr); gap: 1px; padding: 0 1px 2px; }
-    .card-name { font-size: 17px; }
+    .catalog-grid { grid-template-columns: 1fr; gap: 14px; padding: 0 12px 12px; }
+    .product-card { aspect-ratio: 4/5; }
+    .card-name { font-size: 24px; }
+    .card-brand { font-size: 10px; }
     .filters { justify-content: flex-start; padding-left: 8px; }
   }
   @media (min-width: 641px) and (max-width: 900px) {
@@ -1107,7 +1141,6 @@
   <h1 class="brand-name">Luxury <span>Fernández</span></h1>
   <p class="brand-tagline">Carteras · Joyas · Moda · Accesorios</p>
   <p class="intro-message">Luxury es elegancia en tus manos en sus distintas categorías, revísanos.</p>
-  <div class="promo-banner">Día del Padre: 10% de descuento en billeteras</div>
   <div class="gold-divider"><div class="gold-divider-diamond"></div></div>
   <div class="search-wrap">
     <input type="text" id="searchInput" class="search-input" placeholder="Buscar productos, marcas…" oninput="doSearch(this.value)">
@@ -1724,14 +1757,18 @@
       </div>
     </div>
     <div class="form-group">
-      <label>Imagen *</label>
-      <input type="text" id="f-img" placeholder="Pegar URL (Google Drive, web...)" oninput="previewImgUrl()">
+      <label>Imágenes * (hasta 5, la primera es la portada)</label>
+      <div style="display:flex; gap:8px;">
+        <input type="text" id="f-img" placeholder="Pegar URL (Google Drive, web...)" style="flex:1">
+        <button type="button" class="modal-admin-save" style="width:auto; padding:0 16px;" onclick="addProductImageFromUrl()">Agregar</button>
+      </div>
       <div class="img-or-divider">— o sube desde tu dispositivo —</div>
       <label class="file-upload-btn">
-        📷 Seleccionar imagen desde tu dispositivo
-        <input type="file" id="f-img-file" accept="image/*" onchange="handleImageFile(event)" style="display:none">
+        📷 Seleccionar imágenes desde tu dispositivo
+        <input type="file" id="f-img-file" accept="image/*" multiple onchange="handleImageFile(event)" style="display:none">
       </label>
-      <img id="f-img-preview" class="img-preview-thumb" alt="Vista previa">
+      <div id="f-img-grid" class="img-multi-grid"></div>
+      <div class="img-multi-hint">Toca ★ para hacer una imagen la portada, o ✕ para quitarla.</div>
     </div>
     <div class="form-group">
       <label>Descripción</label>
@@ -1812,13 +1849,18 @@
         </select>
         <label>Descripción</label>
         <textarea class="modal-admin-input modal-admin-textarea" id="modalEditDesc" placeholder="Descripción del producto"></textarea>
-        <label>Nueva imagen (URL o Google Drive)</label>
-        <input type="text" class="modal-admin-input" id="modalEditImgUrl" placeholder="Pegar URL de imagen...">
+        <label>Imágenes (hasta 5, la primera es la portada)</label>
+        <div style="display:flex; gap:8px;">
+          <input type="text" class="modal-admin-input" id="modalEditImgUrl" placeholder="Pegar URL de imagen..." style="flex:1; margin-bottom:0;">
+          <button type="button" class="modal-admin-save" style="width:auto; padding:0 16px; margin-bottom:0;" onclick="addModalImageFromUrl()">Agregar</button>
+        </div>
         <div class="img-or-divider" style="margin:7px 0">— o sube desde tu dispositivo —</div>
         <label class="file-upload-btn" style="margin-bottom:0">
-          📷 Seleccionar imagen
-          <input type="file" id="modalEditImgFile" accept="image/*" onchange="handleModalImgFile(event)" style="display:none">
+          📷 Seleccionar imágenes
+          <input type="file" id="modalEditImgFile" accept="image/*" multiple onchange="handleModalImgFile(event)" style="display:none">
         </label>
+        <div id="modalEditImgGrid" class="img-multi-grid"></div>
+        <div class="img-multi-hint">Toca ★ para hacer una imagen la portada, o ✕ para quitarla.</div>
         <label class="modal-admin-toggle">
           <input type="checkbox" id="modalEditVisible">
           Visible en catálogo
@@ -1842,8 +1884,8 @@ const WA = '593998894744';
 const ADMIN_PWD = 'luxury2025'; // ← cambia tu contraseña aquí
 const SITE_URL = 'https://luxury-fernandez.shop';
 const API_BASE = window.location.origin;
-let _tempImgData = null;
-let _modalTempImg = null;
+let _newProductImages = [];
+let _modalEditImages = [];
 let currentModalIdx = -1;
 
 const products = [
@@ -1918,7 +1960,7 @@ const TAG_LABELS = {
 };
 
 const CATEGORY_META = [
-  { key: 'billetera', title: 'Billeteras para Papá', kicker: '🎁 Día del Padre' },
+  { key: 'billetera', title: 'Billeteras', kicker: 'Categoría' },
   { key: 'cartera', title: 'Carteras y bolsos', kicker: 'Categoría' },
   { key: 'joya', title: 'Joyas', kicker: 'Categoría' },
   { key: 'gorra', title: 'Gorras', kicker: 'Categoría' },
@@ -2225,7 +2267,8 @@ function openModal(idx) {
   document.getElementById('modalEditImgFile').value = '';
   document.getElementById('modalEditVisible').checked = !p.hidden && !p.deleted;
   document.getElementById('modalRestoreBtn').style.display = (p.hidden || p.deleted) ? 'block' : 'none';
-  _modalTempImg = null;
+  _modalEditImages = (p.images && p.images.length ? p.images : (p.img ? [p.img] : [])).slice();
+  renderImgGrid('modalEditImgGrid', _modalEditImages);
 }
 function closeModal(e) {
   if (e.target === document.getElementById('modal')) closeModalDirect();
@@ -2377,18 +2420,21 @@ function closeAddModal(e) {
 function closeAddModalDirect() {
   document.getElementById('addOverlay').classList.remove('open');
   document.body.style.overflow = adminActive ? '' : '';
+  _newProductImages = [];
+  renderImgGrid('f-img-grid', _newProductImages);
+  document.getElementById('f-img-file').value = '';
+  document.getElementById('f-img').value = '';
 }
 async function saveProduct() {
   const name  = document.getElementById('f-name').value.trim();
   const brand = document.getElementById('f-brand').value.trim();
   const cat   = document.getElementById('f-cat').value;
   const price = document.getElementById('f-price').value.trim() || 'Consultar precio';
-  let   img   = document.getElementById('f-img').value.trim();
   const desc  = document.getElementById('f-desc').value.trim();
-  if (_tempImgData) img = _tempImgData;
-  else if (img) img = convertGDriveUrl(img);
+  const images = _newProductImages.slice(0, 5);
+  const img = images[0] || '';
   if (!name || !brand || !img) { alert('Completa nombre, marca e imagen.'); return; }
-  const newProduct = { img, brand, name, cat, price, desc: desc || `${name} de ${brand}.`, tag: 'nuevo', hidden: false, deleted: false, isCustom: true };
+  const newProduct = { img, images, brand, name, cat, price, desc: desc || `${name} de ${brand}.`, tag: 'nuevo', hidden: false, deleted: false, isCustom: true };
   let savedProduct;
   try {
     savedProduct = await apiRequest('/api/catalogos', {
@@ -2407,8 +2453,8 @@ async function saveProduct() {
   applyFilters();
   ['f-name','f-brand','f-price','f-img','f-desc'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-img-file').value = '';
-  document.getElementById('f-img-preview').style.display = 'none';
-  _tempImgData = null;
+  _newProductImages = [];
+  renderImgGrid('f-img-grid', _newProductImages);
   closeAddModalDirect();
   alert(`✓ "${name}" agregado al catálogo.`);
 }
@@ -2432,61 +2478,74 @@ function renderCustomProduct(p, idx) {
   grid.insertBefore(card, noRes);
 }
 
+// ── MULTI-IMAGE MANAGER (shared by add & edit forms) ──
+function renderImgGrid(containerId, imagesArr) {
+  const grid = document.getElementById(containerId);
+  if (!grid) return;
+  grid.innerHTML = imagesArr.map((src, i) => `
+    <div class="img-multi-item${i === 0 ? ' img-multi-cover' : ''}">
+      <img src="${modalImgSrc(src)}" alt="Imagen ${i + 1}">
+      ${i === 0 ? '<span class="img-multi-badge">Portada</span>' : `<button type="button" class="img-multi-cover-btn" title="Hacer portada" onclick="makeImgCover('${containerId}', ${i})">★</button>`}
+      <button type="button" class="img-multi-remove" title="Quitar" onclick="removeImgFromGrid('${containerId}', ${i})">✕</button>
+    </div>
+  `).join('');
+}
+function getImgArrayForContainer(containerId) {
+  return containerId === 'f-img-grid' ? _newProductImages : _modalEditImages;
+}
+function setImgArrayForContainer(containerId, arr) {
+  if (containerId === 'f-img-grid') _newProductImages = arr;
+  else _modalEditImages = arr;
+}
+function removeImgFromGrid(containerId, i) {
+  const arr = getImgArrayForContainer(containerId);
+  arr.splice(i, 1);
+  renderImgGrid(containerId, arr);
+}
+function makeImgCover(containerId, i) {
+  const arr = getImgArrayForContainer(containerId);
+  const [item] = arr.splice(i, 1);
+  arr.unshift(item);
+  renderImgGrid(containerId, arr);
+}
+function addImagesFromFileList(files, containerId) {
+  const arr = getImgArrayForContainer(containerId);
+  const remaining = 5 - arr.length;
+  if (remaining <= 0) { showToast('Máximo 5 imágenes por producto.'); return; }
+  const toRead = Array.from(files).slice(0, remaining);
+  if (files.length > toRead.length) showToast('Máximo 5 imágenes por producto.');
+  toRead.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      arr.push(e.target.result);
+      renderImgGrid(containerId, arr);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function addImageUrlToGrid(containerId, urlInputId) {
+  const input = document.getElementById(urlInputId);
+  const url = input.value.trim();
+  if (!url) return;
+  const arr = getImgArrayForContainer(containerId);
+  if (arr.length >= 5) { showToast('Máximo 5 imágenes por producto.'); return; }
+  arr.push(convertGDriveUrl(url));
+  renderImgGrid(containerId, arr);
+  input.value = '';
+}
+function addProductImageFromUrl() {
+  addImageUrlToGrid('f-img-grid', 'f-img');
+}
+function addModalImageFromUrl() {
+  addImageUrlToGrid('modalEditImgGrid', 'modalEditImgUrl');
+}
+
 // ── MODAL ADMIN EDIT ──
 function handleModalImgFile(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  document.getElementById('modalEditImgUrl').value = '';
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    _modalTempImg = e.target.result;
-    document.getElementById('modalImg').src = _modalTempImg;
-  };
-  reader.readAsDataURL(file);
+  addImagesFromFileList(event.target.files, 'modalEditImgGrid');
+  event.target.value = '';
 }
 
-function saveModalEditLegacy() {
-  if (currentModalIdx < 0) return;
-  const priceVal = document.getElementById('modalEditPrice').value.trim();
-  const imgUrlVal = document.getElementById('modalEditImgUrl').value.trim();
-  const newImg = _modalTempImg || (imgUrlVal ? convertGDriveUrl(imgUrlVal) : null);
-  let changed = false;
-
-  if (priceVal) {
-    customPrices[currentModalIdx] = priceVal;
-    document.getElementById('modalPrice').textContent = priceVal;
-    if (allProducts[currentModalIdx]) allProducts[currentModalIdx].price = priceVal;
-    const priceEl = document.querySelector(`.price-text[data-pid="${currentModalIdx}"]`);
-    if (priceEl) priceEl.textContent = priceVal;
-    const wa = document.getElementById('modalWA');
-    const p = allProducts[currentModalIdx];
-    if (wa && p) {
-      const msg = encodeURIComponent(`Hola! Me interesa: *${p.name}* de ${p.brand}. Precio: ${priceVal}. ¿Puedes darme más información? Gracias!`);
-      wa.href = `https://wa.me/${WA}?text=${msg}`;
-    }
-    changed = true;
-  }
-
-  if (newImg) {
-    document.getElementById('modalImg').src = newImg;
-    const cardImg = document.querySelector(`.product-card[data-idx="${currentModalIdx}"] .card-img`);
-    if (cardImg) cardImg.src = newImg;
-    const localIdx = currentModalIdx - products.length;
-    if (localIdx >= 0 && localProducts[localIdx]) {
-      localProducts[localIdx].img = newImg;
-      allProducts[currentModalIdx].img = newImg;
-    }
-    changed = true;
-  }
-
-  _modalTempImg = null;
-  document.getElementById('modalEditImgFile').value = '';
-  document.getElementById('modalEditImgUrl').value = '';
-  if (changed) showToast('¡Cambios guardados!');
-  else showToast('No hay cambios para guardar.');
-}
-
-// ── GOOGLE DRIVE URL CONVERSION ──
 async function saveModalEdit() {
   if (currentModalIdx < 0) return;
   const p = allProducts[currentModalIdx];
@@ -2499,12 +2558,14 @@ async function saveModalEdit() {
   const tagVal = document.getElementById('modalEditTag').value;
   const descVal = document.getElementById('modalEditDesc').value.trim();
   const visibleVal = document.getElementById('modalEditVisible').checked;
-  const imgUrlVal = document.getElementById('modalEditImgUrl').value.trim();
-  const newImg = _modalTempImg || (imgUrlVal ? convertGDriveUrl(imgUrlVal) : null);
   let changed = false;
 
   if (!nameVal || !brandVal) {
     showToast('Completa nombre y marca.');
+    return;
+  }
+  if (!_modalEditImages.length) {
+    showToast('El producto necesita al menos una imagen.');
     return;
   }
 
@@ -2520,9 +2581,14 @@ async function saveModalEdit() {
   if ((p.desc || '') !== descVal) { p.desc = descVal; changed = true; }
   if (!!p.hidden === visibleVal) { p.hidden = !visibleVal; changed = true; }
   if (visibleVal && p.deleted) { p.deleted = false; changed = true; }
-  if (newImg) { p.img = newImg; changed = true; }
+  const prevImages = p.images && p.images.length ? p.images : (p.img ? [p.img] : []);
+  if (JSON.stringify(prevImages) !== JSON.stringify(_modalEditImages)) {
+    p.images = _modalEditImages.slice();
+    p.img = _modalEditImages[0];
+    changed = true;
+  }
 
-  document.getElementById('modalImg').src = p.img;
+  document.getElementById('modalImg').src = modalImgSrc(p.img);
   document.getElementById('modalImg').alt = p.name;
   document.getElementById('modalCategory').textContent = p.cat;
   document.getElementById('modalTitle').textContent = p.name;
@@ -2532,6 +2598,18 @@ async function saveModalEdit() {
   updateWhatsAppLink(p, p.price);
   updateProductCard(currentModalIdx);
   syncCategorySections();
+
+  const gallery = document.getElementById('modalImgGallery');
+  const imgs = p.images && p.images.length > 1 ? p.images : null;
+  if (imgs) {
+    gallery.className = 'modal-img-gallery has-thumbs';
+    gallery.innerHTML = imgs.map((src, i) =>
+      `<img class="modal-img-thumb${i === 0 ? ' active' : ''}" src="${modalImgSrc(src)}" alt="Imagen ${i + 1}" onclick="changeModalImg(this,'${src.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}">`
+    ).join('');
+  } else {
+    gallery.className = 'modal-img-gallery';
+    gallery.innerHTML = '';
+  }
 
   if (changed) {
     try {
@@ -2544,7 +2622,6 @@ async function saveModalEdit() {
   }
   applyFilters();
   document.getElementById('modalRestoreBtn').style.display = (p.hidden || p.deleted) ? 'block' : 'none';
-  _modalTempImg = null;
   document.getElementById('modalEditImgFile').value = '';
   document.getElementById('modalEditImgUrl').value = '';
   showToast(changed ? '¡Cambios guardados!' : 'No hay cambios para guardar.');
@@ -2600,33 +2677,10 @@ function convertGDriveUrl(url) {
   return url;
 }
 
-// ── IMAGE PREVIEW (URL) ──
-function previewImgUrl() {
-  _tempImgData = null;
-  document.getElementById('f-img-file').value = '';
-  const url = document.getElementById('f-img').value.trim();
-  const preview = document.getElementById('f-img-preview');
-  if (url) {
-    preview.src = convertGDriveUrl(url);
-    preview.style.display = 'block';
-  } else {
-    preview.style.display = 'none';
-  }
-}
-
 // ── IMAGE UPLOAD FROM DEVICE ──
 function handleImageFile(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  document.getElementById('f-img').value = '';
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    _tempImgData = e.target.result;
-    const preview = document.getElementById('f-img-preview');
-    preview.src = _tempImgData;
-    preview.style.display = 'block';
-  };
-  reader.readAsDataURL(file);
+  addImagesFromFileList(event.target.files, 'f-img-grid');
+  event.target.value = '';
 }
 
 // ── SHARE PRODUCT ──
