@@ -1131,9 +1131,112 @@
   .whatsapp-btn {
     border-radius: 999px;
   }
+
+  /* ── SPLASH / PORTADA ── */
+  body.splash-lock { overflow: hidden; }
+  .splash {
+    position: fixed; inset: 0; z-index: 5000;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 50% 42%, #1a160f 0%, #0a0806 65%, #050403 100%);
+    overflow: hidden;
+    cursor: pointer;
+    transition: opacity 0.9s ease, visibility 0.9s ease;
+  }
+  .splash.splash-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+  .splash-glow {
+    position: absolute; top: 50%; left: 50%;
+    width: 700px; height: 700px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(201,168,76,0.16) 0%, transparent 70%);
+    animation: splashPulse 4s ease-in-out infinite;
+  }
+  @keyframes splashPulse {
+    0%, 100% { opacity: 0.55; transform: translate(-50%, -50%) scale(0.92); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.06); }
+  }
+  .splash-frame {
+    position: absolute; inset: 22px;
+    border: 1px solid rgba(201,168,76,0.28);
+    pointer-events: none;
+  }
+  .splash-content { position: relative; text-align: center; padding: 20px; cursor: default; min-width: 0; max-width: 100%; }
+  .splash-mark {
+    color: var(--gold); font-size: 22px; letter-spacing: 10px;
+    opacity: 0; animation: splashFadeUp 1s ease forwards 0.2s;
+  }
+  .splash-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(38px, 9vw, 78px);
+    letter-spacing: 6px;
+    line-height: 1;
+    color: var(--cream);
+    margin-top: 20px;
+    opacity: 0; animation: splashFadeUp 1s ease forwards 0.5s;
+  }
+  .splash-name span { color: var(--gold); font-style: italic; }
+  .splash-divider {
+    display: flex; align-items: center; justify-content: center;
+    gap: 14px; width: 0; margin: 26px auto; overflow: hidden;
+    animation: splashDividerGrow 1s ease forwards 1s;
+  }
+  .splash-divider::before, .splash-divider::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .splash-divider-diamond {
+    width: 6px; height: 6px; background: var(--gold);
+    transform: rotate(45deg); flex-shrink: 0;
+  }
+  @keyframes splashDividerGrow { from { width: 0; } to { width: 210px; } }
+  .splash-tagline {
+    font-size: 11px; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--warm-gray);
+    opacity: 0; animation: splashFadeUp 1s ease forwards 1.3s;
+  }
+  .splash-enter {
+    display: inline-block;
+    margin-top: 42px;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold-light);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    padding: 14px 42px;
+    cursor: pointer;
+    opacity: 0; animation: splashFadeUp 1s ease forwards 1.7s;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  .splash-enter:hover { background: var(--gold); color: var(--black); }
+  @keyframes splashFadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @media (max-width: 600px) {
+    .splash-frame { inset: 14px; }
+    .splash-mark { font-size: 16px; letter-spacing: 6px; }
+    .splash-name { letter-spacing: 1px; font-size: clamp(26px, 7vw, 40px); }
+    .splash-tagline { letter-spacing: 1.5px; font-size: 9px; }
+    .splash-enter { padding: 12px 32px; margin-top: 34px; }
+  }
 </style>
 </head>
-<body>
+<body class="splash-lock">
+
+<!-- ══ PORTADA ══ -->
+<div class="splash" id="splash" onclick="dismissSplash()">
+  <div class="splash-glow"></div>
+  <div class="splash-frame"></div>
+  <div class="splash-content" onclick="event.stopPropagation()">
+    <div class="splash-mark">✦ ✦ ✦</div>
+    <h1 class="splash-name">Luxury <span>Fernández</span></h1>
+    <div class="splash-divider"><div class="splash-divider-diamond"></div></div>
+    <p class="splash-tagline">Carteras · Joyas · Moda · Accesorios</p>
+    <button class="splash-enter" onclick="dismissSplash()">Entrar</button>
+  </div>
+</div>
 
 <!-- ══ HEADER ══ -->
 <header>
@@ -1887,6 +1990,19 @@ const API_BASE = window.location.origin;
 let _newProductImages = [];
 let _modalEditImages = [];
 let currentModalIdx = -1;
+
+// ── PORTADA ──
+let _splashDismissed = false;
+function dismissSplash() {
+  if (_splashDismissed) return;
+  _splashDismissed = true;
+  const splash = document.getElementById('splash');
+  document.body.classList.remove('splash-lock');
+  if (!splash) return;
+  splash.classList.add('splash-hidden');
+  setTimeout(() => splash.remove(), 900);
+}
+setTimeout(dismissSplash, 4500);
 
 const products = [
   /* 0 */ { img:'imagenes/84bff691-0d81-43a1-984f-bddb26ffd087.JPG', brand:'Bimba y Lola', name:'Crossbody Blanca Cadena', cat:'Cartera', price:'Consultar precio', desc:'Elegante bolso crossbody en color blanco roto con cadena plateada y correa ajustable con logo. Cierre de botón giratorio. Ideal para el día a día con estilo y distinción.' },
